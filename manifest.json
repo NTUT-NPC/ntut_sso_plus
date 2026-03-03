@@ -20,5 +20,6 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "description": "A browser extension for NTUT students to access academic, student affairs, and other services through a unified interface."
+  "homepage_url": "https://github.com/NTUT-NPC/ntut_sso_plus",
+  "description": "提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。"
 }
