@@ -13,21 +13,29 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Build CRX and ZIP
-        uses: fast-growing/chrome-extension-build-action@v1.1.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          # This compresses from the root directory as requested
-          extension-path: './' 
-          # The name of the output file (without extension)
-          zip-name: 'ntut_sso_plus'
-          # Required for CRX: You must provide a private key string
-          # Store this in your Repo Settings > Secrets and Variables > Actions
-          private-key: ${{ secrets.CHROME_PRIVATE_KEY }}
+          node-version: 20
 
-      - name: Upload Artifact
+      - name: Install CRX utility
+        run: npm install -g crx
+
+      - name: Build Extension (CRX and ZIP)
+        run: |
+          # 1. Create the ZIP (from root)
+          zip -r extension.zip . -x "*.git*" ".github*"
+          
+          # 2. Create the CRX
+          # Note: This assumes you've added your .pem key to GitHub Secrets
+          echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
+          crx pack . -p private.pem -o extension.crx
+          rm private.pem
+        
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: built-extension
+          name: extension-files
           path: |
-            *.crx
-            *.zip
+            extension.zip
+            extension.crx
