@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*' 
-  workflow_dispatch:
+  workflow_dispatch: # The manual button
 
 jobs:
   build:
@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for tagging
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -26,17 +28,26 @@ jobs:
 
       - name: Build CRX
         run: |
-          # Generate the CRX using your secret key
           echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
           crx pack . -p private.pem -o extension.crx
           rm private.pem
 
+      - name: Generate Tag Name
+        id: tagger
+        run: |
+          # If triggered by a tag, use it. Otherwise, create a timestamp tag.
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=manual-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # Only include the CRX file here
           files: extension.crx
-          name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.tagger.outputs.tag }}
+          name: Release ${{ steps.tagger.outputs.tag }}
           draft: false
           prerelease: false
         env:
