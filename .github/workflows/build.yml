@@ -1,14 +1,17 @@
-name: Build Chrome Extension
+name: Build and Release Extension
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    tags:
+      - 'v*' # Triggers on tags starting with v (e.g., v1.0.1)
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # Required to create a release
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -23,19 +26,22 @@ jobs:
 
       - name: Build Extension (CRX and ZIP)
         run: |
-          # 1. Create the ZIP (from root)
+          # Create ZIP (from root, excluding git/github folders)
           zip -r extension.zip . -x "*.git*" ".github*"
           
-          # 2. Create the CRX
-          # Note: This assumes you've added your .pem key to GitHub Secrets
+          # Create CRX using your secret key
           echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
           crx pack . -p private.pem -o extension.crx
           rm private.pem
-        
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: extension-files
-          path: |
+          files: |
             extension.zip
             extension.crx
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
