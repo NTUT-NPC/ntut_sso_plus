@@ -1,16 +1,16 @@
-name: Build and Release Extension
+name: Build and Release CRX
 
 on:
   push:
     tags:
-      - 'v*' # Triggers on tags starting with v (e.g., v1.0.1)
-  workflow_dispatch: # Allows manual triggering
+      - 'v*' 
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to create a release
+      contents: write 
     
     steps:
       - name: Checkout Code
@@ -24,12 +24,9 @@ jobs:
       - name: Install CRX utility
         run: npm install -g crx
 
-      - name: Build Extension (CRX and ZIP)
+      - name: Build CRX
         run: |
-          # Create ZIP (from root, excluding git/github folders)
-          zip -r extension.zip . -x "*.git*" ".github*"
-          
-          # Create CRX using your secret key
+          # Generate the CRX using your secret key
           echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
           crx pack . -p private.pem -o extension.crx
           rm private.pem
@@ -37,9 +34,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            extension.zip
-            extension.crx
+          # Only include the CRX file here
+          files: extension.crx
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
