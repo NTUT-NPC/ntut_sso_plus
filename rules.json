@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "Origin", "operation": "remove" },
+        { "header": "Sec-Fetch-Mode", "operation": "remove" },
+        { "header": "Sec-Fetch-Site", "operation": "remove" },
+        { "header": "User-Agent", "operation": "set", "value": "Direk ios App" }
+      ],
+      "responseHeaders": [
+        { "header": "Access-Control-Expose-Headers", "operation": "set", "value": "Location" },
+        { "header": "Access-Control-Allow-Origin", "operation": "set", "value": "*" }
+      ]
+    },
+    "condition": {
+      "urlFilter": "https://app.ntut.edu.tw/*",
+      "resourceTypes": ["xmlhttprequest"]
+    }
+  }
+]
