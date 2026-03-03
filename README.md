@@ -40,7 +40,7 @@
 
 2. 開啟 [chrome://extensions](chrome://extensions)。
 
-3. 啟用右上角的「開發者模式」。
+3. 啟用頁面中的「開發者模式」。
 
 4. 點擊「載入未封裝項目」，選擇「ntut_sso_plus」資料夾。
 
