@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "北科大 SSO+",
+  "version": "26.3.13",
+  "permissions": ["storage", "declarativeNetRequest"],
+  "host_permissions": ["https://app.ntut.edu.tw/*"],
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+   "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "description": "A browser extension for NTUT students to access academic, student affairs, and other services through a unified interface."
+}
