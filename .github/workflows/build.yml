@@ -1,0 +1,33 @@
+name: Build Chrome Extension
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build CRX and ZIP
+        uses: fast-growing/chrome-extension-build-action@v1.1.0
+        with:
+          # This compresses from the root directory as requested
+          extension-path: './' 
+          # The name of the output file (without extension)
+          zip-name: 'ntut_sso_plus'
+          # Required for CRX: You must provide a private key string
+          # Store this in your Repo Settings > Secrets and Variables > Actions
+          private-key: ${{ secrets.CHROME_PRIVATE_KEY }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-extension
+          path: |
+            *.crx
+            *.zip
