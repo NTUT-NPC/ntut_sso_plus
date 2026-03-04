@@ -1,19 +1,5 @@
 const BASE_URL = 'https://app.ntut.edu.tw/';
 const SERVICES = {
-    "常用服務 (Favorite)": {
-        "北科 i 學園 PLUS": "ischool_plus_oauth",
-        "學生請假系統": "sa_010_oauth",
-        "課程系統": "aa_0010-oauth",
-        "成績查詢專區": "sa_003_oauth",
-        "圖書館入口": "lib_002_oauth2",
-        "電子郵件": "zimbrasso_oauth",
-        "期中撤選": "aa_Online+Course+Withdrawal+System_stu_oauth",
-        "期末網路預選 1": "aa_011_oauth",
-        "期末網路預選 2": "aa_012_oauth",
-        "開學加退選 1": "aa_030_oauth",
-        "開學加退選 2": "aa_030_2_oauth",
-        "開學加退選 3": "aa_030_3_oauth"
-    },
     "教務處 (Academic)": {
         "學業成績查詢": "aa_003_LB_oauth",
         "學業成績查詢(二機)": "aa_003_oauth",
@@ -28,7 +14,19 @@ const SERVICES = {
         "畢業生離校系統": "aa-gradu_oauth",
         "家長系統": "aa_ParentSystem_oauth",
         "Easy Test 平台": "aa_easytest_oauth",
-        "外語中心資訊系統": "aa_027_oauth"
+        "外語中心資訊系統": "aa_027_oauth",
+        // 注意：原本寫在常用服務裡的 "北科 i 學園 PLUS" 等等，
+        // 如果它原本就不在下面的分類裡，你需要把它補回來這裡面的某個分類，
+        // 或是開一個 "其他 (Others)" 放進去，這樣編輯選單才選得到它。
+        "北科 i 學園 PLUS": "ischool_plus_oauth", 
+        "課程系統": "aa_0010-oauth",
+        "成績查詢專區": "sa_003_oauth",
+        "期中撤選": "aa_Online+Course+Withdrawal+System_stu_oauth",
+        "期末網路預選 1": "aa_011_oauth",
+        "期末網路預選 2": "aa_012_oauth",
+        "開學加退選 1": "aa_030_oauth",
+        "開學加退選 2": "aa_030_2_oauth",
+        "開學加退選 3": "aa_030_3_oauth"
     },
     "學務處 (Student Affairs)": {
         "學生停車證申請": "sa_005",
@@ -40,6 +38,8 @@ const SERVICES = {
         "學生證掛失補發": "ezcard_oauth"
     },
     "其他服務 (Others)": {
+        "圖書館入口": "lib_002_oauth2", 
+        "電子郵件": "zimbrasso_oauth",
         "新學術資源網": "ar_OAUTH",
         "學雜費減免(進修部)": "NTUT_exemption_OCE_oauth",
         "學雜費減免/弱勢助學": "NTUT_exemption_oauth",
@@ -60,6 +60,20 @@ const SERVICES = {
         "小郵差": "test_postman"
     }
 };
+
+const DEFAULT_FAVORITES = [
+    "ischool_plus_oauth", "sa_010_oauth", "aa_0010-oauth",
+    "sa_003_oauth", "lib_002_oauth2", "zimbrasso_oauth"
+];
+
+function findNameByCode(code) {
+    for (const cat in SERVICES) {
+        for (const [name, c] of Object.entries(SERVICES[cat])) {
+            if (c === code) return name;
+        }
+    }
+    return code; 
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -145,27 +159,73 @@ document.addEventListener('DOMContentLoaded', () => {
 function showMainView() {
     document.getElementById('login-view').classList.add('hidden');
     document.getElementById('main-view').classList.remove('hidden');
-    setTimeout(() => {
-        loginView.classList.add('hidden');
-        document.getElementById('main-view').classList.remove('hidden');
-    }, 300);
-    const container = document.getElementById('service-container');
-    container.innerHTML = '';
+    
+    // 讀取使用者設定，如果沒有就用預設值
+    chrome.storage.local.get(['custom_favorites'], (result) => {
+        const favorites = result.custom_favorites || DEFAULT_FAVORITES;
+        const container = document.getElementById('service-container');
+        container.innerHTML = '';
 
-    Object.entries(SERVICES).forEach(([category, items]) => {
-        const header = document.createElement('div');
-        header.style = "grid-column: 1 / -1; margin: 15px 0 5px 0; font-size: 13px; font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 4px;";
-        header.innerText = category;
-        header.className = "category-header";
-        container.appendChild(header);
+        // --- 1. 渲染「常用服務」區塊 (包含你的 SVG 筆) ---
+        const favHeader = document.createElement('div');
+        favHeader.className = "category-header";
+        favHeader.style.display = "flex";
+        favHeader.style.alignItems = "center";
+        
+        // 你的 SVG
+        const editIconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="pointer-events: none;">
+            <path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/>
+        </svg>`;
 
-        Object.entries(items).forEach(([name, code]) => {
-            const div = document.createElement('div');
-            div.className = 'service-item';
-            div.innerText = name;
-            div.setAttribute('data-name', name);
-            div.addEventListener('click', () => startSSO(code));
-            container.appendChild(div);
+        favHeader.innerHTML = `
+            <span>常用服務 (Favorite)</span>
+            <button id="edit-fav-btn" class="edit-btn" title="編輯常用按鈕" style="display:flex; align-items:center; justify-content:center; margin-left:8px;">
+                ${editIconSvg}
+            </button>`;
+        container.appendChild(favHeader);
+
+        // 綁定編輯按鈕功能
+        favHeader.querySelector('#edit-fav-btn').addEventListener('click', () => {
+            openEditModal(favorites);
+        });
+
+        // 顯示常用的按鈕
+        if (favorites.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.innerText = "尚未設定常用服務";
+            emptyMsg.style = "grid-column: 1/-1; text-align:center; color:#999; font-size:12px; padding:5px;";
+            container.appendChild(emptyMsg);
+        } else {
+            favorites.forEach(code => {
+                const name = findNameByCode(code);
+                // 為了避免顯示找不到名稱的項目（例如該服務已被學校移除），加個檢查
+                if (name) {
+                    const div = document.createElement('div');
+                    div.className = 'service-item';
+                    div.innerText = name;
+                    div.addEventListener('click', () => startSSO(code));
+                    container.appendChild(div);
+                }
+            });
+        }
+
+        // --- 2. 渲染下方其他所有分類 (保持原樣) ---
+        Object.entries(SERVICES).forEach(([category, items]) => {
+            const header = document.createElement('div');
+            header.style = "grid-column: 1 / -1; margin: 15px 0 5px 0; font-size: 13px; font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 4px;";
+            header.innerText = category;
+            header.className = "category-header";
+            container.appendChild(header);
+
+            Object.entries(items).forEach(([name, code]) => {
+                const div = document.createElement('div');
+                div.className = 'service-item';
+                div.innerText = name;
+                div.setAttribute('data-name', name);
+                div.addEventListener('click', () => startSSO(code));
+                container.appendChild(div);
+            });
         });
     });
 }
@@ -235,4 +295,95 @@ function monitorFinalRedirect(tabId) {
             }
         }
     });
+}
+
+// ... (前面是原本的 monitorFinalRedirect)
+
+function openEditModal(currentFavorites) {
+    if (document.getElementById('edit-modal')) return;
+
+    // 1. 建立 Modal 外框
+    const modal = document.createElement('div');
+    modal.id = 'edit-modal';
+    // 這裡直接寫入 style，省去你去改 CSS 檔案的麻煩，當然能移到 CSS 最好
+    modal.style = `
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg); z-index: 50; display: flex; flex-direction: column;
+        padding: 20px; box-sizing: border-box; animation: fadeIn 0.3s;
+    `;
+    
+    const title = document.createElement('h3');
+    title.innerText = "編輯常用服務";
+    title.style.marginBottom = "15px";
+    modal.appendChild(title);
+
+    const listDiv = document.createElement('div');
+    listDiv.id = 'edit-list';
+    listDiv.style = "flex-grow: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-bottom: 20px;";
+    
+    const selectedSet = new Set(currentFavorites);
+
+    // 2. 產生勾選清單
+    Object.entries(SERVICES).forEach(([category, items]) => {
+        Object.entries(items).forEach(([name, code]) => {
+            const itemDiv = document.createElement('div');
+            const isSelected = selectedSet.has(code);
+            
+            // 設定樣式
+            itemDiv.className = 'service-item'; // 重用原本的 class 保持一致
+            itemDiv.style.border = isSelected ? "1px solid var(--primary)" : "1px solid var(--border)";
+            itemDiv.style.background = isSelected ? "var(--primary-glow)" : "var(--card-bg)";
+            itemDiv.style.color = isSelected ? "var(--primary)" : "var(--text-main)";
+            itemDiv.style.fontSize = "12px";
+            
+            itemDiv.innerText = name;
+            
+            // 點擊切換選擇狀態
+            itemDiv.onclick = () => {
+                if (selectedSet.has(code)) {
+                    selectedSet.delete(code);
+                    itemDiv.style.border = "1px solid var(--border)";
+                    itemDiv.style.background = "var(--card-bg)";
+                    itemDiv.style.color = "var(--text-main)";
+                } else {
+                    selectedSet.add(code);
+                    itemDiv.style.border = "1px solid var(--primary)";
+                    itemDiv.style.background = "var(--primary-glow)";
+                    itemDiv.style.color = "var(--primary)";
+                }
+            };
+            listDiv.appendChild(itemDiv);
+        });
+    });
+
+    modal.appendChild(listDiv);
+
+    // 3. 底部按鈕區
+    const actionDiv = document.createElement('div');
+    actionDiv.style = "display: flex; gap: 10px; margin-top: 10px;";
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.innerText = "取消";
+    cancelBtn.style = "flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--card-bg); border-radius: 4px; cursor: pointer;";
+    cancelBtn.onclick = () => modal.remove();
+
+    const saveBtn = document.createElement('button');
+    saveBtn.innerText = "儲存";
+    saveBtn.style = "flex: 1; padding: 10px; border: none; background: var(--primary); color: white; border-radius: 4px; cursor: pointer; font-weight: bold;";
+    saveBtn.onclick = () => {
+        const newFavorites = Array.from(selectedSet);
+        chrome.storage.local.set({ custom_favorites: newFavorites }, () => {
+            // 重新渲染畫面並關閉視窗
+            const container = document.getElementById('service-container');
+            container.innerHTML = ''; // 清空
+            showMainView(); // 重新執行主程式 (它會重讀 storage)
+            modal.remove();
+        });
+    };
+
+    actionDiv.appendChild(cancelBtn);
+    actionDiv.appendChild(saveBtn);
+    modal.appendChild(actionDiv);
+
+    document.body.appendChild(modal);
 }

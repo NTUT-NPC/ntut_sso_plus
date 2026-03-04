@@ -366,6 +366,84 @@ h3 { font-size: 1.2rem; font-weight: 800; margin: 0; color: var(--primary); lett
   color: var(--primary);
   text-decoration: underline;
 }
+/* --- 新增的樣式 --- */
+
+/* 編輯按鈕 (那隻筆) */
+.edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 5px;
+  margin-left: 5px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.edit-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* 編輯模式的 Modal (覆蓋層) */
+#edit-modal {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s;
+}
+
+#edit-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 編輯模式改為兩欄，比較好閱讀 */
+  gap: 8px;
+  padding-bottom: 20px;
+}
+
+/* 編輯模式下的項目樣式 */
+.edit-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.edit-item.selected {
+  border-color: var(--primary);
+  background-color: var(--primary-glow);
+  color: var(--primary);
+  font-weight: bold;
+}
+.edit-item input {
+  width: auto; /* 覆蓋原本 input 的寬度 */
+  margin: 0;
+}
+
+/* 編輯模式底部的按鈕區 */
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.btn-secondary {
+  background: var(--category-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex: 1;
+}
 </style>
 </head>
 <body>
