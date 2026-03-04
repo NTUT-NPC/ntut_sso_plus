@@ -1,28 +1,37 @@
 /* iStudyTab grid view styles */
 .istudy-course-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .istudy-course-block {
   background: var(--card-bg);
-  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  padding: 10px 10px 6px 10px;
+  box-shadow: var(--shadow-sm);
+  padding: 12px;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  margin-bottom: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.istudy-course-block:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-glow);
 }
 
 .istudy-course-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 12px;
+  margin: 0 0 6px 0;
 }
 
 .istudy-course-title {
@@ -33,22 +42,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin: 0;
 }
 
 .istudy-scan-btn {
-  padding: 5px 12px;
-  background: var(--primary);
-  color: #fff;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
 }
 
 .istudy-scan-btn:hover {
-  background: #2563eb;
+  transform: translateY(-1px);
+  color: #a855f7;
 }
 
 /* iStudyTab styles */

@@ -17,7 +17,9 @@ export async function loadOtherTabCourses() {
                         <span class="istudy-course-title">${item.title}</span>
                         <button class="istudy-scan-btn" id="${btnId}" data-cid="${item.course_id}">檢索檔案</button>
                     </div>
-                    <div class="istudy-file-list" id="file-list-${item.course_id}"></div>
+                    <div class="istudy-file-list" id="file-list-${item.course_id}">
+                        <span class="istudy-empty">點擊「檢索檔案」以取得內容</span>
+                    </div>
                 </div>`;
             }).join('');
             otherTab.innerHTML = `<div class="istudy-course-grid">${list}</div>`;
@@ -68,7 +70,7 @@ export async function loadOtherTabCourses() {
                     }
                     // Add click handler for download links
                     fileDiv.querySelectorAll('.file-download-link').forEach(link => {
-                        link.addEventListener('click', function(e) {
+                        link.addEventListener('click', function (e) {
                             e.preventDefault();
                             const url = decodeURIComponent(this.getAttribute('data-href'));
                             window.open(url, '_blank');
