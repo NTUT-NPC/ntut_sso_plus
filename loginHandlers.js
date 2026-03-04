@@ -1,4 +1,6 @@
 // Handles login form logic and storage
+import { BASE_URL } from "./constants.js";
+
 export function setupLoginHandlers({ onLoginSuccess }) {
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
@@ -27,8 +29,8 @@ export function setupLoginHandlers({ onLoginSuccess }) {
 
         try {
             const loginParams = new URLSearchParams({ muid: uid, mpassword: pwd });
-            const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, { 
-                method: 'POST' 
+            const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, {
+                method: 'POST'
             });
             const loginText = await loginRes.text();
             let loginBody;
