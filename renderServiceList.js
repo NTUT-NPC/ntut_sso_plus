@@ -1,4 +1,4 @@
-import { SERVICES, DEFAULT_FAVORITES } from "./constants.js";
+import { SERVICES } from "./constants.js";
 import { startSSO } from "./ssoservice.js";
 
 function findNameByCode(code) {
