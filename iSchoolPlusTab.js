@@ -12,6 +12,16 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
+/** Return true only if the URL uses an explicitly safe protocol. */
+function isSafeUrl(url) {
+    try {
+        const parsed = new URL(url, 'https://placeholder.invalid');
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 export async function loadOtherTabCourses() {
     const otherTab = document.getElementById('tab-other');
     otherTab.innerHTML = '<div class="istudy-loading">載入中...</div>';
@@ -49,7 +59,7 @@ export async function loadOtherTabCourses() {
                     if (Array.isArray(f.item) && f.item.length > 0) {
                         children = renderFileItems(f.item);
                     }
-                    if (href && href !== 'about:blank' && !href.startsWith('istream')) {
+                    if (href && isSafeUrl(href)) {
                         return `<li><a href="#" class="file-download-link istudy-file-link" data-href="${encodeURIComponent(href)}" data-filename="${encodeURIComponent(rawText)}">${safeText}</a>${children}</li>`;
                     } else {
                         return `<li>${safeText}${children}</li>`;
@@ -86,7 +96,9 @@ export async function loadOtherTabCourses() {
                         link.addEventListener('click', function (e) {
                             e.preventDefault();
                             const url = decodeURIComponent(this.getAttribute('data-href'));
-                            window.open(url, '_blank');
+                            if (isSafeUrl(url)) {
+                                window.open(url, '_blank');
+                            }
                         });
                     });
                 });
