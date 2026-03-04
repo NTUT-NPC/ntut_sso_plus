@@ -27,52 +27,7 @@
    * Falls back to a channel label.
    */
   function buildFilename(channelLabel) {
-    let lectureName = '';
-    let courseTitle = '';
-
-    // Try to find selected lecture name from the s_catalog sidebar frame
-    // (may be in a sibling frame — try parent.s_catalog or top-level traversal)
-    try {
-      const catalogFrame = window.parent?.frames?.s_catalog || window.top?.frames?.s_catalog;
-      if (catalogFrame && catalogFrame.document) {
-        const selectedLi = catalogFrame.document.querySelector('li.selected, li. selected');
-        if (selectedLi) {
-          const anchor = selectedLi.querySelector('a');
-          if (anchor) lectureName = anchor.textContent.trim();
-        }
-      }
-    } catch (e) {
-      // Cross-origin — can't access sibling frame
-    }
-
-    // Try the page <title> from the top frame for the course name
-    try {
-      const topTitle = window.top?.document?.title || '';
-      if (topTitle.length > 3) {
-        courseTitle = topTitle.replace(/\s*-\s*臺北科技大學.*$/i, '').trim();
-      }
-    } catch (e) {
-      // Cross-origin
-    }
-
-    // Fallback: try this frame's own <title> or common selectors
-    if (!lectureName && !courseTitle) {
-      const titleEl =
-        document.querySelector('title') ||
-        document.querySelector('.lecture-title') ||
-        document.querySelector('#lecture_title');
-      if (titleEl) courseTitle = titleEl.textContent.trim();
-    }
-
-    let parts = [];
-    if (courseTitle) parts.push(courseTitle);
-    if (lectureName) parts.push(lectureName);
-    let base = parts.join('_') || 'istream_video';
-
-    // Sanitise
-    base = base.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_').substring(0, 120);
-
-    return `${base}_${channelLabel}.mp4`;
+    return `istream_video_${channelLabel}.mp4`;
   }
 
   // --- Draggable helper ---------------------------------------------------
