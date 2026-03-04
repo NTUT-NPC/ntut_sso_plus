@@ -31,10 +31,10 @@
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "homepage_url": "https://github.com/NTUT-NPC/ntut_sso_plus",
   "description": "提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。"
