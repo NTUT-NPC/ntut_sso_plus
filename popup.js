@@ -1,4 +1,5 @@
 const BASE_URL = 'https://app.ntut.edu.tw/';
+
 const SERVICES = {
     "教務處 (Academic)": {
         "學業成績查詢": "aa_003_LB_oauth",
@@ -15,9 +16,6 @@ const SERVICES = {
         "家長系統": "aa_ParentSystem_oauth",
         "Easy Test 平台": "aa_easytest_oauth",
         "外語中心資訊系統": "aa_027_oauth",
-        // 注意：原本寫在常用服務裡的 "北科 i 學園 PLUS" 等等，
-        // 如果它原本就不在下面的分類裡，你需要把它補回來這裡面的某個分類，
-        // 或是開一個 "其他 (Others)" 放進去，這樣編輯選單才選得到它。
         "北科 i 學園 PLUS": "ischool_plus_oauth", 
         "課程系統": "aa_0010-oauth",
         "成績查詢專區": "sa_003_oauth",
@@ -169,8 +167,8 @@ function showMainView() {
         // --- 1. 渲染「常用服務」區塊 (包含你的 SVG 筆) ---
         const favHeader = document.createElement('div');
         favHeader.className = "category-header";
-        favHeader.style.display = "flex";
-        favHeader.style.alignItems = "center";
+        // [修改] 這裡的 style 已經調整成跟其他分類一致 (藍色字、粗體、底線)
+        favHeader.style = "grid-column: 1 / -1; margin: 15px 0 5px 0; font-size: 13px; font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 4px; display: flex; align-items: center; justify-content: space-between;";
         
         // 你的 SVG
         const editIconSvg = `
@@ -180,7 +178,7 @@ function showMainView() {
 
         favHeader.innerHTML = `
             <span>常用服務 (Favorite)</span>
-            <button id="edit-fav-btn" class="edit-btn" title="編輯常用按鈕" style="display:flex; align-items:center; justify-content:center; margin-left:8px;">
+            <button id="edit-fav-btn" class="edit-btn" title="編輯常用按鈕" style="display:flex; align-items:center; justify-content:center; padding: 4px; background: transparent; border: none; cursor: pointer; color: var(--text-main);">
                 ${editIconSvg}
             </button>`;
         container.appendChild(favHeader);
@@ -297,8 +295,6 @@ function monitorFinalRedirect(tabId) {
     });
 }
 
-// ... (前面是原本的 monitorFinalRedirect)
-
 function openEditModal(currentFavorites) {
     if (document.getElementById('edit-modal')) return;
 
@@ -364,7 +360,8 @@ function openEditModal(currentFavorites) {
 
     const cancelBtn = document.createElement('button');
     cancelBtn.innerText = "取消";
-    cancelBtn.style = "flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--card-bg); border-radius: 4px; cursor: pointer;";
+    // [修改] 這裡加了 color: var(--text-main)，確保深色模式下文字是白色的
+    cancelBtn.style = "flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); border-radius: 4px; cursor: pointer;";
     cancelBtn.onclick = () => modal.remove();
 
     const saveBtn = document.createElement('button');
