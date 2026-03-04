@@ -4,7 +4,7 @@ const SERVICES = {
     "教務系統": {
         "課程系統": "aa_0010-oauth",
         "北科 i 學園 PLUS": "ischool_plus_oauth",                
-        "學業成績查詢 1": "aa_003_oauth",   //original: 學業成績查詢(二機)
+        "學業成績查詢": "aa_003_oauth",   //original: 學業成績查詢(二機)
         "新生網路選課 1": "aa_016_oauth",
         "新生網路選課 2": "aa_017_oauth",
         "期中撤選": "aa_Online+Course+Withdrawal+System_stu_oauth",                
@@ -23,7 +23,6 @@ const SERVICES = {
         "Easy Test 平台": "aa_easytest_oauth",
         "外語中心資訊系統": "aa_027_oauth",
         "電子大頭照上傳": "aa_StuPhoto_oauth",        
-        "學業成績查詢 2": "aa_003_LB_oauth" //original: 學業成績查詢
     },    
     "學務系統": {
         "學生查詢專區": "sa_003_oauth",
