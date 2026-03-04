@@ -2,6 +2,16 @@
 // Handles the UI and logic for the '其他' tab in the popup
 import { silentLoginAndGetJson } from "./iSchoolPlus/iSchoolPlusAPI.js";
 
+/** Escape a string for safe interpolation into HTML markup. */
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 export async function loadOtherTabCourses() {
     const otherTab = document.getElementById('tab-other');
     otherTab.innerHTML = '<div class="istudy-loading">載入中...</div>';
@@ -10,14 +20,16 @@ export async function loadOtherTabCourses() {
         const data = await res.json();
         if (data.code === 0 && data.data && Array.isArray(data.data.list)) {
             const list = data.data.list.map(item => {
-                const divId = `course-${item.course_id}`;
-                const btnId = `scan-btn-${item.course_id}`;
+                const safeId = escapeHtml(item.course_id);
+                const safeTitle = escapeHtml(item.title);
+                const divId = `course-${safeId}`;
+                const btnId = `scan-btn-${safeId}`;
                 return `<div class="istudy-course-block">
                     <div class="istudy-course-row">
-                        <span class="istudy-course-title">${item.title}</span>
-                        <button class="istudy-scan-btn" id="${btnId}" data-cid="${item.course_id}">檢索檔案</button>
+                        <span class="istudy-course-title">${safeTitle}</span>
+                        <button class="istudy-scan-btn" id="${btnId}" data-cid="${safeId}">檢索檔案</button>
                     </div>
-                    <div class="istudy-file-list" id="file-list-${item.course_id}">
+                    <div class="istudy-file-list" id="file-list-${safeId}">
                         <span class="istudy-empty">點擊「檢索檔案」以取得內容</span>
                     </div>
                 </div>`;
@@ -30,16 +42,17 @@ export async function loadOtherTabCourses() {
                     return '<span class="istudy-empty">無檔案</span>';
                 }
                 return '<ul class="istudy-file-ul">' + items.map(f => {
-                    const text = f.title || f.text || JSON.stringify(f);
+                    const rawText = f.title || f.text || JSON.stringify(f);
+                    const safeText = escapeHtml(rawText);
                     const href = f.url || f.link || f.href || f.download_url || '';
                     let children = '';
                     if (Array.isArray(f.item) && f.item.length > 0) {
                         children = renderFileItems(f.item);
                     }
                     if (href && href !== 'about:blank' && !href.startsWith('istream')) {
-                        return `<li><a href="#" class="file-download-link istudy-file-link" data-href="${encodeURIComponent(href)}" data-filename="${encodeURIComponent(text)}">${text}</a>${children}</li>`;
+                        return `<li><a href="#" class="file-download-link istudy-file-link" data-href="${encodeURIComponent(href)}" data-filename="${encodeURIComponent(rawText)}">${safeText}</a>${children}</li>`;
                     } else {
-                        return `<li>${text}${children}</li>`;
+                        return `<li>${safeText}${children}</li>`;
                     }
                 }).join('') + '</ul>';
             }
