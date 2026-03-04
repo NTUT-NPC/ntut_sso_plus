@@ -1,0 +1,137 @@
+#ntut-sso-dl-bar {
+  --primary: #005bac;
+  --primary-glow: rgba(0, 91, 172, 0.3);
+  --bg: #f3f4f6;
+  --card-bg: #ffffff;
+  --text-main: #1f2937;
+  --text-sub: rgb(85, 85, 85);
+  --border: #d1d5db;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  #ntut-sso-dl-bar {
+    --primary: #60a5fa;
+    --primary-glow: rgba(96, 165, 250, 0.3);
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-sub: #dddddd;
+    --border: #334155;
+  }
+}
+
+#ntut-sso-dl-bar {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+  color: var(--text-main);
+  z-index: 2147483647;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  cursor: grab;
+  animation: ntut-dl-appear 0.4s ease-out;
+}
+
+@keyframes ntut-dl-appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#ntut-sso-dl-bar.ntut-sso-dl-bar--dragging {
+  opacity: 0.85;
+  cursor: grabbing;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.ntut-sso-dl-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ntut-sso-dl-label {
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.ntut-sso-dl-hint {
+  color: var(--text-sub);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+
+.ntut-sso-dl-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.ntut-sso-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: inherit;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ntut-sso-dl-btn:hover {
+  border-color: var(--primary);
+  background: var(--card-bg);
+  color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--primary-glow);
+}
+
+.ntut-sso-dl-btn:active {
+  transform: scale(0.95);
+}
+
+.ntut-sso-dl-btn--started {
+  background: rgba(34, 197, 94, 0.1) !important;
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  color: #16a34a !important;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ntut-sso-dl-btn--started {
+    color: #4ade80 !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #ntut-sso-dl-bar {
+    gap: 4px;
+    padding: 6px 8px;
+  }
+  .ntut-sso-dl-hint {
+    display: none;
+  }
+}
