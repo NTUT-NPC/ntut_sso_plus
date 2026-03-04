@@ -34,7 +34,6 @@
 
     <div id="main-view" class="hidden">
       <header>
-          </script>
         <div class="brand-wrapper">
           <h3 class="brand-logo">NTUT SSO<span class="plus-sign">+</span></h3>
           <div class="npc-tag">POWERED BY NPC</div>
@@ -44,14 +43,22 @@
           <a href="#" id="reset-btn">登出</a>
         </div>
       </header>
-      
-      <div id="service-container"></div>
-      <a
-        class="repo-link"
-        href="https://github.com/NTUT-NPC/ntut_sso_plus"
-        target="_blank"
-        rel="noopener noreferrer"
-      >GitHub Repository</a>
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-main-btn" data-tab="main">服務</button>
+        <button class="tab-btn" id="tab-other-btn" data-tab="other">其他</button>
+      </div>
+      <div id="tab-main" class="tab-content">
+        <div id="service-container"></div>
+        <a
+          class="repo-link"
+          href="https://github.com/NTUT-NPC/ntut_sso_plus"
+          target="_blank"
+          rel="noopener noreferrer"
+        >GitHub Repository</a>
+      </div>
+      <div id="tab-other" class="tab-content hidden">
+        <div style="padding: 20px; color: var(--text-sub); text-align: center;">這裡可以放置其他內容。</div>
+      </div>
     </div>
   </div>
   <script type="module" src="popup.js"></script>

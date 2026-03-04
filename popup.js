@@ -89,7 +89,26 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBtn.click();
         }
     });
+
+    // Tab switching logic
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('tab-btn')) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            const tab = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            if (tab === 'other') {
+                loadOtherTabCourses();
+            }
+        }
+    });
 });
+
+// Load and display course list in the '其他' tab
+
+import { loadOtherTabCourses } from "./iSchoolPlusTab.js";
+
 
 function showMainView() {
     document.getElementById('login-view').classList.add('hidden');
