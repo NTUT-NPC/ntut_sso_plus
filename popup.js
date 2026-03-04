@@ -30,7 +30,7 @@ const SERVICES = {
         "學生停車證申請": "sa_005",
         "學生宿舍登錄抽籤": "sa_007_oauth",
         "器材租借系統": "sa_009_oauth",
-        "就學貸款申請": "sa_SLAS_oauth",
+        "就學貸款申請系統": "sa_SLAS_oauth",
         "英文門檻考試報名": "StuETA_oauth",
         "學生證掛失補發": "ezcard_oauth"
     },
@@ -51,7 +51,7 @@ const SERVICES = {
         "線上繳費系統": "OnlinePayment_oauth",
         "教師評鑑及資料庫": "rd_001_oauth",
         "產學合作資訊系統": "rd_003",
-        "研究獎助生申請": "rnd-rs-oauth",
+        "研究獎助生申請系統": "rnd-rs-oauth",
         "學術倫理管理系統": "rd_aes_oauth",
         "網路投票系統": "per_001_oauth",
         "小郵差": "test_postman"
