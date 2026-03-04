@@ -1,3 +1,166 @@
+/* iStudyTab grid view styles */
+.istudy-course-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.istudy-course-block {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  padding: 10px 10px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.istudy-course-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.istudy-course-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.istudy-scan-btn {
+  padding: 5px 12px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.istudy-scan-btn:hover {
+  background: #2563eb;
+}
+/* iStudyTab styles */
+.istudy-loading {
+  padding: 10px;
+  color: var(--text-sub);
+  text-align: center;
+}
+.istudy-course-list {
+  text-align: left;
+  font-size: 14px;
+}
+.istudy-course-block {
+  margin-bottom: 10px;
+}
+.istudy-course-btn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 2px;
+  transition: background 0.2s;
+}
+.istudy-course-btn:hover {
+  background: #2563eb;
+}
+.istudy-file-list {
+  margin-top: 6px;
+}
+.istudy-file-ul {
+  margin: 0.5em 0 0 1em;
+  padding: 0;
+  font-size: 13px;
+}
+.istudy-file-ul li {
+  margin-bottom: 2px;
+  color: var(--text-main);
+}
+.istudy-file-link {
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.istudy-empty {
+  color: #999;
+}
+.istudy-error {
+  color: red;
+  padding: 10px;
+  text-align: center;
+}
+/* Course button style for 其他 tab */
+.course-btn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 2px;
+  transition: background 0.2s;
+}
+.course-btn:hover {
+  background: #2563eb;
+}
+.file-list ul {
+  margin: 0.5em 0 0 1em;
+  padding: 0;
+  font-size: 13px;
+}
+.file-list li {
+  margin-bottom: 2px;
+  color: var(--text-main);
+}
+/* ======================
+   Tab Bar
+====================== */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+  background: var(--bg);
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+}
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  background: var(--card-bg);
+}
+/* Make tab content always scrollable and show scrollbar */
+.tab-content {
+  display: block;
+  height: 100%;
+  max-height: 420px;
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
+}
+.tab-content.hidden {
+  display: none !important;
+}
 
 /* ======================
    Theme Variables
@@ -216,13 +379,6 @@ h3 {
   letter-spacing: 1px;
 }
 
-.fade-out-exit {
-  opacity: 0 !important;
-  transform: scale(0.9) !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  pointer-events: none;
-}
-
 /* ======================
    Service Container & Items
 ====================== */
@@ -277,14 +433,18 @@ h3 {
   transform: scale(0.95);
 }
 
-#service-container::-webkit-scrollbar {
+/* Custom scrollbar for scrollable tab content */
+#service-container::-webkit-scrollbar,
+.tab-content::-webkit-scrollbar {
   width: 4px;
 }
-#service-container::-webkit-scrollbar-thumb {
+#service-container::-webkit-scrollbar-thumb,
+.tab-content::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
 }
-#service-container::-webkit-scrollbar-thumb:hover {
+#service-container::-webkit-scrollbar-thumb:hover,
+.tab-content::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 

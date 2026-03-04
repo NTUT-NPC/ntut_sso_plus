@@ -1,4 +1,5 @@
-async function silentLoginAndGetJson(cid) {
+import { startSSO } from "../ssoservice.js";
+export async function silentLoginAndGetJson(cid) {
     const AP_OU = "ischool_plus_oauth";
     const originalTabsCreate = chrome.tabs.create;
     
