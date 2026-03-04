@@ -4,7 +4,6 @@ import { renderServiceList } from "./renderServiceList.js";
 import { loadOtherTabCourses } from "./iSchoolPlusTab.js";
 import { DEFAULT_FAVORITES } from "./constants.js";
 import { openEditModal } from "./editFavoritesModal.js";
-import
 
 function showMainView() {
     document.getElementById('login-view').classList.add('hidden');
