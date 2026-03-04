@@ -7,6 +7,8 @@
  * - Download progress tracking
  */
 
+let activeDownloads = {};
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'download_video') {
     const { url, filename } = message;
@@ -28,11 +30,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse({ success: false, error: chrome.runtime.lastError.message });
         } else {
           console.log('[SSO+ BG] Download started, id:', downloadId);
+          activeDownloads[downloadId] = true;
           sendResponse({ success: true, downloadId });
         }
       }
     );
 
     return true;
+  }
+});
+
+chrome.downloads.onChanged.addListener((delta) => {
+  if (!delta || !delta.id || !activeDownloads[delta.id]) return;
+
+  let status = null;
+  let progress = null;
+
+  if (delta.state && delta.state.current) {
+    status = delta.state.current;
+  }
+  if (delta.bytesReceived && delta.totalBytes) {
+    progress = Math.floor((delta.bytesReceived / delta.totalBytes) * 100);
+  }
+
+  chrome.runtime.sendMessage({
+    action: 'download_progress',
+    downloadId: delta.id,
+    status,
+    progress,
+  });
+
+  if (status === 'complete' || status === 'interrupted') {
+    delete activeDownloads[delta.id];
   }
 });

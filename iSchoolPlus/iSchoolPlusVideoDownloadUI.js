@@ -1,11 +1,25 @@
+
 /**
- * iStream Video Download - Content Script
- * Injects download buttons into the iStream video player on istream.ntut.edu.tw
- * Runs in all frames (including the s_main frame where the video player lives).
+ * 北科大 SSO+ 影片下載內容腳本
+ *
+ * 功能：
+ * - 在 istream.ntut.edu.tw 影片播放器下方注入「下載」按鈕
+ * - 支援多頻道（講師/簡報）影片下載
+ * - 按下下載按鈕時：
+ *   1. 送出下載請求給背景 Service Worker，使用 chrome.downloads API 下載影片
+ *   2. 開啟一個新分頁作為「下載請求已送出」的回饋頁（建議使用 HTTPS 靜態網站以避免被 Brave 等瀏覽器阻擋）
+ *   3. 按鈕顯示進度、完成、失敗、取消等狀態，並防止重複點擊
+ * - 支援拖曳浮動下載工具列
+ *
+ * 注意事項：
+ * - 若使用 Brave 或隱私擴充功能，chrome-extension:// 分頁可能被阻擋，建議改用 HTTPS 網站作為回饋頁
+ * - 下載速度取決於伺服器回應，可能有延遲
  */
 
 (function () {
-  'use strict';
+  // ========================
+  // 工具函式區
+  // ========================
 
   // --- Helpers -----------------------------------------------------------
 
@@ -180,14 +194,21 @@
       btn.title = `下載${ch.label}`;
       btn.textContent = ch.label;
 
+      let currentDownloadId = null;
+      let isDownloading = false;
+
       btn.addEventListener('click', (e) => {
+        if (isDownloading) return;
         e.preventDefault();
         e.stopPropagation();
 
         const filename = buildFilename(ch.label);
+        const fallbackTab = window.open(videoUrl, '_blank');
 
-        // Open a blank tab synchronously to avoid popup blocking
-        const fallbackTab = window.open('about:blank', '_blank');
+        isDownloading = true;
+        btn.classList.add('ntut-sso-dl-btn--started');
+        btn.textContent = '已送出下載請求';
+        btn.disabled = true;
 
         chrome.runtime.sendMessage(
           {
@@ -199,18 +220,59 @@
             if (chrome.runtime.lastError || !(response && response.success)) {
               console.error('[SSO+ DL]', chrome.runtime.lastError ? chrome.runtime.lastError.message : 'Download failed');
               if (fallbackTab) fallbackTab.location = videoUrl;
+              btn.textContent = '下載失敗';
+              setTimeout(() => {
+                btn.classList.remove('ntut-sso-dl-btn--started');
+                btn.textContent = ch.label;
+                btn.disabled = false;
+                currentDownloadId = null;
+                isDownloading = false;
+              }, 2000);
               return;
             }
-            // Download succeeded, close the blank tab if still open
-            if (fallbackTab) fallbackTab.close();
-            btn.classList.add('ntut-sso-dl-btn--started');
-            btn.textContent = '下載中…';
+            // Download succeeded, close the fallback tab after a short delay
+            currentDownloadId = response.downloadId;
+            setTimeout(() => {
+              try { if (fallbackTab) fallbackTab.close(); } catch {}
+            }, 1200);
+          }
+        );
+      });
+
+      // Listen for download progress messages from background
+      chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.action === 'download_progress' && msg.downloadId === currentDownloadId) {
+          if (msg.status === 'in_progress' && typeof msg.progress === 'number') {
+            btn.textContent = `下載中… ${msg.progress}%`;
+          } else if (msg.status === 'complete') {
+            btn.textContent = '下載完成';
             setTimeout(() => {
               btn.classList.remove('ntut-sso-dl-btn--started');
               btn.textContent = ch.label;
-            }, 3000);
+              btn.disabled = false;
+              currentDownloadId = null;
+              isDownloading = false;
+            }, 2000);
+          } else if (msg.status === 'interrupted') {
+            btn.textContent = '下載失敗';
+            setTimeout(() => {
+              btn.classList.remove('ntut-sso-dl-btn--started');
+              btn.textContent = ch.label;
+              btn.disabled = false;
+              currentDownloadId = null;
+              isDownloading = false;
+            }, 2000);
+          } else if (msg.status === 'cancelled') {
+            btn.textContent = '下載已取消';
+            setTimeout(() => {
+              btn.classList.remove('ntut-sso-dl-btn--started');
+              btn.textContent = ch.label;
+              btn.disabled = false;
+              currentDownloadId = null;
+              isDownloading = false;
+            }, 2000);
           }
-        );
+        }
       });
 
       btnRow.appendChild(btn);
