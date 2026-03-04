@@ -435,16 +435,19 @@ h3 {
 
 /* Custom scrollbar for scrollable tab content */
 #service-container::-webkit-scrollbar,
-.tab-content::-webkit-scrollbar {
+.tab-content::-webkit-scrollbar,
+#edit-list::-webkit-scrollbar {
   width: 4px;
 }
 #service-container::-webkit-scrollbar-thumb,
-.tab-content::-webkit-scrollbar-thumb {
+.tab-content::-webkit-scrollbar-thumb,
+#edit-list::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
 }
 #service-container::-webkit-scrollbar-thumb:hover,
-.tab-content::-webkit-scrollbar-thumb:hover {
+.tab-content::-webkit-scrollbar-thumb:hover,
+#edit-list::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
