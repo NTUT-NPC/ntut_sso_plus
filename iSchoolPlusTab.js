@@ -27,6 +27,11 @@ export async function loadOtherTabCourses() {
     otherTab.innerHTML = '<div class="istudy-loading">載入中...</div>';
     try {
         const res = await fetch('https://istudy.ntut.edu.tw/xmlapi/index.php?action=my-course-list');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const contentType = res.headers.get('Content-Type') || '';
+        if (!contentType.includes('application/json')) {
+            throw new Error('伺服器未回傳 JSON（可能需要重新登入 iStudy）');
+        }
         const data = await res.json();
         if (data.code === 0 && data.data && Array.isArray(data.data.list)) {
             const list = data.data.list.map(item => {
