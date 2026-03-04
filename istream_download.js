@@ -231,6 +231,9 @@
 
         const filename = buildFilename(ch.label);
 
+        // Open a blank tab synchronously to avoid popup blocking
+        const fallbackTab = window.open('about:blank', '_blank');
+
         chrome.runtime.sendMessage(
           {
             action: 'download_video',
@@ -238,21 +241,19 @@
             filename: filename,
           },
           (response) => {
-            if (chrome.runtime.lastError) {
-              console.error('[SSO+ DL]', chrome.runtime.lastError.message);
-              window.open(videoUrl, '_blank');
+            if (chrome.runtime.lastError || !(response && response.success)) {
+              console.error('[SSO+ DL]', chrome.runtime.lastError ? chrome.runtime.lastError.message : 'Download failed');
+              if (fallbackTab) fallbackTab.location = videoUrl;
               return;
             }
-            if (response && response.success) {
-              btn.classList.add('ntut-sso-dl-btn--started');
-              btn.textContent = '下載中…';
-              setTimeout(() => {
-                btn.classList.remove('ntut-sso-dl-btn--started');
-                btn.textContent = ch.label;
-              }, 3000);
-            } else {
-              window.open(videoUrl, '_blank');
-            }
+            // Download succeeded, close the blank tab if still open
+            if (fallbackTab) fallbackTab.close();
+            btn.classList.add('ntut-sso-dl-btn--started');
+            btn.textContent = '下載中…';
+            setTimeout(() => {
+              btn.classList.remove('ntut-sso-dl-btn--started');
+              btn.textContent = ch.label;
+            }, 3000);
           }
         );
       });
