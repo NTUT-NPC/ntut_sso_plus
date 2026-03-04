@@ -22,6 +22,26 @@ export async function loadOtherTabCourses() {
             }).join('');
             otherTab.innerHTML = `<div class="istudy-course-grid">${list}</div>`;
 
+            // Recursive file rendering function
+            function renderFileItems(items) {
+                if (!Array.isArray(items) || items.length === 0) {
+                    return '<span class="istudy-empty">無檔案</span>';
+                }
+                return '<ul class="istudy-file-ul">' + items.map(f => {
+                    const text = f.title || f.text || JSON.stringify(f);
+                    const href = f.url || f.link || f.href || f.download_url || '';
+                    let children = '';
+                    if (Array.isArray(f.item) && f.item.length > 0) {
+                        children = renderFileItems(f.item);
+                    }
+                    if (href && href !== 'about:blank' && !href.startsWith('istream')) {
+                        return `<li><a href="#" class="file-download-link istudy-file-link" data-href="${encodeURIComponent(href)}" data-filename="${encodeURIComponent(text)}">${text}</a>${children}</li>`;
+                    } else {
+                        return `<li>${text}${children}</li>`;
+                    }
+                }).join('') + '</ul>';
+            }
+
             // Add event listeners for each button
             data.data.list.forEach(item => {
                 const btn = document.getElementById(`scan-btn-${item.course_id}`);
@@ -31,38 +51,15 @@ export async function loadOtherTabCourses() {
                     try {
                         const result = await silentLoginAndGetJson(item.course_id);
                         if (result && result.data) {
-                            // Prefer path.item if present, else fallback to list
+                            let fileHtml = '';
                             if (result.data.path && Array.isArray(result.data.path.item)) {
-                                if (result.data.path.item.length === 0) {
-                                    fileDiv.innerHTML = '<span class="istudy-empty">無檔案</span>';
-                                } else {
-                                    fileDiv.innerHTML = '<ul class="istudy-file-ul">' + result.data.path.item.map((f, idx) => {
-                                        const text = f.title || f.text || JSON.stringify(f);
-                                        const href = f.url || f.link || f.href || f.download_url || '';
-                                        if (href && !href.startsWith('istream') && !href.startsWith('about')) {
-                                            return `<li><a href=\"#\" class=\"file-download-link istudy-file-link\" data-href=\"${encodeURIComponent(href)}\" data-filename=\"${encodeURIComponent(text)}\">${text}</a></li>`;
-                                        } else {
-                                            return `<li>${text}</li>`;
-                                        }
-                                    }).join('') + '</ul>';
-                                }
+                                fileHtml = renderFileItems(result.data.path.item);
                             } else if (Array.isArray(result.data.list)) {
-                                if (result.data.list.length === 0) {
-                                    fileDiv.innerHTML = '<span class="istudy-empty">無檔案</span>';
-                                } else {
-                                    fileDiv.innerHTML = '<ul class="istudy-file-ul">' + result.data.list.map((f, idx) => {
-                                        const text = f.title || JSON.stringify(f);
-                                        const href = f.url || f.link || f.href || f.download_url || '';
-                                        if (href && !href.startsWith('istream') && !href.startsWith('about')) {
-                                            return `<li><a href=\"#\" class=\"file-download-link istudy-file-link\" data-href=\"${encodeURIComponent(href)}\" data-filename=\"${encodeURIComponent(text)}\">${text}</a></li>`;
-                                        } else {
-                                            return `<li>${text}</li>`;
-                                        }
-                                    }).join('') + '</ul>';
-                                }
+                                fileHtml = renderFileItems(result.data.list);
                             } else {
-                                fileDiv.innerHTML = '<span class="istudy-empty">無檔案</span>';
+                                fileHtml = '<span class="istudy-empty">無檔案</span>';
                             }
+                            fileDiv.innerHTML = fileHtml;
                         } else {
                             fileDiv.innerHTML = '<span class="istudy-error">無法取得檔案清單</span>';
                         }
