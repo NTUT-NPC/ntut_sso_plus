@@ -2,8 +2,15 @@
   "manifest_version": 3,
   "name": "北科大 SSO+",
   "version": "26.3.13",
-  "permissions": ["storage", "declarativeNetRequest"],
-  "host_permissions": ["https://app.ntut.edu.tw/*"],
+  "permissions": ["storage", "declarativeNetRequest", "downloads", "activeTab", "tabs", "scripting"],
+  "host_permissions": [
+    "https://app.ntut.edu.tw/*",
+    "https://istream.ntut.edu.tw/*",
+    "https://istudy.ntut.edu.tw/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "declarative_net_request": {
     "rule_resources": [{
       "id": "ruleset_1",
@@ -11,10 +18,19 @@
       "path": "rules.json"
     }]
   },
+  "content_scripts": [
+    {
+      "matches": ["https://istream.ntut.edu.tw/*", "https://istudy.ntut.edu.tw/*"],
+      "js": ["istream_download.js"],
+      "css": ["istream_download.css"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   },
-   "icons": {
+  "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
     "48": "icon48.png",
