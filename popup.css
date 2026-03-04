@@ -619,3 +619,46 @@ h3 {
   cursor: pointer;
   flex: 1;
 }
+
+/* Favorites header styles */
+.fav-header {
+  grid-column: 1 / -1;
+  margin: 15px 0 5px 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.edit-fav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-main);
+}
+.edit-icon-svg {
+  pointer-events: none;
+}
+.empty-favorites-msg {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  padding: 5px;
+}
+.service-category-header {
+  grid-column: 1 / -1;
+  margin: 15px 0 5px 0;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
