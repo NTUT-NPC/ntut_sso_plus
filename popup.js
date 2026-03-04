@@ -38,7 +38,7 @@ const SERVICES = {
         "圖書館入口": "lib_002_oauth2",
         "獎助學金申請": "NTUT_scholarship_oauth",
         "網路資訊安全管理": "ipmac_oauth",
-        "學雜費減免/弱勢助學": "NTUT_exemption_oauth",
+        "學雜費減免 / 弱勢助學": "NTUT_exemption_oauth",
         "學雜費減免（進修部）": "NTUT_exemption_OCE_oauth",                               
         "電子郵件": "zimbrasso_oauth",
         "北科 VCP AI 平台": "inf_vcp_oauth",
