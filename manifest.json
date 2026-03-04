@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "北科大 SSO+",
   "version": "26.3.13",
-  "permissions": ["storage", "declarativeNetRequest", "downloads", "activeTab", "tabs", "scripting"],
+  "permissions": ["storage", "declarativeNetRequest", "downloads", "tabs"],
   "host_permissions": [
     "https://app.ntut.edu.tw/*",
     "https://istream.ntut.edu.tw/*",
