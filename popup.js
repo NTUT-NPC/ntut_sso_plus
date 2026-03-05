@@ -33,7 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loginTitle = document.querySelector('#login-view h3');
     if (loginTitle) {
-        loginTitle.innerHTML = `<div class="brand-title">NTUT SSO<span class="brand-plus">+</span></div>`;
+        loginTitle.replaceChildren();
+        const brandTitle = document.createElement('div');
+        brandTitle.className = "brand-title";
+        brandTitle.textContent = "NTUT SSO";
+        const brandPlus = document.createElement('span');
+        brandPlus.className = "brand-plus";
+        brandPlus.textContent = "+";
+        brandTitle.appendChild(brandPlus);
+        loginTitle.appendChild(brandTitle);
     }
 
     setupLoginHandlers({ onLoginSuccess: showMainView });

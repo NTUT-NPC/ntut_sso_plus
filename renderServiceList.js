@@ -7,20 +7,32 @@ function findNameByCode(code) {
             if (c === code) return name;
         }
     }
-    return code; 
+    return code;
 }
 
 export function renderServiceList(container, favorites) {
-    container.innerHTML = '';
+    container.replaceChildren();
     const favHeader = document.createElement('div');
     favHeader.className = "category-header fav-header";
+
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = "常用服務";
+    favHeader.appendChild(titleSpan);
+
+    const editBtn = document.createElement('button');
+    editBtn.id = "edit-fav-btn";
+    editBtn.className = "edit-btn edit-fav-btn";
+    editBtn.title = "編輯常用按鈕";
+
+    const parser = new DOMParser();
     const editIconSvg = `
-        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" class=\"edit-icon-svg\">
-            <path fill=\"currentColor\" d=\"M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z\"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="edit-icon-svg">
+            <path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/>
         </svg>`;
-    favHeader.innerHTML = `
-        <span>常用服務</span>
-        <button id=\"edit-fav-btn\" class=\"edit-btn edit-fav-btn\" title=\"編輯常用按鈕\">${editIconSvg}</button>`;
+    const svgDoc = parser.parseFromString(editIconSvg, 'image/svg+xml');
+    editBtn.appendChild(svgDoc.documentElement);
+
+    favHeader.appendChild(editBtn);
     container.appendChild(favHeader);
     // The edit button handler should be set by the caller
 

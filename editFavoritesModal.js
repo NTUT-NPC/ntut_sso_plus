@@ -57,7 +57,7 @@ export function openEditModal(currentFavorites, showMainView) {
         const newFavorites = Array.from(selectedSet);
         chrome.storage.local.set({ custom_favorites: newFavorites }, () => {
             const container = document.getElementById('service-container');
-            container.innerHTML = '';
+            container.replaceChildren();
             if (typeof showMainView === 'function') showMainView();
             modal.remove();
         });
