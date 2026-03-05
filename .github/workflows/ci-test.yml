@@ -5,11 +5,10 @@ on:
   workflow_dispatch: # The manual button
 
 jobs:
-  build:
+  buildExpected:
     runs-on: ubuntu-latest
     permissions:
-      contents: read 
-    
+      contents: read    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -28,7 +27,9 @@ jobs:
         run: node scripts/check-imports.js
 
       - name: Build CRX
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        if: |
+          github.event_name == 'workflow_dispatch' || 
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           if [ -n "${{ secrets.CHROME_PRIVATE_KEY }}" ]; then
             echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem

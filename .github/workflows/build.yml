@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # The manual button
 
 jobs:
-  build:
+  buildExpected:
     runs-on: ubuntu-latest
     permissions:
       contents: write
