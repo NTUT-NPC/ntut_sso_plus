@@ -1,5 +1,6 @@
 // Handles login form logic and storage
 import { BASE_URL } from "./constants.js";
+import { encrypt, decrypt } from "./cryptoUtils.js";
 
 export function setupLoginHandlers({ onLoginSuccess }) {
     const saveBtn = document.getElementById('save-btn');
@@ -10,16 +11,34 @@ export function setupLoginHandlers({ onLoginSuccess }) {
     chrome.storage.local.get(['uid', 'pwd'], async (result) => {
         if (!result.uid || !result.pwd) return;
 
+        let pwd = result.pwd;
+        // Attempt to decrypt if it looks like encrypted JSON
+        if (pwd.startsWith('{"iv":')) {
+            const decoded = await decrypt(pwd);
+            if (decoded) {
+                pwd = decoded;
+            } else {
+                // Decryption failure (e.g. key lost) — clear storage
+                chrome.storage.local.remove(['uid', 'pwd']);
+                return;
+            }
+        }
+
         // Silently re-validate stored credentials against the server
         statusDiv.style.color = "#2563eb";
         statusDiv.innerText = "自動登入中...";
         try {
-            const loginParams = new URLSearchParams({ muid: result.uid, mpassword: result.pwd });
+            const loginParams = new URLSearchParams({ muid: result.uid, mpassword: pwd });
             const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, {
                 method: 'POST'
             });
             const loginBody = JSON.parse(await loginRes.text());
             if (loginBody.success) {
+                // If it was plaintext, encrypt it now for future use
+                if (!result.pwd.startsWith('{"iv":')) {
+                    const encrypted = await encrypt(pwd);
+                    chrome.storage.local.set({ pwd: encrypted });
+                }
                 onLoginSuccess();
             } else {
                 chrome.storage.local.remove(['uid', 'pwd']);
@@ -61,7 +80,8 @@ export function setupLoginHandlers({ onLoginSuccess }) {
             }
 
             if (loginBody.success) {
-                chrome.storage.local.set({ uid, pwd }, () => {
+                const encrypted = await encrypt(pwd);
+                chrome.storage.local.set({ uid, pwd: encrypted }, () => {
                     statusDiv.style.color = "#16a34a";
                     statusDiv.innerText = "驗證成功！";
                     setTimeout(() => {
