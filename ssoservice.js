@@ -1,4 +1,5 @@
 import { BASE_URL } from "./constants.js";
+import { decrypt, isEncryptedFormat } from "./cryptoUtils.js";
 
 export async function startSSO(apOu) {
     document.body.classList.add('fade-out-exit');
@@ -6,7 +7,23 @@ export async function startSSO(apOu) {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     try {
-        const { uid, pwd } = await chrome.storage.local.get(['uid', 'pwd']);
+        const { uid, pwd: storedPwd } = await chrome.storage.local.get(['uid', 'pwd']);
+        let pwd = storedPwd;
+        if (isEncryptedFormat(pwd)) {
+            let decryptedPwd = null;
+            try {
+                decryptedPwd = await decrypt(pwd);
+            } catch (e) {
+                decryptedPwd = null;
+            }
+            if (!decryptedPwd) {
+                await chrome.storage.local.remove(['uid', 'pwd']);
+                throw new Error("登入資訊已失效，請重新登入");
+            }
+            pwd = decryptedPwd;
+        }
+        if (!uid || !pwd) throw new Error("請先登入");
+
         const loginParams = new URLSearchParams({ muid: uid, mpassword: pwd });
         const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, { method: 'POST' });
         const loginText = await loginRes.text();
