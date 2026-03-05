@@ -16,7 +16,16 @@ if (!fs.existsSync("manifest.json")) {
   console.error("Error: manifest.json not found");
   process.exit(1);
 }
-const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+
+let manifest;
+try {
+  const manifestContent = fs.readFileSync("manifest.json", "utf8");
+  manifest = JSON.parse(manifestContent);
+} catch (err) {
+  console.error("Error: Failed to parse manifest.json as valid JSON: " + err.message);
+  process.exit(1);
+}
+
 const manifestFiles = [];
 
 if (manifest.background && manifest.background.service_worker) {
@@ -44,7 +53,11 @@ if (manifest.declarative_net_request && manifest.declarative_net_request.rule_re
   });
 }
 
-manifestFiles.forEach(f => checkFile(path.join(".", f)));
+manifestFiles.forEach(f => {
+  if (typeof f === "string") {
+    checkFile(path.join(".", f));
+  }
+});
 
 // 2. Check JS imports
 console.log("Checking JS imports...");
@@ -79,9 +92,33 @@ jsFiles.forEach(jsFile => {
 
 // 3. Check HTML script/link tags
 console.log("Checking HTML references...");
-const htmlFiles = ["popup.html"]; 
-htmlFiles.forEach(htmlFile => {
-  if (!fs.existsSync(htmlFile)) return;
+const htmlFiles = new Set();
+
+// Include any HTML files referenced in the manifest
+manifestFiles.forEach(f => {
+  if (typeof f === "string" && f.toLowerCase().endsWith(".html")) {
+    htmlFiles.add(path.join(".", f));
+  }
+});
+
+// Also include all .html files found in the project tree
+function findHtmlFiles(dir) {
+  const files = fs.readdirSync(dir);
+  files.forEach(file => {
+    const fullPath = path.join(dir, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      if (file !== "node_modules" && file !== ".git") {
+        findHtmlFiles(fullPath);
+      }
+    } else if (file.toLowerCase().endsWith(".html")) {
+      htmlFiles.add(fullPath);
+    }
+  });
+}
+
+findHtmlFiles(".");
+
+Array.from(htmlFiles).forEach(htmlFile => {
   const content = fs.readFileSync(htmlFile, "utf8");
   const scriptRegex = /<script.*?src=["'](.*?)["']/g;
   const linkRegex = /<link.*?href=["'](.*?)["']/g;
