@@ -68,7 +68,13 @@ export function setupLoginHandlers({ onLoginSuccess }) {
                     }, 500);
                 });
             } else {
-                throw new Error(loginBody.msg || "帳號或密碼錯誤");
+                const msg = loginBody.errorMsg || "";
+                // Detect account-locked response and format it cleanly
+                const minuteMatch = msg.match(/(\d+)\s*分鐘之後/);
+                if (msg.includes("帳號已被鎖住") && minuteMatch) {
+                    throw new Error(`帳號已被鎖住，請於 ${minuteMatch[1]} 分鐘後再重新登入`);
+                }
+                throw new Error(msg || "帳號或密碼錯誤");
             }
         } catch (err) {
             statusDiv.style.color = "#ef4444";
