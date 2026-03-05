@@ -1,0 +1,37 @@
+name: Build and Release CRX
+
+on:
+  pull_request:
+  workflow_dispatch: # The manual button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for tagging
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install CRX utility
+        run: npm install -g crx
+
+      - name: Check import
+        run: node scripts/check-imports.js
+
+
+      - name: Build CRX
+        run: |
+          echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
+          crx pack . -p private.pem -o extension.crx
+          rm private.pem
+
+      
