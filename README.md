@@ -8,21 +8,13 @@
 
 ![](./docs/Screenshot0.png)
 
-![](./docs/Screenshot1.png)
+![](./docs/Screenshot2.png)
+
+![](./docs/Screenshot3.png)
 
 ## 功能
 
-- 快速存取常用服務包含：
-
-  - 北科 i 學園 PLUS
-
-  - 學生請假系統
-
-  - 課程系統
-
-  - 成績查詢專區
-
-  - 圖書館入口
+- **常用服務自定義**：可點擊編輯圖示自由選取常用項目，依個人習慣配置專屬選單。
 
 - **iStream 影片下載**：在 iStream 影片播放頁面自動顯示下載按鈕，支援分別下載講師與簡報頻道影片。
 
