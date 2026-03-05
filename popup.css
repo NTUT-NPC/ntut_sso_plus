@@ -659,3 +659,108 @@ h3 {
   border-bottom: 1px solid var(--border);
   padding-bottom: 4px;
 }
+
+/* ======================
+   Experimental Tab
+====================== */
+.exp-section {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exp-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.exp-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+
+.exp-card-icon {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.exp-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.exp-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.exp-card-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* stored course ID chips */
+.cs-stored-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+  min-height: 0;
+}
+
+.cs-chip {
+  background: var(--primary-glow);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.cs-empty-msg {
+  font-size: 11.5px;
+  color: var(--text-sub);
+  font-style: italic;
+}
+
+.exp-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.exp-action-btn {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.exp-action-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.exp-action-btn:active {
+  transform: scale(0.97);
+}
