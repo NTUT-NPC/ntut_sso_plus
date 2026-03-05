@@ -24,6 +24,7 @@ dist/
 build/
 *.log
 npm-debug.log*
+*.zip
 
 # Misc
 .cache/
