@@ -1,0 +1,145 @@
+/* ===================================================
+   iSchoolPlus File Download UI — Inline Sidebar Section
+   Matches the mooc_sysbar native .section styling.
+   =================================================== */
+
+/* ── Header layout ── */
+#ntut-sso-fdl-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px;
+    flex-wrap: wrap;
+    cursor: pointer;
+    transition: color 0.2s;
+    height: auto !important;
+    line-height: 1.6 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+#ntut-sso-fdl-header:hover {
+    color: #007F81;
+}
+
+/* Title takes full row, pushing badges to next line */
+.ntut-sso-fdl-title {
+    width: 100%;
+}
+
+/* ── Badges (cid + status) — same size ── */
+.ntut-sso-fdl-badge {
+    display: inline-block;
+    padding: 0 7px;
+    background: #06A2A4;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    line-height: 1.8;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Status badge — default: clickable hint */
+.ntut-sso-fdl-status {
+    background: #e5e7eb;
+    color: #666;
+}
+
+/* Status: loading */
+.ntut-sso-fdl-status--loading {
+    background: #fbbf24;
+    color: #78350f;
+}
+
+/* Status: done */
+.ntut-sso-fdl-status--done {
+    background: #16a34a;
+    color: #fff;
+}
+
+/* ── File list container ── */
+.ntut-sso-fdl-file-list {
+    max-height: 350px;
+    overflow-y: auto;
+    font-size: 12px;
+    padding: 4px 10px 8px 10px;
+    line-height: 1.6;
+}
+
+.ntut-sso-fdl-loading {
+    color: #06A2A4;
+    font-weight: 600;
+    padding: 4px 0;
+    display: block;
+}
+
+.ntut-sso-fdl-empty {
+    color: #999;
+    font-style: italic;
+    padding: 4px 0;
+    display: block;
+}
+
+.ntut-sso-fdl-error {
+    color: #dc2626;
+    font-weight: 600;
+    padding: 4px 0;
+    display: block;
+}
+
+/* ── File tree list ── */
+.ntut-sso-fdl-file-ul {
+    list-style: none !important;
+    margin: 2px 0 0 !important;
+    padding: 0 0 0 8px !important;
+}
+
+.ntut-sso-fdl-file-ul li {
+    background: none !important;
+    padding: 3px 0 !important;
+    line-height: 1.6 !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ntut-sso-fdl-file-ul li:last-child {
+    border-bottom: none;
+}
+
+.ntut-sso-fdl-link {
+    color: #005bac !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    padding: 2px 4px !important;
+    display: inline !important;
+    transition: color 0.15s, background 0.15s;
+    border-radius: 3px;
+}
+
+.ntut-sso-fdl-link:hover {
+    color: #fff !important;
+    background: #06A2A4 !important;
+    text-decoration: none !important;
+}
+
+.ntut-sso-fdl-folder {
+    font-weight: 700;
+    color: #333 !important;
+    display: block;
+    padding: 2px 4px;
+}
+
+.ntut-sso-fdl-folder::before {
+    content: "📂 ";
+}
+
+/* ── Nested file lists ── */
+.ntut-sso-fdl-file-ul .ntut-sso-fdl-file-ul {
+    padding-left: 16px !important;
+    margin-top: 0 !important;
+    border-left: 2px solid #e5e5e5;
+}
