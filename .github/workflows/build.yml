@@ -40,6 +40,8 @@ jobs:
             -x "docs/*" \
             -x "scripts/*" \
             -x "_metadata/*" \
+            -x "manifest.firefox.json" \
+            -x "chrome.zip" \
             -x "build.sh" \
             -x "README.md" \
             -x ".gitignore"
