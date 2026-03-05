@@ -7,9 +7,28 @@ export function setupLoginHandlers({ onLoginSuccess }) {
     const statusDiv = document.getElementById('status');
     const loginForm = document.getElementById('login-view');
 
-    chrome.storage.local.get(['uid', 'pwd'], (result) => {
-        if (result.uid && result.pwd) {
-            onLoginSuccess();
+    chrome.storage.local.get(['uid', 'pwd'], async (result) => {
+        if (!result.uid || !result.pwd) return;
+
+        // Silently re-validate stored credentials against the server
+        statusDiv.style.color = "#2563eb";
+        statusDiv.innerText = "自動登入中...";
+        try {
+            const loginParams = new URLSearchParams({ muid: result.uid, mpassword: result.pwd });
+            const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, {
+                method: 'POST'
+            });
+            const loginBody = JSON.parse(await loginRes.text());
+            if (loginBody.success) {
+                onLoginSuccess();
+            } else {
+                chrome.storage.local.remove(['uid', 'pwd']);
+                statusDiv.style.color = "#ef4444";
+                statusDiv.innerText = "儲存的帳號已失效，請重新登入";
+            }
+        } catch {
+            // Network error or parse failure — stay on login form silently
+            statusDiv.innerText = "";
         }
     });
 
@@ -18,6 +37,7 @@ export function setupLoginHandlers({ onLoginSuccess }) {
         const pwd = document.getElementById('password').value;
 
         if (!uid || !pwd) {
+            statusDiv.style.color = "#b45309";
             statusDiv.innerText = "請輸入帳密";
             return;
         }
@@ -39,8 +59,10 @@ export function setupLoginHandlers({ onLoginSuccess }) {
             } catch (e) {
                 throw new Error("伺服器回應格式異常");
             }
+
             if (loginBody.success) {
                 chrome.storage.local.set({ uid, pwd }, () => {
+                    statusDiv.style.color = "#16a34a";
                     statusDiv.innerText = "驗證成功！";
                     setTimeout(() => {
                         onLoginSuccess();
@@ -49,7 +71,13 @@ export function setupLoginHandlers({ onLoginSuccess }) {
                     }, 500);
                 });
             } else {
-                throw new Error(loginBody.msg || "帳號或密碼錯誤");
+                const msg = loginBody.errorMsg || "";
+                // Detect account-locked response and format it cleanly
+                const minuteMatch = msg.match(/(\d+)\s*分鐘之後/);
+                if (msg.includes("帳號已被鎖住") && minuteMatch) {
+                    throw new Error(`帳號已被鎖住，請於 ${minuteMatch[1]} 分鐘後再重新登入`);
+                }
+                throw new Error(msg || "帳號或密碼錯誤");
             }
         } catch (err) {
             statusDiv.style.color = "#ef4444";
