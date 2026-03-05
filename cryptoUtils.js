@@ -24,6 +24,9 @@ export function isEncryptedFormat(data) {
 async function getOrGenerateKey() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get([KEY_ALIAS], async (result) => {
+            if (chrome.runtime.lastError) {
+                return reject(new Error(chrome.runtime.lastError.message));
+            }
             if (result[KEY_ALIAS]) {
                 try {
                     const keyData = result[KEY_ALIAS];
@@ -37,12 +40,20 @@ async function getOrGenerateKey() {
                     resolve(key);
                 } catch (e) {
                     // If import fails, generate a new one
-                    const newKey = await generateAndStoreKey();
-                    resolve(newKey);
+                    try {
+                        const newKey = await generateAndStoreKey();
+                        resolve(newKey);
+                    } catch (err) {
+                        reject(err);
+                    }
                 }
             } else {
-                const newKey = await generateAndStoreKey();
-                resolve(newKey);
+                try {
+                    const newKey = await generateAndStoreKey();
+                    resolve(newKey);
+                } catch (err) {
+                    reject(err);
+                }
             }
         });
     });
@@ -55,14 +66,21 @@ async function generateAndStoreKey() {
         ['encrypt', 'decrypt']
     );
     const keyData = await crypto.subtle.exportKey('jwk', key);
-    await new Promise(r => chrome.storage.local.set({ [KEY_ALIAS]: keyData }, r));
+    await new Promise((resolve, reject) => {
+        chrome.storage.local.set({ [KEY_ALIAS]: keyData }, () => {
+            if (chrome.runtime.lastError) {
+                return reject(new Error(chrome.runtime.lastError.message));
+            }
+            resolve();
+        });
+    });
     return key;
 }
 
 /**
  * Encrypts a plaintext string.
  * @param {string} plainText 
- * @returns {Promise<string>} Base64 encoded JSON string containing iv and ciphertext.
+ * @returns {Promise<string>} JSON string whose fields (iv, content) are base64-encoded.
  */
 export async function encrypt(plainText) {
     if (!plainText) return null;
@@ -86,7 +104,7 @@ export async function encrypt(plainText) {
 
 /**
  * Decrypts an encrypted string.
- * @param {string} encryptedData Base64 encoded JSON string from encrypt().
+ * @param {string} encryptedData JSON string whose fields (iv, content) are base64-encoded from encrypt().
  * @returns {Promise<string>} Original plaintext.
  */
 export async function decrypt(encryptedData) {
