@@ -1,0 +1,117 @@
+/* ============================================================
+   北科大 SSO+ — 快速填課面板 CSS
+   Injected into https://aps-course.ntut.edu.tw/oads/Main
+   Follows the site's own UI conventions (no floating/shadow)
+   ============================================================ */
+
+/* ── Panel ──────────────────────────────────────────────────── */
+#ntut-sso-cs-panel {
+    margin-top: 8px;
+    padding: 6px 10px 8px;
+    background: #f0f4fa;
+    border-top: 1px solid #b0c4de;
+    border-bottom: 1px solid #b0c4de;
+    font-family: inherit;
+    font-size: 13px;
+    color: #1f2937;
+}
+
+/* ── Hint text ──────────────────────────────────────────────── */
+.ntut-sso-cs-hint {
+    margin: 0 0 5px;
+    color: #444;
+    font-size: 12px;
+}
+
+/* ── Input row ──────────────────────────────────────────────── */
+.ntut-sso-cs-row {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.ntut-sso-cs-course-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3px 5px;
+    border: 1px solid #aaa;
+    background: #fff;
+    color: #111;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    outline: none;
+}
+
+.ntut-sso-cs-course-input:focus {
+    border-color: #005bac;
+    outline: 1px solid #005bac;
+}
+
+.ntut-sso-cs-course-input::placeholder {
+    color: #bbb;
+    font-style: italic;
+    font-family: inherit;
+}
+
+/* ── Status ─────────────────────────────────────────────────── */
+.ntut-sso-cs-status {
+    min-height: 0;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.ntut-sso-cs-status--success {
+    color: #166534;
+}
+
+.ntut-sso-cs-status--error {
+    color: #991b1b;
+}
+
+.ntut-sso-cs-status--info {
+    color: #1e40af;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.ntut-sso-cs-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.ntut-sso-cs-btn {
+    padding: 2px 10px;
+    border: 1px solid #aaa;
+    background: #e8e8e8;
+    color: #111;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.ntut-sso-cs-btn:hover {
+    background: #d8d8d8;
+}
+
+.ntut-sso-cs-btn:active {
+    background: #c8c8c8;
+}
+
+.ntut-sso-cs-btn--primary {
+    background: #005bac;
+    color: #fff;
+    border-color: #004a8c;
+    font-weight: bold;
+}
+
+.ntut-sso-cs-btn--primary:hover {
+    background: #004a8c;
+}
+
+.ntut-sso-cs-btn--primary:active {
+    background: #003d75;
+}
+
+.ntut-sso-cs-btn--clear {
+    background: #e8e8e8;
+    color: #555;
+}

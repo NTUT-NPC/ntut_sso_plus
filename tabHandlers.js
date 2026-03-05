@@ -1,5 +1,5 @@
 // Handles tab switching logic and loading other tab content
-export function setupTabHandlers({ onOtherTab }) {
+export function setupTabHandlers({ onOtherTab, onTabChange }) {
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('tab-btn')) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -9,6 +9,9 @@ export function setupTabHandlers({ onOtherTab }) {
             document.getElementById('tab-' + tab).classList.remove('hidden');
             if (tab === 'other' && typeof onOtherTab === 'function') {
                 onOtherTab();
+            }
+            if (typeof onTabChange === 'function') {
+                onTabChange(tab);
             }
         }
     });
