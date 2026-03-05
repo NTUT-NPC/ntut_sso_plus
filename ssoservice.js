@@ -10,7 +10,17 @@ export async function startSSO(apOu) {
         const { uid, pwd: storedPwd } = await chrome.storage.local.get(['uid', 'pwd']);
         let pwd = storedPwd;
         if (pwd && pwd.startsWith('{"iv":')) {
-            pwd = await decrypt(pwd);
+            let decryptedPwd = null;
+            try {
+                decryptedPwd = await decrypt(pwd);
+            } catch (e) {
+                decryptedPwd = null;
+            }
+            if (!decryptedPwd) {
+                await chrome.storage.local.remove(['uid', 'pwd']);
+                throw new Error("登入資訊已失效，請重新登入");
+            }
+            pwd = decryptedPwd;
         }
         if (!uid || !pwd) throw new Error("請先登入");
 
