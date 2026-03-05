@@ -7,9 +7,28 @@ export function setupLoginHandlers({ onLoginSuccess }) {
     const statusDiv = document.getElementById('status');
     const loginForm = document.getElementById('login-view');
 
-    chrome.storage.local.get(['uid', 'pwd'], (result) => {
-        if (result.uid && result.pwd) {
-            onLoginSuccess();
+    chrome.storage.local.get(['uid', 'pwd'], async (result) => {
+        if (!result.uid || !result.pwd) return;
+
+        // Silently re-validate stored credentials against the server
+        statusDiv.style.color = "#2563eb";
+        statusDiv.innerText = "自動登入中...";
+        try {
+            const loginParams = new URLSearchParams({ muid: result.uid, mpassword: result.pwd });
+            const loginRes = await fetch(`${BASE_URL}login.do?${loginParams.toString()}`, {
+                method: 'POST'
+            });
+            const loginBody = JSON.parse(await loginRes.text());
+            if (loginBody.success) {
+                onLoginSuccess();
+            } else {
+                chrome.storage.local.remove(['uid', 'pwd']);
+                statusDiv.style.color = "#ef4444";
+                statusDiv.innerText = "儲存的帳號已失效，請重新登入";
+            }
+        } catch {
+            // Network error or parse failure — stay on login form silently
+            statusDiv.innerText = "";
         }
     });
 
