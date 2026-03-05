@@ -37,6 +37,7 @@ export function setupLoginHandlers({ onLoginSuccess }) {
         const pwd = document.getElementById('password').value;
 
         if (!uid || !pwd) {
+            statusDiv.style.color = "#b45309";
             statusDiv.innerText = "請輸入帳密";
             return;
         }
@@ -58,8 +59,10 @@ export function setupLoginHandlers({ onLoginSuccess }) {
             } catch (e) {
                 throw new Error("伺服器回應格式異常");
             }
+
             if (loginBody.success) {
                 chrome.storage.local.set({ uid, pwd }, () => {
+                    statusDiv.style.color = "#16a34a";
                     statusDiv.innerText = "驗證成功！";
                     setTimeout(() => {
                         onLoginSuccess();
