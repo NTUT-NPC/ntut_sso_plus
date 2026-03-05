@@ -1,36 +1,48 @@
-name: Build and Release CRX
+name: Build and Release Extension
 
 on:
   push:
     tags:
-      - 'v*' 
+      - 'v*'
   workflow_dispatch: # The manual button
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
-    
+      contents: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important for tagging
+          fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install CRX utility
-        run: npm install -g crx
-
-      - name: Build CRX
+      - name: Build Chrome ZIP
         run: |
-          echo "${{ secrets.CHROME_PRIVATE_KEY }}" > private.pem
-          crx pack . -p private.pem -o extension.crx
-          rm private.pem
+          zip -r chrome.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "docs/*" \
+            -x "scripts/*" \
+            -x "_metadata/*" \
+            -x "manifest.firefox.json" \
+            -x "build.sh" \
+            -x "README.md" \
+            -x ".gitignore"
+
+      - name: Build Firefox ZIP
+        run: |
+          cp manifest.firefox.json manifest.json
+          zip -r firefox.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "docs/*" \
+            -x "scripts/*" \
+            -x "_metadata/*" \
+            -x "build.sh" \
+            -x "README.md" \
+            -x ".gitignore"
 
       - name: Generate Tag Name
         id: tagger
@@ -39,13 +51,15 @@ jobs:
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            echo "tag=manual-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+            echo "tag=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
           fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: extension.crx
+          files: |
+            chrome.zip
+            firefox.zip
           tag_name: ${{ steps.tagger.outputs.tag }}
           name: Release ${{ steps.tagger.outputs.tag }}
           draft: false

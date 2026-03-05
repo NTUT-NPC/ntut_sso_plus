@@ -1,0 +1,76 @@
+{
+  "manifest_version": 3,
+  "name": "北科大 SSO+",
+  "version": "26.3.13",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ntut-sso-plus@ntut-npc",
+      "strict_min_version": "113.0"
+    }
+  },
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "downloads",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://app.ntut.edu.tw/*",
+    "https://istream.ntut.edu.tw/*",
+    "https://istudy.ntut.edu.tw/*"
+  ],
+  "background": {
+    "scripts": [
+      "iSchoolPlus/iSchoolPlusBackgroundServiceWorker.js"
+    ]
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://istream.ntut.edu.tw/*",
+        "https://istudy.ntut.edu.tw/*"
+      ],
+      "js": [
+        "iSchoolPlus/iSchoolPlusVideoDownloadUI.js"
+      ],
+      "css": [
+        "iSchoolPlus/iSchoolPlusVideoDownloadUI.css"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://istudy.ntut.edu.tw/*"
+      ],
+      "js": [
+        "iSchoolPlus/iSchoolPlusFileDownloadUI.js"
+      ],
+      "css": [
+        "iSchoolPlus/iSchoolPlusFileDownloadUI.css"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "homepage_url": "https://github.com/NTUT-NPC/ntut_sso_plus",
+  "description": "提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。"
+}
