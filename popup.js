@@ -1,7 +1,7 @@
 import { setupLoginHandlers } from "./loginHandlers.js";
 import { setupTabHandlers } from "./tabHandlers.js";
 import { renderServiceList } from "./renderServiceList.js";
-import { loadOtherTabCourses } from "./iSchoolPlusTab.js";
+
 import { DEFAULT_FAVORITES } from "./constants.js";
 import { openEditModal } from "./editFavoritesModal.js";
 
@@ -37,5 +37,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupLoginHandlers({ onLoginSuccess: showMainView });
-    setupTabHandlers({ onOtherTab: loadOtherTabCourses });
+    setupTabHandlers({});
 });

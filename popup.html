@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
   <div class="container">
     <div id="splash-screen" class="splash">
-    <div class="splash-content">
+      <div class="splash-content">
         <div class="splash-logo">NTUT SSO<span class="plus-sign">+</span></div>
         <div class="loader-line"></div>
         <div class="npc-footer">POWERED BY NPC</div>
-    </div>
+      </div>
     </div>
     <div id="login-view">
       <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
       <h3>北科快速通</h3>
       <p style="color:var(--text-sub); font-size:12px; margin: 0 0 20px 0;">校園服務一鍵登入</p>
-      
+
       <div class="input-group">
         <label>Portal 學號</label>
         <input type="text" id="username" placeholder="請輸入學號">
       </div>
-      
+
       <div class="input-group">
         <label>Portal 密碼</label>
         <input type="password" id="password" placeholder="••••••••">
       </div>
-      
+
       <button id="save-btn">儲存並進入系統</button>
       <div id="status"></div>
     </div>
@@ -45,22 +47,20 @@
       </header>
       <div class="tab-bar">
         <button class="tab-btn active" id="tab-main-btn" data-tab="main">校園入口</button>
-        <button class="tab-btn" id="tab-other-btn" data-tab="other">課程檔案</button>
+        <button class="tab-btn" id="tab-other-btn" data-tab="other">實驗性功能</button>
       </div>
       <div id="tab-main" class="tab-content">
         <div id="service-container"></div>
-        <a
-          class="repo-link"
-          href="https://github.com/NTUT-NPC/ntut_sso_plus"
-          target="_blank"
-          rel="noopener noreferrer"
-        >GitHub Repository</a>
+        <a class="repo-link" href="https://github.com/NTUT-NPC/ntut_sso_plus" target="_blank"
+          rel="noopener noreferrer">GitHub Repository</a>
       </div>
       <div id="tab-other" class="tab-content hidden">
-        <div style="padding: 20px; color: var(--text-sub); text-align: center;">這裡可以放置其他內容。</div>
+        <div style="padding: 40px 20px; color: var(--text-sub); text-align: center; font-size: 14px;">實驗性功能即將推出，敬請期待！
+        </div>
       </div>
     </div>
   </div>
   <script type="module" src="popup.js"></script>
 </body>
+
 </html>
