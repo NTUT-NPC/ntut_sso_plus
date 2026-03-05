@@ -82,29 +82,56 @@
 
     function renderFileTree(items) {
         if (!Array.isArray(items) || items.length === 0) {
-            return '<span class="ntut-sso-fdl-empty">無檔案</span>';
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'ntut-sso-fdl-empty';
+            emptySpan.textContent = '無檔案';
+            return emptySpan;
         }
-        return '<ul class="ntut-sso-fdl-file-ul">' + items.map(f => {
+
+        const ul = document.createElement('ul');
+        ul.className = 'ntut-sso-fdl-file-ul';
+
+        items.forEach(f => {
+            const li = document.createElement('li');
             const text = f.title || f.text || '(無標題)';
             const href = f.url || f.link || f.href || f.download_url || '';
-            let children = '';
-            if (Array.isArray(f.item) && f.item.length > 0) {
-                children = renderFileTree(f.item);
-            }
+
             // Only show as clickable link if it's a real downloadable URL
             const isDownloadable = href
                 && !href.startsWith('istream')
                 && !href.startsWith('about')
                 && !href.startsWith('/istream');
+
             if (isDownloadable) {
-                return `<li><a class="ntut-sso-fdl-link" href="${href}" target="_blank" rel="noopener">${text}</a>${children}</li>`;
+                const a = document.createElement('a');
+                a.className = 'ntut-sso-fdl-link';
+                a.href = href;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.textContent = text;
+                li.appendChild(a);
+            } else {
+                const span = document.createElement('span');
+                span.className = 'ntut-sso-fdl-folder';
+                span.textContent = text;
+                li.appendChild(span);
             }
-            return `<li><span class="ntut-sso-fdl-folder">${text}</span>${children}</li>`;
-        }).join('') + '</ul>';
+
+            if (Array.isArray(f.item) && f.item.length > 0) {
+                li.appendChild(renderFileTree(f.item));
+            }
+            ul.appendChild(li);
+        });
+
+        return ul;
     }
 
     async function fetchFileList(cid, container) {
-        container.innerHTML = '<span class="ntut-sso-fdl-loading">載入中…</span>';
+        const loadingSpan = document.createElement('span');
+        loadingSpan.className = 'ntut-sso-fdl-loading';
+        loadingSpan.textContent = '載入中…';
+        container.replaceChildren(loadingSpan);
+
         try {
             const apiUrl = `https://istudy.ntut.edu.tw/xmlapi/index.php?action=my-course-path-info&onlyProgress=0&descendant=1&cid=${cid}`;
             const res = await fetch(apiUrl, { credentials: 'include' });
@@ -120,18 +147,27 @@
             const data = await res.json();
             if (data && data.data) {
                 if (data.data.path && Array.isArray(data.data.path.item)) {
-                    container.innerHTML = renderFileTree(data.data.path.item);
+                    container.replaceChildren(renderFileTree(data.data.path.item));
                 } else if (Array.isArray(data.data.list)) {
-                    container.innerHTML = renderFileTree(data.data.list);
+                    container.replaceChildren(renderFileTree(data.data.list));
                 } else {
-                    container.innerHTML = '<span class="ntut-sso-fdl-empty">此課程無教材檔案</span>';
+                    const emptySpan = document.createElement('span');
+                    emptySpan.className = 'ntut-sso-fdl-empty';
+                    emptySpan.textContent = '此課程無教材檔案';
+                    container.replaceChildren(emptySpan);
                 }
             } else {
-                container.innerHTML = '<span class="ntut-sso-fdl-empty">無法取得檔案清單</span>';
+                const emptySpan = document.createElement('span');
+                emptySpan.className = 'ntut-sso-fdl-empty';
+                emptySpan.textContent = '無法取得檔案清單';
+                container.replaceChildren(emptySpan);
             }
         } catch (err) {
             console.error('[SSO+ FDL] Fetch error:', err);
-            container.innerHTML = `<span class="ntut-sso-fdl-error">取得檔案失敗：${err.message}</span>`;
+            const errorSpan = document.createElement('span');
+            errorSpan.className = 'ntut-sso-fdl-error';
+            errorSpan.textContent = `取得檔案失敗：${err.message}`;
+            container.replaceChildren(errorSpan);
         }
     }
 
