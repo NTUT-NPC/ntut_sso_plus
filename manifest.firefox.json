@@ -72,9 +72,5 @@
     "128": "icons/icon128.png"
   },
   "homepage_url": "https://github.com/NTUT-NPC/ntut_sso_plus",
-  "description": "提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。",
-  "data_collection_permissions": {
-    "storageSync": "exempt",
-    "storageLocal": "exempt"
-  }
+  "description": "提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。"
 }
