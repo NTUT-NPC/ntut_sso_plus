@@ -5,6 +5,22 @@
 
 const KEY_ALIAS = 'crypto_key_data';
 
+/**
+ * Checks if a string appears to be our encrypted JSON format.
+ * @param {string} data 
+ * @returns {boolean}
+ */
+export function isEncryptedFormat(data) {
+    if (!data || typeof data !== 'string') return false;
+    if (!data.startsWith('{') || !data.endsWith('}')) return false;
+    try {
+        const obj = JSON.parse(data);
+        return obj && typeof obj.iv === 'string' && typeof obj.content === 'string';
+    } catch {
+        return false;
+    }
+}
+
 async function getOrGenerateKey() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get([KEY_ALIAS], async (result) => {

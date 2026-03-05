@@ -1,5 +1,5 @@
 import { BASE_URL } from "./constants.js";
-import { decrypt } from "./cryptoUtils.js";
+import { decrypt, isEncryptedFormat } from "./cryptoUtils.js";
 
 export async function startSSO(apOu) {
     document.body.classList.add('fade-out-exit');
@@ -9,7 +9,7 @@ export async function startSSO(apOu) {
     try {
         const { uid, pwd: storedPwd } = await chrome.storage.local.get(['uid', 'pwd']);
         let pwd = storedPwd;
-        if (pwd && pwd.startsWith('{"iv":')) {
+        if (isEncryptedFormat(pwd)) {
             let decryptedPwd = null;
             try {
                 decryptedPwd = await decrypt(pwd);

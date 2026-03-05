@@ -1,6 +1,6 @@
 // Handles login form logic and storage
 import { BASE_URL } from "./constants.js";
-import { encrypt, decrypt } from "./cryptoUtils.js";
+import { encrypt, decrypt, isEncryptedFormat } from "./cryptoUtils.js";
 
 export function setupLoginHandlers({ onLoginSuccess }) {
     const saveBtn = document.getElementById('save-btn');
@@ -13,7 +13,7 @@ export function setupLoginHandlers({ onLoginSuccess }) {
 
         let pwd = result.pwd;
         // Attempt to decrypt if it looks like encrypted JSON
-        if (pwd.startsWith('{"iv":')) {
+        if (isEncryptedFormat(pwd)) {
             const decoded = await decrypt(pwd);
             if (decoded) {
                 pwd = decoded;
@@ -35,7 +35,7 @@ export function setupLoginHandlers({ onLoginSuccess }) {
             const loginBody = JSON.parse(await loginRes.text());
             if (loginBody.success) {
                 // If it was plaintext, encrypt it now for future use
-                if (!result.pwd.startsWith('{"iv":')) {
+                if (!isEncryptedFormat(result.pwd)) {
                     const encrypted = await encrypt(pwd);
                     chrome.storage.local.set({ pwd: encrypted });
                 }
