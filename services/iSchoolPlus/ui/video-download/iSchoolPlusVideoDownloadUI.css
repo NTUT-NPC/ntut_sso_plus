@@ -1,38 +1,27 @@
 #ntut-sso-dl-bar {
-  --primary: #005bac;
-  --primary-glow: rgba(0, 91, 172, 0.3);
+  --primary: black;
+  --secondary: white;
+  --primary-glow: rgba(255, 255, 255, 0.3);
   --bg: #f3f4f6;
   --card-bg: #ffffff;
-  --text-main: #1f2937;
-  --text-sub: rgb(85, 85, 85);
-  --border: #d1d5db;
+  --text-main: #000000;
+  --btn-bg: #000000;
+  --text-btn: #ffffff;
+  --text-sub: rgb(45, 45, 45);
+  --border: #000000;
   --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-}
-
-@media (prefers-color-scheme: dark) {
-  #ntut-sso-dl-bar {
-    --primary: #60a5fa;
-    --primary-glow: rgba(96, 165, 250, 0.3);
-    --bg: #0f172a;
-    --card-bg: #1e293b;
-    --text-main: #f1f5f9;
-    --text-sub: #dddddd;
-    --border: #334155;
-  }
 }
 
 #ntut-sso-dl-bar {
   position: fixed;
-  bottom: 12px;
-  right: 12px;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
   background: var(--card-bg);
-  border: 1px solid var(--border);
+  border: 0;
   border-radius: var(--radius-sm);
   font-family: "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
   color: var(--text-main);
@@ -40,18 +29,15 @@
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   user-select: none;
   cursor: grab;
-  animation: ntut-dl-appear 0.4s ease-out;
+  transition: all 0.2s ease-in-out;
 }
 
-@keyframes ntut-dl-appear {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 #ntut-sso-dl-bar.ntut-sso-dl-bar--dragging {
   opacity: 0.85;
   cursor: grabbing;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transition: none;
 }
 
 .ntut-sso-dl-top {
@@ -87,10 +73,10 @@
   justify-content: center;
   flex: 1;
   padding: 8px 14px;
-  background: var(--card-bg);
+  background: var(--btn-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: var(--text-main);
+  color: var(--text-btn);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -131,6 +117,7 @@
     gap: 4px;
     padding: 6px 8px;
   }
+
   .ntut-sso-dl-hint {
     display: none;
   }

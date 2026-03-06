@@ -34,7 +34,7 @@
     color: #fff;
     font-size: 10px;
     font-weight: 700;
-    border-radius: 999px;
+    border-radius: 4px;
     letter-spacing: 0.3px;
     white-space: nowrap;
     line-height: 1.8;
@@ -111,13 +111,13 @@
 }
 
 .ntut-sso-fdl-link {
-    color: #005bac !important;
+    color: black !important;
     text-decoration: none !important;
     cursor: pointer;
     padding: 2px 4px !important;
     display: inline !important;
     transition: color 0.15s, background 0.15s;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .ntut-sso-fdl-link:hover {

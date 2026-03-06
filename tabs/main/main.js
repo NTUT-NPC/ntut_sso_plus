@@ -1,5 +1,5 @@
-import { SERVICES } from "./constants.js";
-import { startSSO } from "./ssoservice.js";
+import { SERVICES, DEFAULT_FAVORITES } from "../../core/constants.js";
+import { startSSO } from "../../core/sso.js";
 
 function findNameByCode(code) {
     for (const cat in SERVICES) {
@@ -19,22 +19,7 @@ export function renderServiceList(container, favorites) {
     titleSpan.textContent = "常用服務";
     favHeader.appendChild(titleSpan);
 
-    const editBtn = document.createElement('button');
-    editBtn.id = "edit-fav-btn";
-    editBtn.className = "edit-btn edit-fav-btn";
-    editBtn.title = "編輯常用按鈕";
-
-    const parser = new DOMParser();
-    const editIconSvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="edit-icon-svg">
-            <path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/>
-        </svg>`;
-    const svgDoc = parser.parseFromString(editIconSvg, 'image/svg+xml');
-    editBtn.appendChild(svgDoc.documentElement);
-
-    favHeader.appendChild(editBtn);
     container.appendChild(favHeader);
-    // The edit button handler should be set by the caller
 
     if (favorites.length === 0) {
         const emptyMsg = document.createElement('div');
@@ -68,5 +53,15 @@ export function renderServiceList(container, favorites) {
             div.addEventListener('click', () => startSSO(code));
             container.appendChild(div);
         });
+    });
+}
+
+export function initMainTab() {
+    chrome.storage.local.get(['custom_favorites'], (result) => {
+        const favorites = result.custom_favorites || DEFAULT_FAVORITES;
+        const container = document.getElementById('service-container');
+        if (container) {
+            renderServiceList(container, favorites);
+        }
     });
 }

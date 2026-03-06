@@ -1,66 +1,68 @@
-import { setupLoginHandlers } from "./loginHandlers.js";
-import { setupTabHandlers } from "./tabHandlers.js";
-import { renderServiceList } from "./renderServiceList.js";
-import { startSSO } from "./ssoservice.js";
+import { setupLoginHandlers } from "./login/login.js";
+import { setupTabHandlers } from "./core/tabs.js";
+import { initMainTab } from "./tabs/main/main.js";
+import { initEditTab } from "./tabs/edit/edit.js";
+import { initOtherTab } from "./tabs/other/other.js";
 
-import { DEFAULT_FAVORITES } from "./constants.js";
-import { openEditModal } from "./editFavoritesModal.js";
-
-
-
-function showMainView() {
-    document.getElementById('login-view').classList.add('hidden');
-    document.getElementById('main-view').classList.remove('hidden');
-    chrome.storage.local.get(['custom_favorites'], (result) => {
-        const favorites = result.custom_favorites || DEFAULT_FAVORITES;
-        const container = document.getElementById('service-container');
-        renderServiceList(container, favorites);
-        const editBtn = container.querySelector('#edit-fav-btn');
-        if (editBtn) {
-            editBtn.addEventListener('click', () => {
-                openEditModal(favorites, showMainView);
-            });
-        }
-    });
+async function loadContent(containerId, htmlPath) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    try {
+        const response = await fetch(htmlPath);
+        const html = await response.text();
+        container.innerHTML = html;
+    } catch (err) {
+        console.error(`Failed to load content for ${containerId}:`, err);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.classList.add('hidden'), 500);
-        }
-    }, 800);
+async function showMainView() {
+    const loginContainer = document.getElementById('login-container');
+    if (loginContainer) loginContainer.classList.add('hidden');
 
-    const loginTitle = document.querySelector('#login-view h3');
-    if (loginTitle) {
-        loginTitle.replaceChildren();
-        const brandTitle = document.createElement('div');
-        brandTitle.className = "brand-title";
-        brandTitle.textContent = "NTUT SSO";
-        const brandPlus = document.createElement('span');
-        brandPlus.className = "brand-plus";
-        brandPlus.textContent = "+";
-        brandTitle.appendChild(brandPlus);
-        loginTitle.appendChild(brandTitle);
+    document.getElementById('main-view').classList.remove('hidden');
+
+    // Load tabs if not already loaded
+    if (document.getElementById('tab-main').innerHTML === "") {
+        await Promise.all([
+            loadContent('tab-main', 'tabs/main/main.html'),
+            loadContent('tab-edit', 'tabs/edit/edit.html'),
+            loadContent('tab-other', 'tabs/other/other.html')
+        ]);
+
+        initMainTab();
+        initEditTab(initMainTab); // Re-render main on edit
+        initOtherTab();
+    } else {
+        initMainTab();
     }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Load login view first
+    await loadContent('login-container', 'login/login.html');
 
     setupLoginHandlers({ onLoginSuccess: showMainView });
     setupTabHandlers({});
 
-    // Experimental tab — course server buttons
-    const btnConfigs = [
-        { id: 'open-course-1-btn', apOu: 'aa_030_oauth' },
-        { id: 'open-course-2-btn', apOu: 'aa_030_2_oauth' },
-        { id: 'open-course-3-btn', apOu: 'aa_030_3_oauth' },
-        { id: 'open-ischool-btn', apOu: 'ischool_plus_oauth' }
-    ];
+    // Window Mode: Open in new window
+    const popWindowBtn = document.getElementById('popwindow-btn');
+    if (popWindowBtn) {
+        popWindowBtn.addEventListener('click', () => {
+            chrome.windows.create({
+                url: chrome.runtime.getURL('popup.html'),
+                type: 'popup',
+                width: 720,
+                height: 640,
+            });
+            window.close();
+        });
+    }
+    const popoutBtn = document.getElementById('popout-btn');
+    if (popoutBtn) {
+        popoutBtn.addEventListener('click', () => {
+            chrome.tabs.create({ url: chrome.runtime.getURL('popup.html') });
+        });
+    }
 
-    btnConfigs.forEach(config => {
-        const btn = document.getElementById(config.id);
-        if (btn) {
-            btn.addEventListener('click', () => startSSO(config.apOu));
-        }
-    });
 });

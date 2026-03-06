@@ -1,6 +1,6 @@
 // Handles login form logic and storage
-import { BASE_URL } from "./constants.js";
-import { encrypt, decrypt, isEncryptedFormat } from "./cryptoUtils.js";
+import { BASE_URL } from "../core/constants.js";
+import { encrypt, decrypt, isEncryptedFormat } from "../utils/cryptoUtils.js";
 
 export function setupLoginHandlers({ onLoginSuccess }) {
     const saveBtn = document.getElementById('save-btn');
@@ -9,7 +9,10 @@ export function setupLoginHandlers({ onLoginSuccess }) {
     const loginForm = document.getElementById('login-view');
 
     chrome.storage.local.get(['uid', 'pwd'], async (result) => {
-        if (!result.uid || !result.pwd) return;
+        if (!result.uid || !result.pwd) {
+            loginForm.classList.remove('hidden');
+            return;
+        }
 
         let pwd = result.pwd;
         // Attempt to decrypt if it looks like encrypted JSON
@@ -20,6 +23,7 @@ export function setupLoginHandlers({ onLoginSuccess }) {
             } else {
                 // Decryption failure (e.g. key lost) — clear storage
                 chrome.storage.local.remove(['uid', 'pwd']);
+                loginForm.classList.remove('hidden');
                 return;
             }
         }
@@ -44,10 +48,13 @@ export function setupLoginHandlers({ onLoginSuccess }) {
                 chrome.storage.local.remove(['uid', 'pwd']);
                 statusDiv.style.color = "#ef4444";
                 statusDiv.innerText = "儲存的帳號已失效，請重新登入";
+                loginForm.classList.remove('hidden');
             }
         } catch {
-            // Network error or parse failure — stay on login form silently
-            statusDiv.innerText = "";
+            // Network error or parse failure
+            statusDiv.style.color = "#ef4444";
+            statusDiv.innerText = "網路錯誤或伺服器無回應";
+            loginForm.classList.remove('hidden');
         }
     });
 

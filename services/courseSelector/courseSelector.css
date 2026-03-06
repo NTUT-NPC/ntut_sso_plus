@@ -42,8 +42,8 @@
 }
 
 .ntut-sso-cs-course-input:focus {
-    border-color: #005bac;
-    outline: 1px solid #005bac;
+    border-color: black;
+    outline: 1px solid black;
 }
 
 .ntut-sso-cs-course-input::placeholder {
@@ -97,18 +97,18 @@
 }
 
 .ntut-sso-cs-btn--primary {
-    background: #005bac;
-    color: #fff;
-    border-color: #004a8c;
+    background: black;
+    color: white;
+    border-color: black;
     font-weight: bold;
 }
 
 .ntut-sso-cs-btn--primary:hover {
-    background: #004a8c;
+    background: #333;
 }
 
 .ntut-sso-cs-btn--primary:active {
-    background: #003d75;
+    background: black;
 }
 
 .ntut-sso-cs-btn--clear {

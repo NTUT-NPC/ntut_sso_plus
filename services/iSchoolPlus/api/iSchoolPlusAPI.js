@@ -1,4 +1,4 @@
-import { startSSO } from "../ssoservice.js";
+import { startSSO } from "../../../core/sso.js";
 export async function silentLoginAndGetJson(cid) {
     const AP_OU = "ischool_plus_oauth";
     const originalTabsCreate = chrome.tabs.create;
