@@ -49,12 +49,8 @@ jobs:
       - name: Generate Tag Name
         id: tagger
         run: |
-          # If triggered by a tag, use it. Otherwise, create a timestamp tag.
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          else
-            echo "tag=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
-          fi
+          VERSION=$(jq -r .version manifest.json)
+          echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

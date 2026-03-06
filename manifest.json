@@ -17,7 +17,7 @@
     "https://isms-nagios.ntut.edu.tw/*"
   ],
   "background": {
-    "service_worker": "iSchoolPlus/iSchoolPlusBackgroundServiceWorker.js"
+    "service_worker": "services/iSchoolPlus/background/iSchoolPlusBackgroundServiceWorker.js"
   },
   "declarative_net_request": {
     "rule_resources": [
@@ -35,10 +35,10 @@
         "https://istudy.ntut.edu.tw/*"
       ],
       "js": [
-        "iSchoolPlus/iSchoolPlusVideoDownloadUI.js"
+        "services/iSchoolPlus/ui/video-download/iSchoolPlusVideoDownloadUI.js"
       ],
       "css": [
-        "iSchoolPlus/iSchoolPlusVideoDownloadUI.css"
+        "services/iSchoolPlus/ui/video-download/iSchoolPlusVideoDownloadUI.css"
       ],
       "all_frames": true,
       "run_at": "document_idle"
@@ -48,10 +48,10 @@
         "https://istudy.ntut.edu.tw/*"
       ],
       "js": [
-        "iSchoolPlus/iSchoolPlusFileDownloadUI.js"
+        "services/iSchoolPlus/ui/file-download/iSchoolPlusFileDownloadUI.js"
       ],
       "css": [
-        "iSchoolPlus/iSchoolPlusFileDownloadUI.css"
+        "services/iSchoolPlus/ui/file-download/iSchoolPlusFileDownloadUI.css"
       ],
       "all_frames": true,
       "run_at": "document_idle"
@@ -63,10 +63,10 @@
         "https://isms-nagios.ntut.edu.tw/oads/Main*"
       ],
       "js": [
-        "courseSelector/courseSelector.js"
+        "services/courseSelector/courseSelector.js"
       ],
       "css": [
-        "courseSelector/courseSelector.css"
+        "services/courseSelector/courseSelector.css"
       ],
       "run_at": "document_idle"
     }

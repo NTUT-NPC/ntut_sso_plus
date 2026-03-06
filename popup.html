@@ -1,38 +1,23 @@
 <!DOCTYPE html>
 <html>
 
+
+
+
+
+
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="tabs/main/main.css">
+  <link rel="stylesheet" href="tabs/edit/edit.css">
+  <link rel="stylesheet" href="tabs/other/other.css">
+  <link rel="stylesheet" href="login/login.css">
 </head>
 
 <body>
   <div class="container">
-    <div id="splash-screen" class="splash">
-      <div class="splash-content">
-        <div class="splash-logo">NTUT SSO<span class="plus-sign">+</span></div>
-        <div class="loader-line"></div>
-        <div class="npc-footer">POWERED BY NPC</div>
-      </div>
-    </div>
-    <div id="login-view">
-      <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
-      <h3>北科快速通</h3>
-      <p style="color:var(--text-sub); font-size:12px; margin: 0 0 20px 0;">校園服務一鍵登入</p>
-
-      <div class="input-group">
-        <label>Portal 學號</label>
-        <input type="text" id="username" placeholder="請輸入學號">
-      </div>
-
-      <div class="input-group">
-        <label>Portal 密碼</label>
-        <input type="password" id="password" placeholder="••••••••">
-      </div>
-
-      <button id="save-btn">儲存並進入系統</button>
-      <div id="status"></div>
-    </div>
+    <div id="login-container"></div>
 
     <div id="main-view" class="hidden">
       <header>
@@ -41,45 +26,20 @@
           <div class="npc-tag">POWERED BY NPC</div>
         </div>
         <div class="header-actions">
-          <span id="session-status" class="status-dot"></span>
+          <button id="popout-btn" title="在新分頁開啟">在新分頁開啟</button>
+          <button id="popwindow-btn" title="在新視窗開啟">在新視窗開啟</button>
           <a href="#" id="reset-btn">登出</a>
         </div>
       </header>
       <div class="tab-bar">
         <button class="tab-btn active" id="tab-main-btn" data-tab="main">校園入口</button>
+        <button class="tab-btn" id="tab-edit-btn" data-tab="edit">編輯常用</button>
         <button class="tab-btn" id="tab-other-btn" data-tab="other">實驗性功能</button>
       </div>
-      <div id="tab-main" class="tab-content">
-        <div id="service-container"></div>
-        <a class="repo-link" href="https://github.com/NTUT-NPC/ntut_sso_plus" target="_blank"
-          rel="noopener noreferrer">GitHub Repository</a>
-      </div>
-      <div id="tab-other" class="tab-content hidden">
-        <div class="exp-section">
-          <div class="exp-card" id="course-selector-card">
-            <div class="exp-card-icon">📚</div>
-            <div class="exp-card-body">
-              <div class="exp-card-title">加退選快速填課</div>
-              <div class="exp-card-desc">在加退選頁面輸入課號，一鍵自動填入欄位並查詢。</div>
-              <div class="exp-card-actions">
-                <button class="btn-primary exp-action-btn" id="open-course-1-btn">加退選 1</button>
-                <button class="btn-primary exp-action-btn" id="open-course-2-btn">加退選 2</button>
-                <button class="btn-primary exp-action-btn" id="open-course-3-btn">加退選 3</button>
-              </div>
-            </div>
-          </div>
-          <div class="exp-card" id="ischool-downloader-card">
-            <div class="exp-card-icon">⏬</div>
-            <div class="exp-card-body">
-              <div class="exp-card-title">北科 i 學園下載器</div>
-              <div class="exp-card-desc">在 i學園課程頁面自動偵測並提供影片與教材下載按鈕。</div>
-              <div class="exp-card-actions">
-                <button class="btn-primary exp-action-btn" id="open-ischool-btn">前往北科 i 學園</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="tab-main" class="tab-content"></div>
+      <div id="tab-edit" class="tab-content hidden"></div>
+      <div id="tab-other" class="tab-content hidden"></div>
+
     </div>
   </div>
   <script type="module" src="popup.js"></script>
