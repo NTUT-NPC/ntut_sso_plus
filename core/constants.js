@@ -15,9 +15,9 @@ export const SERVICES = {
         "期末網路預選 2": "aa_012_oauth",        
         "暑修需求登錄": "aa_015_oauth",        
         "期末教學評量 1": "aa_009_oauth",
-        "期末教學評量 2": "aa_009_2_oauth",        
+        "期末教學評量 2": "aa_009_2_oauth",
+        "暑修選課繳費單": "aa_029_oauth",                
         "傑出教學獎票選": "aa_038_oauth",
-        "暑修選課繳費單": "aa_029_oauth",
         "畢業生離校系統": "aa-gradu_oauth",
         "家長系統": "aa_ParentSystem_oauth",
         "Easy Test 平台": "aa_easytest_oauth",
@@ -45,6 +45,8 @@ export const SERVICES = {
         "校園授權軟體": "inf001_oauth",
         "諮商預約系統": "counseling_oauth",                
         "新學術資源網": "ar_OAUTH",
+        "網路投票系統": "per_001_oauth",
+        "小郵差": "test_postman",                
         "入班輔導活動": "Counselors_Activity_System_oauth",
         "建物與設備維修": "ga_008_oauth",
         "化學物質 GHS 管理": "ga_ghs_oauth",
@@ -53,8 +55,6 @@ export const SERVICES = {
         "產學合作資訊系統": "rd_003",
         "研究獎助生申請系統": "rnd-rs-oauth",
         "學術倫理管理系統": "rd_aes_oauth",
-        "網路投票系統": "per_001_oauth",
-        "小郵差": "test_postman"
     }
 };
 
