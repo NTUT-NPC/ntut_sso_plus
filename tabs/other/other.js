@@ -14,4 +14,14 @@ export function initOtherTab() {
             btn.addEventListener('click', () => startSSO(config.apOu));
         }
     });
+
+    // Theme switching logic
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    themeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.getAttribute('data-theme');
+            document.body.setAttribute('data-theme', theme);
+            chrome.storage.local.set({ theme: theme });
+        });
+    });
 }

@@ -39,6 +39,13 @@ async function showMainView() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Load saved theme
+    chrome.storage.local.get(['theme'], (result) => {
+        if (result.theme) {
+            document.body.setAttribute('data-theme', result.theme);
+        }
+    });
+
     // Load login view first
     await loadContent('login-container', 'login/login.html');
 

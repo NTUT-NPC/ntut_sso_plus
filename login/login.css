@@ -2,83 +2,90 @@
     margin: auto;
     width: 100%;
     max-width: 320px;
-    padding: 30px;
-    background: white;
-    border-radius: 4px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    border: 1px solid black;
+    padding: var(--spacing-lg);
+    background: var(--bg-main);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-on-secondary);
+    border: 1px solid var(--border-color);
     text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;    
+    align-items: center;
 }
 
 .login-icon {
     font-size: 40px;
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-sm);
     width: 100px;
     height: 100px;
 }
 
+.login-icon img {
+    width: 100%;
+    height: 100%;
+}
+
 .login-subtitle {
     color: var(--text-sub);
-    font-size: 12px;
-    margin: 0 0 20px 0;
+    font-size: 13px;
+    margin: 0 0 var(--spacing-lg) 0;
+    font-weight: 500;
 }
 
 .input-group {
     text-align: left;
-    margin-bottom: 15px;
+    margin-bottom: var(--spacing-md);
     width: 100%;
 }
 
 label {
     font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
     display: block;
-    opacity: 0.8;
+    color: var(--text-main);
 }
 
 input {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid black;
-    border-radius: 4px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     box-sizing: border-box;
     outline: none;
     font-size: 14px;
-    background-color: var(--bg);
+    background-color: var(--bg-main);
     color: var(--text-main);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all var(--transition-normal);
 }
 
 input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 #save-btn {
     width: 100%;
-    margin-top: 10px;
-    padding: 12px;
+    margin-top: var(--spacing-sm);
+    padding: 14px;
     cursor: pointer;
     background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
+    color: var(--secondary);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-weight: 800;
     font-size: 15px;
-    transition: all 0.2s;
+    transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
 }
 
 #save-btn:hover {
     background: var(--primary-hover);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-on-primary);
 }
 
 #save-btn:active {
-    transform: translateY(1px) scale(0.98);
+    transform: translateY(1px);
+    box-shadow: 2px 2px 0px var(--secondary);
 }
