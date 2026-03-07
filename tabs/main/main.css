@@ -28,7 +28,7 @@
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-sm);
     background-color: var(--primary);
-    color: var(--secondary);
+    color: var(--btn-text);
     font-size: 14px;
     font-weight: 700;
     text-align: center;
