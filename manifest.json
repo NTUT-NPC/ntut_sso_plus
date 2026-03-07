@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "北科大 SSO+",
-  "version": "26.3.15",
+  "version": "26.3.16",
   "permissions": [
     "storage",
     "declarativeNetRequest",
