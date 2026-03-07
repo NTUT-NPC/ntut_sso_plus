@@ -1,45 +1,40 @@
 .exp-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-md);
 }
 
 .exp-card {
     display: flex;
     align-items: center;
-    padding: 16px;
-    background: white;
-    border-radius: 8px;
-    border: 1.5px solid black;
-    transition: all 0.2s ease;
+    padding: var(--spacing-lg);
+    background: var(--bg-main);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-color);
+    transition: all var(--transition-normal);
 }
 
 .exp-card:hover {
     transform: translateY(-2px);
-    box-shadow: 4px 4px 0px black;
+    box-shadow: var(--shadow-on-secondary);
 }
 
 .exp-card-icon {
-    margin-right: 16px;
-    background: #f1f1f1;
+    margin-right: var(--spacing-md);
+    background: var(--bg-sub);
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
-    text-align: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid black;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .exp-card-icon span {
-    font-size: 18px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 20px;
     line-height: 1;
-    margin: 0;
 }
 
 .exp-card-body {
@@ -48,40 +43,43 @@
 
 .exp-card-title {
     font-weight: 800;
-    font-size: 15px;
-    margin-bottom: 4px;
+    font-size: 16px;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-main);
 }
 
 .exp-card-desc {
     font-size: 13px;
     color: var(--text-sub);
-    margin-bottom: 12px;
-    line-height: 1.4;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
 }
 
 .exp-card-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-sm);
     flex-wrap: wrap;
 }
 
 .btn-primary {
     padding: 8px 16px;
     background: var(--primary);
-    color: white;
-    border: 1px solid black;
-    border-radius: 4px;
-    font-size: 12px;
+    color: var(--btn-text);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: all var(--transition-fast);
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-on-primary);
 }
 
 .btn-primary:active {
-    transform: translateY(1px);
+    transform: translateY(1px) scale(0.98);
+    filter: brightness(0.9);
 }

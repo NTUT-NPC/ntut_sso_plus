@@ -2,7 +2,18 @@ import { SERVICES, DEFAULT_FAVORITES } from "../../core/constants.js";
 
 export function initEditTab(showMainView) {
     const listDiv = document.getElementById('edit-list');
+    const statusDiv = document.getElementById('edit-status');
     if (!listDiv) return;
+
+    let timeout;
+    function showStatus(msg, isError = false) {
+        if (!statusDiv) return;
+        statusDiv.innerText = msg;
+        statusDiv.className = isError ? 'status-msg status-error' : 'status-msg';
+        statusDiv.classList.remove('hidden');
+        clearTimeout(timeout);
+        timeout = setTimeout(() => statusDiv.classList.add('hidden'), 2000);
+    }
 
     chrome.storage.local.get(['custom_favorites'], (result) => {
         const currentFavorites = result.custom_favorites || DEFAULT_FAVORITES;
@@ -30,7 +41,7 @@ export function initEditTab(showMainView) {
                             itemDiv.classList.remove('selected');
                         } else {
                             if (selectedSet.size >= 12) {
-                                alert("最多只能設定 12 個常用服務");
+                                showStatus("最多只能設定 12 個常用服務", true);
                                 return;
                             }
                             selectedSet.add(code);
@@ -40,8 +51,8 @@ export function initEditTab(showMainView) {
                         const newFavorites = Array.from(selectedSet);
                         chrome.storage.local.set({ custom_favorites: newFavorites }, () => {
                             if (typeof showMainView === 'function') {
-                                // Re-render the main view
                                 showMainView();
+                                showStatus(selectedSet.has(code) ? `已新增：${name}` : `已移除：${name}`);
                             }
                         });
                     };
