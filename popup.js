@@ -10,7 +10,9 @@ async function loadContent(containerId, htmlPath) {
     try {
         const response = await fetch(htmlPath);
         const html = await response.text();
-        container.innerHTML = html;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        container.replaceChildren(...doc.body.childNodes);
     } catch (err) {
         console.error(`Failed to load content for ${containerId}:`, err);
     }
@@ -23,7 +25,7 @@ async function showMainView() {
     document.getElementById('main-view').classList.remove('hidden');
 
     // Load tabs if not already loaded
-    if (document.getElementById('tab-main').innerHTML === "") {
+    if (document.getElementById('tab-main').childElementCount === 0) {
         await Promise.all([
             loadContent('tab-main', 'tabs/main/main.html'),
             loadContent('tab-edit', 'tabs/edit/edit.html'),

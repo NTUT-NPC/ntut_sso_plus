@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "北科大 SSO+",
-  "version": "26.3.16",
+  "version": "26.3.17",
   "browser_specific_settings": {
     "gecko": {
       "id": "ntut-sso-plus@ntut-npc",
