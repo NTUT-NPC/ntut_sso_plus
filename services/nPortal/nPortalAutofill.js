@@ -94,7 +94,12 @@
         }
 
         try {
-            const stored = await chrome.storage.local.get(['uid', 'pwd']);
+            const stored = await chrome.storage.local.get(['uid', 'pwd', 'nportal_autofill']);
+
+            if (stored.nportal_autofill === false) {
+                console.log('[SSO+ nPortal] Autofill is explicitly disabled in settings.');
+                return;
+            }
 
             if (!stored.uid || !stored.pwd) {
                 console.log('[SSO+ nPortal] No saved credentials found.');

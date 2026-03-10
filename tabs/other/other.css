@@ -83,3 +83,21 @@
     transform: translateY(1px) scale(0.98);
     filter: brightness(0.9);
 }
+
+.toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.toggle-checkbox {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}

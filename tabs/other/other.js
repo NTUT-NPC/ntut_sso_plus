@@ -24,4 +24,17 @@ export function initOtherTab() {
             chrome.storage.local.set({ theme: theme });
         });
     });
+
+    // Autofill toggle logic
+    const autofillToggle = document.getElementById('nportal-autofill-toggle');
+    if (autofillToggle) {
+        chrome.storage.local.get(['nportal_autofill'], (result) => {
+            // Default is true if not set
+            autofillToggle.checked = result.nportal_autofill !== false;
+        });
+
+        autofillToggle.addEventListener('change', (e) => {
+            chrome.storage.local.set({ nportal_autofill: e.target.checked });
+        });
+    }
 }
