@@ -9,7 +9,7 @@
 - **加退選系統自動填入**
 - **客製化最愛捷徑**
 
-## 安裝指南 (Chrome、Edge、Brave、Chromium)
+## 安裝指南 (Chrome/Edge/Brave/Chromium)
 1. 在 [Github Release](https://github.com/NTUT-NPC/ntut_sso_plus/releases) 下載 [`chrome.zip`](https://github.com/NTUT-NPC/ntut_sso_plus/releases)
 1. 解壓縮 `chrome.zip`
 1. 在網址列輸入並前往
@@ -17,21 +17,27 @@
     chrome://extensions
     ```
 1. 開啟 Developer mode
-    ![](docs/image.png)
+
+    <img width="626" alt="image" src="./docs/image.png" />
+    
 1. 點擊 Load unpacked
 1. 選擇解壓縮完的 `chrome.zip` 資料夾
-    ![](docs/image-1.png)
+   
+    <img width="626" alt="image" src="./docs/image-1.png" />
+   
 
 ## 安裝指南 (Firefox)
-安裝  Firefox Nightly / Developer Edition，從原始碼建置 `.xpi` 檔案並自行安裝
+https://addons.mozilla.org/zh-TW/firefox/addon/%E5%8C%97%E7%A7%91%E5%A4%A7-sso-plus/
+
+<img width="626" height="549" alt="image" src="https://github.com/user-attachments/assets/9c498e88-7f46-424f-b710-8e5dba319243" />
 
 ## 螢幕截圖
-![Screenshot_0](./docs/Screenshot_0.png)
-![Screenshot_1](./docs/Screenshot_1.png)
-![Screenshot_2](./docs/Screenshot_2.png)
-![Screenshot_3](./docs/Screenshot_3.png)
-![Screenshot_4](./docs/Screenshot_4.png)
-![Screenshot_5](./docs/Screenshot_5.png)
+<img width="626" alt="image" src="./docs/Screenshot_0.png" />
+<img width="626" alt="image" src="./docs/Screenshot_1.png" />
+<img width="626" alt="image" src="./docs/Screenshot_2.png" />
+<img width="626" alt="image" src="./docs/Screenshot_3.png" />
+<img width="626" alt="image" src="./docs/Screenshot_4.png" />
+<img width="626" alt="image" src="./docs/Screenshot_5.png" />
 
 
 ## 授權條款
