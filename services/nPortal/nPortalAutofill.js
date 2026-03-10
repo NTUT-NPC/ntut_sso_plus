@@ -9,59 +9,8 @@
 (function () {
     'use strict';
 
-    const KEY_ALIAS = 'crypto_key_data';
-
-    /**
-     * Checks if a string appears to be our encrypted JSON format.
-     */
-    function isEncryptedFormat(data) {
-        if (!data || typeof data !== 'string') return false;
-        if (!data.startsWith('{') || !data.endsWith('}')) return false;
-        try {
-            const obj = JSON.parse(data);
-            return obj && typeof obj.iv === 'string' && typeof obj.content === 'string';
-        } catch {
-            return false;
-        }
-    }
-
-    /**
-     * Decrypts an AES-GCM encrypted string using the key from storage.
-     */
-    async function decryptPassword(encryptedData) {
-        if (!encryptedData) return null;
-        try {
-            const result = await chrome.storage.local.get([KEY_ALIAS]);
-            const keyData = result[KEY_ALIAS];
-            if (!keyData) {
-                console.warn('[SSO+ nPortal] No crypto key found in storage.');
-                return null;
-            }
-
-            const key = await crypto.subtle.importKey(
-                'jwk',
-                keyData,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['decrypt']
-            );
-
-            const { iv, content } = JSON.parse(encryptedData);
-            const ivBuffer = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
-            const contentBuffer = Uint8Array.from(atob(content), c => c.charCodeAt(0));
-
-            const decrypted = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv: ivBuffer },
-                key,
-                contentBuffer
-            );
-
-            return new TextDecoder().decode(decrypted);
-        } catch (e) {
-            console.error('[SSO+ nPortal] Decryption failed:', e);
-            return null;
-        }
-    }
+    // Determine the URL for the crypto module
+    const cryptoUtilsUrl = chrome.runtime.getURL('utils/cryptoUtils.js');
 
     /**
      * Sets a native input value and dispatches input/change events
@@ -109,8 +58,9 @@
             let password = stored.pwd;
 
             // Decrypt if encrypted
-            if (isEncryptedFormat(password)) {
-                const decrypted = await decryptPassword(password);
+            const cryptoUtils = await import(cryptoUtilsUrl);
+            if (cryptoUtils.isEncryptedFormat(password)) {
+                const decrypted = await cryptoUtils.decrypt(password);
                 if (!decrypted) {
                     console.warn('[SSO+ nPortal] Could not decrypt password.');
                     return;

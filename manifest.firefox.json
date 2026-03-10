@@ -95,6 +95,16 @@
       "run_at": "document_idle"
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "utils/cryptoUtils.js"
+      ],
+      "matches": [
+        "https://nportal.ntut.edu.tw/*"
+      ]
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   },
