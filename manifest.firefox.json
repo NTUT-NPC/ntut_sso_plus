@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "北科大 SSO+",
-  "version": "26.3.17",
+  "version": "26.3.18",
   "browser_specific_settings": {
     "gecko": {
       "id": "ntut-sso-plus@ntut-npc",
@@ -22,6 +22,7 @@
   ],
   "host_permissions": [
     "https://app.ntut.edu.tw/*",
+    "https://nportal.ntut.edu.tw/*",
     "https://istream.ntut.edu.tw/*",
     "https://istudy.ntut.edu.tw/*",
     "https://aps-course.ntut.edu.tw/*",
@@ -43,6 +44,15 @@
     ]
   },
   "content_scripts": [
+    {
+      "matches": [
+        "https://nportal.ntut.edu.tw/index.do*"
+      ],
+      "js": [
+        "services/nPortal/nPortalAutofill.js"
+      ],
+      "run_at": "document_idle"
+    },
     {
       "matches": [
         "https://istream.ntut.edu.tw/*",
