@@ -1,0 +1,55 @@
+name: Create Release
+on:
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: '手動覆寫版本號 (留空則自動讀取 wxt.config.ts)'
+        required: false
+        default: ''
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          
+      - name: Get Version
+        id: get_version
+        run: |
+          if [ -n "${{ github.event.inputs.version_override }}" ]; then
+            VERSION="${{ github.event.inputs.version_override }}"
+          else
+            VERSION=$(grep -E "version:\s*['\"][^'\"]+['\"]" wxt.config.ts | sed -E "s/.*['\"]([^'\"]+)['\"].*/\1/")
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found version: $VERSION"
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build and Zip Extension
+        run: |
+          npm run zip
+          npm run zip:firefox
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }} (Build ${{ github.run_number }})
+          files: .output/*.zip
+          generate_release_notes: true
+          body: |
+            ### Build Information
+            - Build Number: ${{ github.run_number }}
+            - Commit: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,36 @@
+{
+  "name": "ntut_sso_plus",
+  "version": "1.0.0",
+  "description": "北科大 SSO+ 提供統一且便捷的介面，讓北科學生快速登入校內各項服務，並提供課程教材下載功能。",
+  "main": "popup.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "postinstall": "wxt prepare"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NTUT-NPC/ntut_sso_plus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NTUT-NPC/ntut_sso_plus/issues"
+  },
+  "homepage": "https://github.com/NTUT-NPC/ntut_sso_plus#readme",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@wxt-dev/module-vue": "^1.0.3",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.30",
+    "wxt": "^0.20.18"
+  }
+}

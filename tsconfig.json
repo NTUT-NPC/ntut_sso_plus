@@ -1,0 +1,16 @@
+{
+    "extends": "./.wxt/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "./*"
+            ]
+        }
+    },
+    "include": [
+        ".wxt/wxt.d.ts",
+        "**/*",
+        ".wxt/types/imports.d.ts"
+    ]
+}
