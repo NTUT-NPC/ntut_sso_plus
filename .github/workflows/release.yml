@@ -48,7 +48,7 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           name: Release v${{ steps.get_version.outputs.VERSION }} (Build ${{ github.run_number }})
-          files: .output/*.zip
+          files: dist/*.zip
           generate_release_notes: true
           body: |
             ### Build Information
