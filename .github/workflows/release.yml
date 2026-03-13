@@ -30,7 +30,7 @@ jobs:
           if [ -n "${{ github.event.inputs.version_override }}" ]; then
             VERSION="${{ github.event.inputs.version_override }}"
           else
-            VERSION=$(grep -E "version:\s*['\"][^'\"]+['\"]" wxt.config.ts | sed -E "s/.*['\"]([^'\"]+)['\"].*/\1/")
+            VERSION=$(grep -E "^[[:space:]]*version:\s*['\"][^'\"]+['\"]" wxt.config.ts | sed -E "s/.*['\"]([^'\"]+)['\"].*/\1/")
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Found version: $VERSION"
