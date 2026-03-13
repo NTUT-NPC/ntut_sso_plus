@@ -6,7 +6,7 @@ export default defineConfig({
     modules: ['@wxt-dev/module-vue'],
     manifest: {
         name: '北科大 SSO+',
-        version: '26.3.19',
+        version: '26.3.20',
         description: '提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。',
         permissions: [
             'storage',
