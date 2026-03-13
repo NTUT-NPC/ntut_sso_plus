@@ -77,16 +77,19 @@ html {
   height: 600px;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 body {
-  width: 100%;
-  height: 100%;
+  width: 700px;
+  height: 600px;
+  min-width: 700px;
+  min-height: 600px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: var(--bg-sub);
   color: var(--text-main);
-  overflow: hidden;
 }
 
 #app {
