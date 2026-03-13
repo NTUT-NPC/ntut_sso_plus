@@ -1,6 +1,6 @@
 /**
  * Cryptographic utilities using Web Crypto API (AES-GCM).
- * Handles persistent key management in chrome.storage.local.
+ * Handles persistent key management in browser.storage.local.
  */
 
 const KEY_ALIAS = 'crypto_key_data';
@@ -10,7 +10,7 @@ const KEY_ALIAS = 'crypto_key_data';
  * @param {string} data 
  * @returns {boolean}
  */
-export function isEncryptedFormat(data) {
+export function isEncryptedFormat(data: string) {
     if (!data || typeof data !== 'string') return false;
     if (!data.startsWith('{') || !data.endsWith('}')) return false;
     try {
@@ -21,11 +21,11 @@ export function isEncryptedFormat(data) {
     }
 }
 
-async function getOrGenerateKey() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get([KEY_ALIAS], async (result) => {
-            if (chrome.runtime.lastError) {
-                return reject(new Error(chrome.runtime.lastError.message));
+async function getOrGenerateKey(): Promise<CryptoKey> {
+    return new Promise<CryptoKey>((resolve, reject) => {
+        browser.storage.local.get([KEY_ALIAS], async (result) => {
+            if (browser.runtime.lastError) {
+                return reject(new Error(browser.runtime.lastError.message));
             }
             if (result[KEY_ALIAS]) {
                 try {
@@ -59,17 +59,17 @@ async function getOrGenerateKey() {
     });
 }
 
-async function generateAndStoreKey() {
+async function generateAndStoreKey(): Promise<CryptoKey> {
     const key = await crypto.subtle.generateKey(
         { name: 'AES-GCM', length: 256 },
         true,
         ['encrypt', 'decrypt']
     );
     const keyData = await crypto.subtle.exportKey('jwk', key);
-    await new Promise((resolve, reject) => {
-        chrome.storage.local.set({ [KEY_ALIAS]: keyData }, () => {
-            if (chrome.runtime.lastError) {
-                return reject(new Error(chrome.runtime.lastError.message));
+    await new Promise<void>((resolve, reject) => {
+        browser.storage.local.set({ [KEY_ALIAS]: keyData }, () => {
+            if (browser.runtime.lastError) {
+                return reject(new Error(browser.runtime.lastError.message));
             }
             resolve();
         });
@@ -82,7 +82,7 @@ async function generateAndStoreKey() {
  * @param {string} plainText 
  * @returns {Promise<string>} JSON string whose fields (iv, content) are base64-encoded.
  */
-export async function encrypt(plainText) {
+export async function encrypt(plainText: string): Promise<string | null> {
     if (!plainText) return null;
     const key = await getOrGenerateKey();
     const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -107,7 +107,7 @@ export async function encrypt(plainText) {
  * @param {string} encryptedData JSON string whose fields (iv, content) are base64-encoded from encrypt().
  * @returns {Promise<string>} Original plaintext.
  */
-export async function decrypt(encryptedData) {
+export async function decrypt(encryptedData: string): Promise<string | null> {
     if (!encryptedData) return null;
     try {
         const { iv, content } = JSON.parse(encryptedData);
