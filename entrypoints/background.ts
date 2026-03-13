@@ -1,7 +1,13 @@
 export default defineBackground(() => {
     let activeDownloads: Record<number, boolean> = {};
 
-    browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    interface DownloadMessage {
+        action: string;
+        url?: string;
+        filename?: string;
+    }
+
+    browser.runtime.onMessage.addListener((message: DownloadMessage, sender, sendResponse) => {
         if (message.action === 'download_video') {
             const { url, filename } = message;
 
@@ -29,17 +35,18 @@ export default defineBackground(() => {
         }
     });
 
-    browser.downloads.onChanged.addListener((delta) => {
+    browser.downloads.onChanged.addListener(async (delta) => {
         if (!delta || !delta.id || !activeDownloads[delta.id]) return;
 
-        let status = null;
+        // Fetch the full DownloadItem to get current progress
+        const [item] = await browser.downloads.search({ id: delta.id });
+        if (!item) return;
+
+        let status = delta.state?.current || item.state;
         let progress = null;
 
-        if (delta.state && delta.state.current) {
-            status = delta.state.current;
-        }
-        if (delta.bytesReceived && delta.totalBytes) {
-            progress = Math.floor((delta.bytesReceived.current / delta.totalBytes.current) * 100);
+        if (item.totalBytes > 0) {
+            progress = Math.floor((item.bytesReceived / item.totalBytes) * 100);
         }
 
         browser.runtime.sendMessage({

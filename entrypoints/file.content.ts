@@ -56,7 +56,18 @@ export default defineContentScript({
             return null;
         }
 
-        function renderFileTree(items: any[]): HTMLElement {
+        interface FileItem {
+            title?: string;
+            text?: string;
+            url?: string;
+            link?: string;
+            href?: string;
+            download_url?: string;
+            item?: FileItem[];
+            [key: string]: any;
+        }
+
+        function renderFileTree(items: FileItem[]): HTMLElement {
             if (!Array.isArray(items) || items.length === 0) {
                 const emptySpan = document.createElement('span');
                 emptySpan.className = 'ntut-sso-fdl-empty';

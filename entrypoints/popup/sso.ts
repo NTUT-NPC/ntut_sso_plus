@@ -1,4 +1,3 @@
-import { browser } from 'wxt/browser';
 import { BASE_URL } from "./constants";
 import { decrypt, isEncryptedFormat } from "./cryptoUtils";
 
@@ -8,8 +7,9 @@ export async function startSSO(apOu: string) {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     try {
-        const { uid, pwd: storedPwd } = await browser.storage.local.get(['uid', 'pwd']);
-        let pwd = storedPwd;
+        const storage = await browser.storage.local.get(['uid', 'pwd']);
+        const uid = storage.uid as string;
+        let pwd = storage.pwd as string;
         if (isEncryptedFormat(pwd)) {
             let decryptedPwd = null;
             try {
@@ -79,7 +79,7 @@ export async function startSSO(apOu: string) {
 }
 
 function monitorFinalRedirect(tabId: number) {
-    const listener = (updatedTabId: number, changeInfo: any) => {
+    const listener = (updatedTabId: number, changeInfo: Browser.tabs.OnUpdatedInfo) => {
         if (updatedTabId === tabId && changeInfo.url) {
             const url = changeInfo.url;
             if (!url.includes('ssoIndex.do') && !url.includes('login.do')) {

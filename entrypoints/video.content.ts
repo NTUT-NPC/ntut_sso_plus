@@ -194,7 +194,14 @@ export default defineContentScript({
                     });
                 });
 
-                browser.runtime.onMessage.addListener((msg) => {
+                interface ProgressMessage {
+                    action: string;
+                    downloadId: number;
+                    status: string;
+                    progress?: number;
+                }
+
+                browser.runtime.onMessage.addListener((msg: ProgressMessage) => {
                     if (msg.action === 'download_progress' && msg.downloadId === currentDownloadId) {
                         if (msg.status === 'in_progress' && typeof msg.progress === 'number') {
                             btn.textContent = `下載中… ${msg.progress}%`;
