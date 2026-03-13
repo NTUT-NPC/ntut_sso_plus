@@ -6,7 +6,7 @@ export default defineConfig({
     modules: ['@wxt-dev/module-vue'],
     manifest: {
         name: '北科大 SSO+',
-        version: '26.3.20',
+        version: '26.3.21',
         description: '提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。',
         permissions: [
             'storage',
@@ -38,6 +38,12 @@ export default defineConfig({
                 },
             ],
         },
+        web_accessible_resources: [
+            {
+                resources: ['assets/video.gif', 'icons/*.png'],
+                matches: ['<all_urls>'],
+            },
+        ],
         // Firefox specific settings (Chrome ignores these)
         browser_specific_settings: {
             gecko: {

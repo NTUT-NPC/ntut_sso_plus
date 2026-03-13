@@ -49,28 +49,28 @@ const handleSave = async () => {
   <div id="login-container" class="animate-fade-in">
     <div id="login-card" class="glass-card">
       <div class="login-header">
-        <div class="login-icon">
+        <!-- <div class="login-icon">
           <img src="/icons/icon128.png" alt="SSO+ Logo" />
-        </div>
+        </div> -->
         <h2 class="login-title">NTUT SSO<span class="plus-sign">+</span></h2>
-        <p class="login-subtitle">請輸入您的門戶帳號密碼</p>
+        <p class="login-subtitle">請輸入校園入口網站帳號密碼</p>
       </div>
 
       <div class="login-form">
         <div class="input-group">
-          <label for="uid">帳號 (學號/身份證字號)</label>
+          <label for="uid">學號</label>
           <input 
             id="uid" 
             v-model="uid" 
             class="input-field"
             type="text" 
-            placeholder="請輸入帳號" 
+            placeholder="請輸入學號" 
             @keyup.enter="handleSave"
           />
         </div>
 
         <div class="input-group">
-          <label for="pwd">密碼</label>
+          <label for="pwd">校園入口密碼</label>
           <input 
             id="pwd" 
             v-model="pwd" 
@@ -94,7 +94,8 @@ const handleSave = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  min-height: 100%;
+  padding: var(--spacing-md) 0;
 }
 
 #login-card {
