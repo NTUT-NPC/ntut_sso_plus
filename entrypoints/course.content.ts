@@ -130,7 +130,7 @@ export default defineContentScript({
             }
         }
 
-        function showStatus(el: HTMLElement & { _timer?: any }, msg: string, type = 'info') {
+        function showStatus(el: HTMLElement & { _timer?: ReturnType<typeof setTimeout> }, msg: string, type = 'info') {
             el.textContent = msg;
             el.className = `ntut-sso-cs-status ntut-sso-cs-status--${type}`;
             clearTimeout(el._timer);
