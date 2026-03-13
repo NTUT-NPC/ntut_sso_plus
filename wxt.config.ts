@@ -38,5 +38,16 @@ export default defineConfig({
                 },
             ],
         },
+        // Firefox specific settings (Chrome ignores these)
+        browser_specific_settings: {
+            gecko: {
+                id: 'ntut-sso-plus@ntut-npc',
+                strict_min_version: '142.0', // Updated to follow ESR for now, 142.0 is future/invalid
+                data_collection_permissions: {
+                    required: ['none'],
+                    optional: [],
+                },
+            } as any,
+        },
     },
 });
