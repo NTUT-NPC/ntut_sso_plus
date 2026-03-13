@@ -3,9 +3,17 @@ import { browser } from 'wxt/browser';
 import { ref, onMounted } from 'vue';
 import Login from './components/Login.vue';
 import MainView from './components/MainView.vue';
+import Tabs from './components/Tabs.vue';
+import ExperimentalTab from './components/ExperimentalTab.vue';
+import Header from './components/Header.vue';
 
 const isLoggedIn = ref(false);
 const isLoading = ref(true);
+
+const guestTabs = [
+  { id: 'login', label: '登入' },
+  { id: 'other', label: '快捷功能' },
+];
 
 onMounted(async () => {
   const result = await browser.storage.local.get(['uid', 'pwd', 'theme']);
@@ -34,12 +42,40 @@ const handleLogout = async () => {
     <div v-if="isLoading" class="loading-screen">
       載入中...
     </div>
-    <Login v-else-if="!isLoggedIn" @login-success="handleLoginSuccess" />
-    <MainView v-else @logout="handleLogout" />
+    <template v-else>
+      <MainView v-if="isLoggedIn" @logout="handleLogout" />
+      <div v-else class="guest-view">
+        <Header />
+        <Tabs :tabs="guestTabs">
+          <template #login>
+            <Login @login-success="handleLoginSuccess" />
+          </template>
+          <template #other>
+            <ExperimentalTab />
+          </template>
+        </Tabs>
+      </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
+.container {
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sub);
+}
+
+.guest-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .loading-screen {
   height: 100%;
   display: flex;

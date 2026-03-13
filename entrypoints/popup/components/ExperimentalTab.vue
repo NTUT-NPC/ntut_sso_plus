@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { browser } from 'wxt/browser';
 import { startSSO } from '../sso';
+import CollapsibleGuide from './CollapsibleGuide.vue';
+import FileDownloadPreview from './FileDownloadPreview.vue';
+import CourseSelectorPreview from './CourseSelectorPreview.vue';
+
+defineProps<{
+  isLoggedIn?: boolean;
+}>();
 
 const themes = [
   { name: '淺色', value: 'light' },
@@ -40,7 +46,24 @@ const handleSSO = (code: string) => {
       <div class="exp-card-body">
         <div class="category-title">加退選快速填課</div>
         <div class="exp-card-desc">在加退選頁面輸入課號，一鍵自動填入欄位並查詢。</div>
-        <div class="exp-card-actions">
+        
+        <CollapsibleGuide title="使用方式">
+          <div class="guide-split">
+            <div class="guide-preview">
+              <CourseSelectorPreview />
+            </div>
+            <div class="guide-info">
+              <b>Step 1: 進入加退選</b>
+              <p>進入學校的加退選系統頁面，外掛會自動新增一個課號輸入區。</p>
+              <b>Step 2: 輸入課號</b>
+              <p>在輸入區輸入您想要選的所有課號（可以用空白或逗號分開）。</p>
+              <b>Step 3: 自動填表</b>
+              <p>點擊「自動填入」，外掛會幫您填好頁面上所有的課號欄位並立刻送出查詢。</p>
+            </div>
+          </div>
+        </CollapsibleGuide>
+
+        <div class="exp-card-actions" v-if="isLoggedIn">
           <button class="modern-btn" @click="handleSSO('aa_030_oauth')">前往加退選一機</button>
           <button class="modern-btn" @click="handleSSO('aa_030_2_oauth')">前往加退選二機</button>
           <button class="modern-btn" @click="handleSSO('aa_030_3_oauth')">前往加退選三機</button>
@@ -52,7 +75,24 @@ const handleSSO = (code: string) => {
       <div class="exp-card-body">
         <div class="category-title">北科 i 學園下載器</div>
         <div class="exp-card-desc">在 i 學園課程頁面自動偵測並提供影片與教材下載按鈕。</div>
-        <div class="exp-card-actions">
+
+        <CollapsibleGuide title="使用方式">
+          <div class="guide-split">
+            <div class="guide-preview">
+              <FileDownloadPreview />
+            </div>
+            <div class="guide-info">
+              <b>Step 1: 進入課程</b>
+              <p>在 i 學園中進入任意一門課程。外掛會自動在側邊欄注入功能區塊。</p>
+              <b>Step 2: 載入清單</b>
+              <p>點擊左側模擬畫面中的「檔案下載」標題，系統將自動獲取該課程的所有教材檔案。</p>
+              <b>Step 3: 一鍵下載</b>
+              <p>載入完成後，直接點擊檔案名稱即可下載。</p>
+            </div>
+          </div>
+        </CollapsibleGuide>
+
+        <div class="exp-card-actions" v-if="isLoggedIn">
           <button class="modern-btn" @click="handleSSO('ischool_plus_oauth')">前往北科 i 學園</button>
         </div>
       </div>
@@ -65,6 +105,7 @@ const handleSSO = (code: string) => {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+    padding-bottom: var(--spacing-xl);
 }
 
 .exp-card-desc {
@@ -78,6 +119,51 @@ const handleSSO = (code: string) => {
     display: flex;
     gap: var(--spacing-sm);
     flex-wrap: wrap;
+    margin-top: var(--spacing-md);
+}
+
+.guide-placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--spacing-sm);
+}
+
+.guide-split {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+}
+
+.guide-preview {
+    flex: 1;
+    min-width: 0;
+}
+
+.guide-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    color: var(--text-main);
+    font-size: 13px;
+}
+
+.guide-info b {
+    color: var(--text-main);
+    margin-top: var(--spacing-xs);
+}
+
+.guide-info p {
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-sub);
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .guide-split {
+        flex-direction: column;
+    }
 }
 
 .theme-btn {
