@@ -38,6 +38,12 @@ export default defineConfig({
                 },
             ],
         },
+        web_accessible_resources: [
+            {
+                resources: ['assets/video.gif', 'icons/*.png'],
+                matches: ['<all_urls>'],
+            },
+        ],
         // Firefox specific settings (Chrome ignores these)
         browser_specific_settings: {
             gecko: {

@@ -5,6 +5,7 @@ declare module "wxt/browser" {
   export type PublicPath =
     | ""
     | "/"
+    | "/assets/video.gif"
     | "/background.js"
     | "/content-scripts/course.js"
     | "/content-scripts/file.js"
