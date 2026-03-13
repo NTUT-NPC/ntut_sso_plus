@@ -30,4 +30,7 @@ npm-debug.log*
 temp/
 tmp/
 
+# WXT
+.wxt/
+
 _metadata/

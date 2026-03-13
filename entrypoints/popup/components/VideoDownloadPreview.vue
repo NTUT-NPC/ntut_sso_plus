@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import videoGifUrl from '/assets/video.gif?url';
 
 const downloadingCh = ref<string | null>(null);
-const videoGifUrl = new URL('/assets/video.gif', import.meta.url).href;
-
 const simulateDownload = (ch: string) => {
   downloadingCh.value = ch;
   setTimeout(() => {
