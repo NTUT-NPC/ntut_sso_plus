@@ -140,7 +140,7 @@ const handleSSO = (code: string) => {
     <div class="glass-card exp-card">
       <div class="exp-card-body">
         <div class="category-title">偵錯模式</div>
-        <div class="exp-card-desc">開啟後可在 console 查看 JSON 並解除下載限制。(下載功能尚未實作)</div>
+        <div class="exp-card-desc">開啟後可在 console 查看 JSON。</div>
         <div class="exp-card-actions">
           <button class="modern-btn" @click="toggleDebugMode">
             {{ debugMode ? '關閉' : '開啟' }} Debug mode

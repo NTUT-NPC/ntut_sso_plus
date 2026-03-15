@@ -6,8 +6,16 @@ export default defineContentScript({
         'https://istudy.ntut.edu.tw/*',
     ],
     allFrames: true,
-    runAt: 'document_idle',
+    matchAboutBlank: true,
+    runAt: 'document_start',
     main() {
+        // Fix for "Permission denied to access property 'document' on cross-origin object"
+        try {
+            (document as any).domain = 'ntut.edu.tw';
+        } catch (e) {
+            console.warn('[SSO+] Failed to set document.domain:', e);
+        }
+
         function resolveVideoUrl(src: string | null) {
             if (!src) return null;
             try {
@@ -242,6 +250,7 @@ export default defineContentScript({
             document.body.appendChild(bar);
             makeDraggable(bar, bar);
         }
+
 
         function init() {
             // Logic for Player Frame (istream)
