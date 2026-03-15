@@ -33,6 +33,16 @@ export default defineBackground(() => {
 
             return true;
         }
+
+        if (message.action === 'relay_video_click') {
+            if (sender.tab?.id) {
+                browser.tabs.sendMessage(sender.tab.id, {
+                    action: 'trigger_video_click',
+                    identifier: (message as any).identifier
+                });
+            }
+            return true;
+        }
     });
 
     browser.downloads.onChanged.addListener(async (delta) => {
