@@ -17,7 +17,15 @@ export default defineContentScript({
             }
         }
 
-        function buildFilename(channelLabel: string) {
+        async function buildFilename(channelLabel: string) {
+            const storage = await browser.storage.local.get('activeVideoTitle');
+            const rawTitle = storage.activeVideoTitle as string;
+            
+            if (rawTitle) {
+                // Remove illegal filename characters and trim
+                const safeTitle = rawTitle.replace(/[\\/:*?"<>|]/g, '_').trim();
+                return `${safeTitle}_${channelLabel}.mp4`;
+            }
             return `istream_video_${channelLabel}.mp4`;
         }
 
@@ -155,12 +163,12 @@ export default defineContentScript({
                 let currentDownloadId: number | null = null;
                 let isDownloading = false;
 
-                btn.addEventListener('click', (e) => {
+                btn.addEventListener('click', async (e) => {
                     if (isDownloading) return;
                     e.preventDefault();
                     e.stopPropagation();
-
-                    const filename = buildFilename(ch.label);
+ 
+                    const filename = await buildFilename(ch.label);
                     const fallbackTab = window.open(videoUrl, '_blank');
 
                     isDownloading = true;
@@ -236,21 +244,48 @@ export default defineContentScript({
         }
 
         function init() {
+            // Logic for Player Frame (istream)
             injectDownloadBar();
-            if (!document.getElementById('ntut-sso-dl-bar')) {
-                const observer = new MutationObserver(() => {
-                    if (document.getElementById('videoplayer')) {
-                        injectDownloadBar();
-                        if (document.getElementById('ntut-sso-dl-bar')) {
-                            observer.disconnect();
-                        }
+            
+            // Logic for Catalog Frame (istudy)
+            // This script runs in all frames. We check for the catalog's unique elements.
+            const syncActiveTitle = () => {
+                const selectedLi = document.querySelector('li.selected');
+                if (selectedLi) {
+                    const titleLink = selectedLi.querySelector('.cssAnchor1');
+                    const titleText = titleLink?.getAttribute('title') || titleLink?.textContent?.trim();
+                    if (titleText) {
+                        browser.storage.local.set({ activeVideoTitle: titleText });
                     }
-                });
-                observer.observe(document.body || document.documentElement, {
-                    childList: true,
-                    subtree: true,
-                });
-                setTimeout(() => observer.disconnect(), 30000);
+                }
+            };
+
+            // Initial sync
+            syncActiveTitle();
+
+            // Monitor for changes in the catalog (e.g. user clicks another video)
+            const observer = new MutationObserver(() => {
+                if (document.getElementById('videoplayer')) {
+                    injectDownloadBar();
+                }
+                syncActiveTitle();
+            });
+
+            observer.observe(document.body || document.documentElement, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class'] // Watch for 'selected' class changes
+            });
+
+            if (!document.getElementById('ntut-sso-dl-bar')) {
+                setTimeout(() => {
+                    if (!document.getElementById('ntut-sso-dl-bar') && document.getElementById('videoplayer')) {
+                        injectDownloadBar();
+                    }
+                }, 1000);
+                
+                setTimeout(() => observer.disconnect(), 60000);
             }
         }
 
