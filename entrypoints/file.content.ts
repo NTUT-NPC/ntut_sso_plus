@@ -5,6 +5,20 @@ export default defineContentScript({
     allFrames: true,
     runAt: 'document_idle',
     main() {
+        browser.runtime.onMessage.addListener((msg) => {
+            if (msg.action === 'trigger_video_click' && msg.identifier) {
+                const el = document.getElementById(msg.identifier);
+                if (el) {
+                    const link = el.querySelector('a');
+                    if (link) {
+                        link.click();
+                    } else {
+                        el.click();
+                    }
+                }
+            }
+        });
+
         function isMoocSysbar() {
             if (document.getElementById('moocSidebar')) return true;
             try {
@@ -57,6 +71,7 @@ export default defineContentScript({
         }
 
         interface FileItem {
+            identifier?: string;
             title?: string;
             text?: string;
             url?: string;
@@ -82,14 +97,32 @@ export default defineContentScript({
                 const li = document.createElement('li');
                 const text = f.title || f.text || '(無標題)';
                 const href = f.url || f.link || f.href || f.download_url || '';
+                const identifier = f.identifier;
 
+                const isIstream = href.startsWith('istream://');
                 const isDownloadable =
-                    href &&
-                    !href.startsWith('istream') &&
-                    !href.startsWith('about') &&
-                    !href.startsWith('/istream');
+                    debugMode || (
+                        href &&
+                        !isIstream &&
+                        !href.startsWith('about') &&
+                        !href.startsWith('/istream')
+                    );
 
-                if (isDownloadable) {
+                if (isIstream && identifier) {
+                    const a = document.createElement('a');
+                    a.className = 'ntut-sso-fdl-link ntut-sso-fdl-video';
+                    a.href = 'javascript:;';
+                    a.textContent = text;
+                    a.title = '點擊開啟影片播放器';
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        browser.runtime.sendMessage({
+                            action: 'relay_video_click',
+                            identifier: identifier
+                        });
+                    });
+                    li.appendChild(a);
+                } else if (isDownloadable) {
                     const a = document.createElement('a');
                     a.className = 'ntut-sso-fdl-link';
                     a.href = href;
