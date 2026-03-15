@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { startSSO } from '../sso';
 import CollapsibleGuide from './CollapsibleGuide.vue';
 import FileDownloadPreview from './FileDownloadPreview.vue';
@@ -13,6 +14,19 @@ const themes = [
   { name: '淺色', value: 'light' },
   { name: '深色', value: 'dark' },
 ];
+
+const debugMode = ref(false);
+
+onMounted(async () => {
+  const data = await browser.storage.local.get('debugMode');
+  debugMode.value = !!data.debugMode;
+});
+
+const toggleDebugMode = async () => {
+  const newValue = !debugMode.value;
+  debugMode.value = newValue;
+  await browser.storage.local.set({ debugMode: newValue });
+};
 
 const changeTheme = async (theme: string) => {
   document.body.setAttribute('data-theme', theme);
@@ -123,7 +137,17 @@ const handleSSO = (code: string) => {
         </div>
       </div>
     </div>
-
+    <div class="glass-card exp-card">
+      <div class="exp-card-body">
+        <div class="category-title">偵錯模式</div>
+        <div class="exp-card-desc">開啟後可在 console 查看 JSON 並解除下載限制。(下載功能尚未實作)</div>
+        <div class="exp-card-actions">
+          <button class="modern-btn" @click="toggleDebugMode">
+            {{ debugMode ? '關閉' : '開啟' }} Debug mode
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

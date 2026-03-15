@@ -67,7 +67,7 @@ export default defineContentScript({
             [key: string]: any;
         }
 
-        function renderFileTree(items: FileItem[]): HTMLElement {
+        function renderFileTree(items: FileItem[], debugMode: boolean = false): HTMLElement {
             if (!Array.isArray(items) || items.length === 0) {
                 const emptySpan = document.createElement('span');
                 emptySpan.className = 'ntut-sso-fdl-empty';
@@ -105,7 +105,7 @@ export default defineContentScript({
                 }
 
                 if (Array.isArray(f.item) && f.item.length > 0) {
-                    li.appendChild(renderFileTree(f.item));
+                    li.appendChild(renderFileTree(f.item, debugMode));
                 }
                 ul.appendChild(li);
             });
@@ -132,11 +132,18 @@ export default defineContentScript({
                 }
 
                 const data = await res.json();
+                
+                const storage = await browser.storage.local.get('debugMode');
+                const debugMode = !!storage.debugMode;
+                if (debugMode) {
+                    console.log('[SSO+ Debug] File List JSON:', data);
+                }
+
                 if (data && data.data) {
                     if (data.data.path && Array.isArray(data.data.path.item)) {
-                        container.replaceChildren(renderFileTree(data.data.path.item));
+                        container.replaceChildren(renderFileTree(data.data.path.item, debugMode));
                     } else if (Array.isArray(data.data.list)) {
-                        container.replaceChildren(renderFileTree(data.data.list));
+                        container.replaceChildren(renderFileTree(data.data.list, debugMode));
                     } else {
                         const emptySpan = document.createElement('span');
                         emptySpan.className = 'ntut-sso-fdl-empty';
