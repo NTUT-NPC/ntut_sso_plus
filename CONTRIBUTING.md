@@ -80,3 +80,26 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 Use kebab-case: `feat/add-student-query-service`, `fix/storage-permission-issue`
 
+## Versioning
+
+The project follows a `year.month.patch` versioning scheme (e.g., `26.3.4`).
+
+### How to Update Version
+
+1. **Source of Truth**: The version is managed in `package.json`. Files like `wxt.config.ts` and GitHub Actions automatically read the version from `package.json`.
+2. **Automated Bumping**: Use the **Update Version** GitHub Action to update the version:
+   - Go to the **Actions** tab in GitHub.
+   - Select the **Update Version** workflow.
+   - Click **Run workflow**. 
+   - You can optionally specify a version number, or leave it empty to automatically increment the patch number (or reset to 1 if the month has changed).
+   - The action will create a Pull Request with the version update. Merge it to apply the changes to `main`.
+3. **Unmerged PRs**: Do **not** update the version number in regular feature or fix PRs. Version bumping should be done separately (via the GitHub Action) only when preparing for a release.
+
+### Manual Update (Local)
+
+If you must update the version manually:
+```bash
+npm version <new-version> --no-git-tag-version
+```
+This will update both `package.json` and `package-lock.json`.
+

@@ -30,7 +30,7 @@ jobs:
           if [ -n "${{ github.event.inputs.version_override }}" ]; then
             VERSION="${{ github.event.inputs.version_override }}"
           else
-            VERSION=$(grep -E "^[[:space:]]*version:\s*['\"][^'\"]+['\"]" wxt.config.ts | sed -E "s/.*['\"]([^'\"]+)['\"].*/\1/")
+            VERSION=$(node -p "require('./package.json').version")
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Found version: $VERSION"
@@ -47,7 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Release v${{ steps.get_version.outputs.VERSION }} (Build ${{ github.run_number }})
+          name: Release v${{ steps.get_version.outputs.VERSION }}
           files: dist/*.zip
           generate_release_notes: true
           body: |
