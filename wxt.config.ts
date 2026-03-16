@@ -1,4 +1,6 @@
 import { defineConfig } from 'wxt';
+import pkg from './package.json';
+
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -6,7 +8,7 @@ export default defineConfig({
     modules: ['@wxt-dev/module-vue'],
     manifest: {
         name: '北科大 SSO+',
-        version: '26.3.22',
+        version: pkg.version,
         description: '提供北科學生免密碼與免驗證碼快速存取校內系統的瀏覽器擴充功能。',
         permissions: [
             'storage',
