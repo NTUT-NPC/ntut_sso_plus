@@ -28,18 +28,21 @@ const handleLogout = () => {
 
 <template>
   <header class="glass-card">
-    <div class="brand-wrapper">
+    <a class="brand-wrapper" href="https://github.com/NTUT-NPC/ntut_sso_plus" target="_blank">
       <h3 class="brand-logo">NTUT SSO<span class="plus-sign">+</span></h3>
-      <div class="npc-tag">BY NPC</div>
-    </div>
+      <div class="npc-tag">v{{ browser.runtime.getManifest().version }} BY NPC</div>
+    </a>
     <div class="header-actions">
-      <button class="modern-btn secondary" title="在新分頁開啟" @click="openInNewTab">
-        新分頁
+      <a class="icon-btn" href="https://github.com/NTUT-NPC/ntut_sso_plus" target="_blank" title="GitHub 專案">
+        <div class="icon github"></div>
+      </a>
+      <button class="icon-btn" title="在新分頁開啟" @click="openInNewTab">
+        <div class="icon external-link"></div>
       </button>
-      <button class="modern-btn secondary" title="在新視窗開啟" @click="openInNewWindow">
-        新視窗
+      <button class="icon-btn" title="在新視窗開啟" @click="openInNewWindow">
+        <div class="icon maximize"></div>
       </button>
-      <button v-if="showLogout" class="modern-btn" @click="handleLogout">登出</button>
+      <button v-if="showLogout" class="modern-btn sm" @click="handleLogout">登出</button>
     </div>
   </header>
 </template>
@@ -58,6 +61,7 @@ header {
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  text-decoration: none;
 }
 
 .brand-logo {
@@ -83,5 +87,58 @@ header {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.icon-btn:hover {
+  background: var(--border);
+  color: var(--text-main);
+  border-color: var(--primary);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.github {
+  mask-image: url('/icons/github.svg');
+  -webkit-mask-image: url('/icons/github.svg');
+}
+
+.external-link {
+  mask-image: url('/icons/external-link.svg');
+  -webkit-mask-image: url('/icons/external-link.svg');
+}
+
+.maximize {
+  mask-image: url('/icons/maximize.svg');
+  -webkit-mask-image: url('/icons/maximize.svg');
+}
+
+.modern-btn.sm {
+  padding: 8.5px 17px;
+  font-size: 12px;
 }
 </style>
