@@ -55,10 +55,18 @@ Last updated: 2026-03-13. If stale (>7 days), verify Status section against code
 - **Authentication:** SSO logic is centralized in `entrypoints/popup/sso.ts`.
 
 ## 📦 Versioning
-The project follows a `year.month.version` versioning scheme (e.g., `26.3.19`).
-- **Year:** Last two digits of the year (e.g., `26` for 2026).
-- **Month:** Current month without leading zero.
-- **Version:** Incremental patch number.
+The project now uses **Pull Request Number** as the version identifier for tracking changes.  
+
+When a new pull request is triggered and merged, its pull request number is automatically assigned as the version (e.g., PR #56 results in `v56`).
+
+- **Version:** The pull request number (`v<PR_NUMBER>`).
+
+This new mechanism ensures simplified version tracking and eliminates the need for manual increments.
+
+### Example:
+- Pull Request #45 → Version: `v45`
+- Pull Request #99 → Version: `v99`
+
 
 ## 🛠 Common Commands
 - `npm run dev`: Start development mode with hot reload for Chrome (manifest v3).
