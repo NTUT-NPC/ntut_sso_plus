@@ -1,58 +1,56 @@
-name: Create Release
+name: Build on Merge
 on:
-  workflow_dispatch:
-    inputs:
-      version_override:
-        description: '手動覆寫版本號 (留空則自動讀取 wxt.config.ts)'
-        required: false
-        default: ''
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  pull_request:
+    types:
+      - closed # 在 PR 被關閉時觸發（包括合併的情況）
+  workflow_dispatch: # 添加手動觸發支持
 
 jobs:
-  release:
+  build-on-merge:
+    # 確保僅在 PR 合併後（或手動觸發時）執行
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node
+      # 1. 檢出分支代碼
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref || github.ref_name }} # 用於區分自動和手動模式
+
+      # 2. 設置 Node.js 環境
+      - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'npm'
-          
-      - name: Get Version
-        id: get_version
-        run: |
-          if [ -n "${{ github.event.inputs.version_override }}" ]; then
-            VERSION="${{ github.event.inputs.version_override }}"
-          else
-            VERSION=$(node -p "require('./package.json').version")
-          fi
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "Found version: $VERSION"
-          
-      - name: Install dependencies
+
+      # 3. 安裝依賴
+      - name: Install Dependencies
         run: npm install
-        
-      - name: Build and Zip Extension
-        run: |
-          npm run zip
-          npm run zip:firefox
-          
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+
+      # 4. 編譯代碼
+      - name: Build Project
+        run: npm run build
+
+      # 5. 執行測試（可選）
+      - name: Run Tests
+        if: success() # 僅在之前的步驟成功時執行
+        run: npm test
+
+      # 6. (可選) 上傳構建工件
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Release v${{ steps.get_version.outputs.VERSION }}
-          files: dist/*.zip
-          generate_release_notes: true
-          body: |
-            ### Build Information
-            - Build Number: ${{ github.run_number }}
-            - Commit: ${{ github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: build-artifacts
+          path: dist/
+
+      # 7. 捕獲錯誤日誌（僅在失敗時執行）
+      - name: Debug on Failure
+        if: failure()
+        run: |
+          echo "[DEBUG] Build failed. Capturing logs:"
+          dmesg
+          cat /var/log/syslog
