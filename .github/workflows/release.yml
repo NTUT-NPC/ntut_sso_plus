@@ -2,52 +2,52 @@ name: Build on Merge
 on:
   pull_request:
     types:
-      - closed # 在 PR 被關閉時觸發（包括合併的情況）
-  workflow_dispatch: # 添加手動觸發支持
+      - closed # Triggered when a PR is closed (including being merged)
+  workflow_dispatch: # Adds manual trigger support
 
 jobs:
   build-on-merge:
-    # 確保僅在 PR 合併後（或手動觸發時）執行
+    # Ensure the workflow only runs after a PR is merged (or manually triggered)
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      # 1. 檢出分支代碼
+      # 1. Checkout branch code
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.base.ref || github.ref_name }} # 用於區分自動和手動模式
+          ref: ${{ github.event.pull_request.base.ref || github.ref_name }} # Distinguish between automatic and manual modes
 
-      # 2. 設置 Node.js 環境
+      # 2. Setup Node.js environment
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'npm'
 
-      # 3. 安裝依賴
+      # 3. Install dependencies
       - name: Install Dependencies
         run: npm install
 
-      # 4. 編譯代碼
+      # 4. Build project
       - name: Build Project
         run: npm run build
 
-      # 5. 執行測試（可選）
+      # 5. Run tests (optional)
       - name: Run Tests
-        if: success() # 僅在之前的步驟成功時執行
+        if: success() # Run only if the previous steps succeeded
         run: npm test
 
-      # 6. (可選) 上傳構建工件
+      # 6. Upload build artifacts (updated to v4)
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: dist/
 
-      # 7. 捕獲錯誤日誌（僅在失敗時執行）
+      # 7. Capture debug logs on failure (optional)
       - name: Debug on Failure
         if: failure()
         run: |
