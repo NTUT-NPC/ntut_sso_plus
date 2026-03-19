@@ -9,12 +9,7 @@ export default defineContentScript({
     matchAboutBlank: true,
     runAt: 'document_start',
     main() {
-        // Fix for "Permission denied to access property 'document' on cross-origin object"
-        try {
-            (document as any).domain = 'ntut.edu.tw';
-        } catch (e) {
-            console.warn('[SSO+] Failed to set document.domain:', e);
-        }
+        // 已移除 document.domain 設定，避免瀏覽器警告
 
         function resolveVideoUrl(src: string | null) {
             if (!src) return null;
