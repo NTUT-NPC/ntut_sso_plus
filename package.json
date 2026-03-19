@@ -1,6 +1,6 @@
 {
   "name": "ntut_sso_plus",
-  "version": "26.3.25",
+  "version": "2026.65.0",
   "description": "北科大 SSO+ 提供統一且便捷的介面，讓北科學生快速登入校內各項服務，並提供課程教材下載功能。",
   "main": "popup.js",
   "directories": {
