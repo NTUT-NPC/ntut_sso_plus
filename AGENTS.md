@@ -55,17 +55,22 @@ Last updated: 2026-03-13. If stale (>7 days), verify Status section against code
 - **Authentication:** SSO logic is centralized in `entrypoints/popup/sso.ts`.
 
 ## 📦 Versioning
-The project now uses **Pull Request Number** as the version identifier for tracking changes.  
+The project now uses a **year-based versioning strategy** combined with the **Pull Request Number** for tracking changes.
 
-When a new pull request is triggered and merged, its pull request number is automatically assigned as the version (e.g., PR #56 results in `v56`).
+When a new pull request is triggered and merged, the version identifier is generated automatically in the format `vYY.NUM.0`, where:
+- `YY`: The last two digits of the current year (e.g., `2026` → `26`).
+- `NUM`: The pull request number.
+- `0`: A fixed trailing digit for the version.
 
-- **Version:** The pull request number (`v<PR_NUMBER>`).
+This mechanism ensures simplified version tracking and aligns with the project changes over time.
 
-This new mechanism ensures simplified version tracking and eliminates the need for manual increments.
+### Version Format:
+`vYY.NUM.0`
 
 ### Example:
-- Pull Request #45 → Version: `v45`
-- Pull Request #99 → Version: `v99`
+- Year: `2026`, Pull Request #42 → Version: `v26.42.0`
+- Year: `2026`, Pull Request #123 → Version: `v26.123.0`
+- Year: `2027`, Pull Request #1 → Version: `v27.1.0`
 
 
 ## 🛠 Common Commands
