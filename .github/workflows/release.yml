@@ -1,56 +1,54 @@
-name: Build on Merge
+name: Create Release
 on:
-  pull_request:
-    types:
-      - closed # Triggered when a PR is closed (including being merged)
-  workflow_dispatch: # Adds manual trigger support
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: '手動覆寫版本號 (留空則自動讀取 wxt.config.ts)'
+        required: false
+        default: ''
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build-on-merge:
-    # Ensure the workflow only runs after a PR is merged (or manually triggered)
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      # 1. Checkout branch code
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.base.ref || github.ref_name }} # Distinguish between automatic and manual modes
-
-      # 2. Setup Node.js environment
-      - name: Setup Node.js Environment
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: 'npm'
-
-      # 3. Install dependencies
-      - name: Install Dependencies
-        run: npm install
-
-      # 4. Build project
-      - name: Build Project
-        run: npm run build
-
-      # 5. Run tests (optional)
-      - name: Run Tests
-        if: success() # Run only if the previous steps succeeded
-        run: npm test
-
-      # 6. Upload build artifacts (updated to v4)
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/
-
-      # 7. Capture debug logs on failure (optional)
-      - name: Debug on Failure
-        if: failure()
+          
+      - name: Get Version
+        id: get_version
         run: |
-          echo "[DEBUG] Build failed. Capturing logs:"
-          dmesg
-          cat /var/log/syslog
+          if [ -n "${{ github.event.inputs.version_override }}" ]; then
+            VERSION="${{ github.event.inputs.version_override }}"
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found version: $VERSION"
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build and Zip Extension
+        run: |
+          npm run zip
+          npm run zip:firefox
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          files: dist/*.zip
+          body: Release v${{ steps.get_version.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
