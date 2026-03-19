@@ -24,20 +24,20 @@ jobs:
           node-version: 24
           cache: 'npm'
 
-      # 獲取 PR 編號並生成版本號
-      - name: Extract PR Number
-        id: extract_pr_number
+      # 獲取年份和 PR 編號
+      - name: Extract Version Info
+        id: version_info
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_OUTPUT
-          echo "Target Version: v$PR_NUMBER"
+          YEAR=$(date +'%Y')
+          VERSION="${YEAR}.${PR_NUMBER}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Target Version: $VERSION"
 
       # 更新 package.json 的版本號
       - name: Update Files
         run: |
-          PR_NUMBER=${{ steps.extract_pr_number.outputs.PR_NUMBER }}
-          # 將 PR 號碼作為版本號設置（不包含 "v"）
-          npm version "$PR_NUMBER" --no-git-tag-version
+          npm version "${{ steps.version_info.outputs.VERSION }}" --no-git-tag-version
 
       # 提交變更
       - name: Commit and Push Changes
@@ -47,14 +47,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
-          git commit -m "chore: bump version to v${{ steps.extract_pr_number.outputs.PR_NUMBER }}"
+          git commit -m "chore: bump version to ${{ steps.version_info.outputs.VERSION }}"
           git push origin ${{ github.head_ref }}
 
-      # 在 PR 上留言，例如 "Tagged version v56"
+      # 在 PR 上留言，例如 "Tagged version 2026.64"
       - name: Leave Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          COMMENT_BODY="Tagged version v${{ steps.extract_pr_number.outputs.PR_NUMBER }}"
+          YEAR=$(date +'%Y')
+          COMMENT_BODY="Tagged version ${YEAR}.${PR_NUMBER}"
           gh pr comment $PR_NUMBER --body "$COMMENT_BODY"
