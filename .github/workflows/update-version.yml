@@ -31,7 +31,7 @@ jobs:
         id: version_info
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
-          YEAR=$(date +'%Y')
+          YEAR=$(date +'%y') # 使用兩位數年份
           VERSION="${YEAR}.${PR_NUMBER}.0"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Target Version: $VERSION"
