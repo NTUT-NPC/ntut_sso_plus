@@ -14,8 +14,10 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      # 檢出 PR 的來源分支
+      # 從 PR 分支檢出程式碼
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       # 設置 Node.js 環境
       - name: Setup Node
@@ -30,7 +32,7 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           YEAR=$(date +'%Y')
-          VERSION="${YEAR}.${PR_NUMBER}.0" # 添加 PATCH (默認為 0)
+          VERSION="${YEAR}.${PR_NUMBER}.0"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Target Version: $VERSION"
 
