@@ -30,7 +30,7 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           YEAR=$(date +'%Y')
-          VERSION="${YEAR}.${PR_NUMBER}"
+          VERSION="${YEAR}.${PR_NUMBER}.0" # 添加 PATCH (默認為 0)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Target Version: $VERSION"
 
@@ -50,12 +50,12 @@ jobs:
           git commit -m "chore: bump version to ${{ steps.version_info.outputs.VERSION }}"
           git push origin ${{ github.head_ref }}
 
-      # 在 PR 上留言，例如 "Tagged version 2026.64"
+      # 在 PR 上留言，例如 "Tagged version 2026.64.0"
       - name: Leave Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           YEAR=$(date +'%Y')
-          COMMENT_BODY="Tagged version ${YEAR}.${PR_NUMBER}"
+          COMMENT_BODY="Tagged version ${YEAR}.${PR_NUMBER}.0"
           gh pr comment $PR_NUMBER --body "$COMMENT_BODY"
