@@ -17,12 +17,7 @@ export default defineConfig({
             'tabs',
         ],
         host_permissions: [
-            'https://app.ntut.edu.tw/*',
-            'https://istream.ntut.edu.tw/*',
-            'https://istudy.ntut.edu.tw/*',
-            'https://aps-course.ntut.edu.tw/*',
-            'https://aps-sign1.ntut.edu.tw/*',
-            'https://isms-nagios.ntut.edu.tw/*',
+            'https://*.ntut.edu.tw/*',
         ],
         homepage_url: 'https://github.com/NTUT-NPC/ntut_sso_plus',
         icons: {
