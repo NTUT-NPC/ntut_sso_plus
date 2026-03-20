@@ -10,6 +10,8 @@
 //
 // CSS before any @match applies to ALL pages on that subdomain.
 // Supports * wildcard, e.g. @match "/course/*";
+import { browser } from 'wxt/browser';
+
 const cssModules = import.meta.glob('./user-css/*.css', { query: '?raw', eager: true });
 
 interface CssSection {
@@ -70,26 +72,55 @@ export default defineContentScript({
     allFrames: true,
     matchAboutBlank: true,
     runAt: 'document_start',
-    main() {
+    async main() {
         const hostname = window.location.hostname;
         const subdomain = hostname.replace('.ntut.edu.tw', '');
         const sections = CSS_MAP[subdomain];
 
-        // 1. Inject CSS
-        if (sections) {
-            const pathname = window.location.pathname;
-            const matched = sections
-                .filter((s) => s.pattern === null || pathMatches(pathname, s.pattern))
-                .map((s) => s.css)
-                .join('\n');
+        const updateCss = async () => {
+            const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
+            const settings = userCssSettings ?? { global: true }; // Default to global: true if not set
 
-            if (matched.trim()) {
-                const style = document.createElement('style');
-                style.id = 'ntut-sso-user-css';
-                style.textContent = matched;
-                (document.head || document.documentElement).appendChild(style);
+            // Check if global or subdomain is disabled
+            // If settings for a subdomain aren't set, default to true
+            const isGlobalEnabled = settings.global !== false;
+            const isSubdomainEnabled = settings[subdomain] !== false;
+
+            if (!isGlobalEnabled || !isSubdomainEnabled) {
+                document.getElementById('ntut-sso-user-css')?.remove();
+                return;
             }
-        }
+
+            if (sections) {
+                const pathname = window.location.pathname;
+                const matched = sections
+                    .filter((s) => s.pattern === null || pathMatches(pathname, s.pattern))
+                    .map((s) => s.css)
+                    .join('\n');
+
+                if (matched.trim()) {
+                    let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
+                    if (!style) {
+                        style = document.createElement('style');
+                        style.id = 'ntut-sso-user-css';
+                        (document.head || document.documentElement).appendChild(style);
+                    }
+                    style.textContent = matched;
+                } else {
+                    document.getElementById('ntut-sso-user-css')?.remove();
+                }
+            }
+        };
+
+        // 1. Inject CSS
+        await updateCss();
+
+        // Listen for storage changes to dynamic update CSS
+        browser.storage.onChanged.addListener((changes) => {
+            if (changes.userCssSettings) {
+                updateCss();
+            }
+        });
 
         // 2. Enable Autocomplete (ONLY for muid/password and add hints for Bitwarden)
         function enableAutocomplete() {

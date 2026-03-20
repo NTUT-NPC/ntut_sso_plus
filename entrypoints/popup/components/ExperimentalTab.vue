@@ -1,36 +1,57 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, toRaw } from 'vue';
+import { browser } from 'wxt/browser';
 import { startSSO } from '../sso';
 import CollapsibleGuide from './CollapsibleGuide.vue';
 import FileDownloadPreview from './FileDownloadPreview.vue';
 import CourseSelectorPreview from './CourseSelectorPreview.vue';
 import VideoDownloadPreview from './VideoDownloadPreview.vue';
+import ToggleSwitch from './ToggleSwitch.vue';
 
 defineProps<{
   isLoggedIn?: boolean;
 }>();
 
-const themes = [
-  { name: '淺色', value: 'light' },
-  { name: '深色', value: 'dark' },
-];
-
+const isDarkMode = ref(false);
 const debugMode = ref(false);
+const userCssSettings = ref<Record<string, boolean>>({ global: true });
+const subdomains = ref<string[]>([]);
 
 onMounted(async () => {
-  const data = await browser.storage.local.get('debugMode');
+  const data = await browser.storage.local.get(['debugMode', 'userCssSettings', 'theme']) as { debugMode?: boolean, userCssSettings?: Record<string, boolean>, theme?: string };
   debugMode.value = !!data.debugMode;
+  isDarkMode.value = data.theme === 'dark';
+  console.log('[ExperimentalTab] Loading settings from storage:', data.userCssSettings);
+  if (data.userCssSettings) {
+    userCssSettings.value = { ...data.userCssSettings };
+  } else {
+    // Initialize with default if absolutely empty
+    userCssSettings.value = { global: true };
+    await browser.storage.local.set({ userCssSettings: { global: true } });
+  }
+
+  // Discover subdomains with CSS files
+  const cssModules = import.meta.glob('../../user-css/*.css', { eager: true });
+  console.log('[ExperimentalTab] Discovered CSS modules:', cssModules);
+  subdomains.value = Object.keys(cssModules).map(path => 
+    path.split('/').pop()!.replace('.css', '')
+  );
 });
 
-const toggleDebugMode = async () => {
-  const newValue = !debugMode.value;
-  debugMode.value = newValue;
-  await browser.storage.local.set({ debugMode: newValue });
+const saveSettings = async () => {
+  const rawData = toRaw(userCssSettings.value);
+  console.log('[ExperimentalTab] Saving userCssSettings:', rawData);
+  await browser.storage.local.set({ userCssSettings: rawData });
 };
 
-const changeTheme = async (theme: string) => {
-  document.body.setAttribute('data-theme', theme);
-  await browser.storage.local.set({ theme });
+const toggleDebugMode = async () => {
+  await browser.storage.local.set({ debugMode: debugMode.value });
+};
+
+const toggleDarkMode = async () => {
+  const newTheme = isDarkMode.value ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', newTheme);
+  await browser.storage.local.set({ theme: newTheme });
 };
 
 const handleSSO = (code: string) => {
@@ -42,17 +63,36 @@ const handleSSO = (code: string) => {
   <div class="exp-section animate-fade-in">
     <div class="glass-card exp-card">
       <div class="exp-card-body">
-        <div class="category-title">配色主題</div>
-        <div class="exp-card-desc">選擇您喜愛的介面配色方案。</div>
-        <div class="exp-card-actions">
-          <button 
-            v-for="theme in themes" 
-            :key="theme.value" 
-            class="modern-btn" 
-            @click="changeTheme(theme.value)"
-          >
-            {{ theme.name }}
-          </button>
+        <div class="category-title">擴充功能樣式</div>
+        <div class="exp-card-desc">切換深色模式以獲得更舒適的夜間使用體驗。</div>
+        <ToggleSwitch 
+          v-model="isDarkMode"
+          label="深色模式"
+          description="啟用深色背景與明亮文字的配色方案。"
+          @update:modelValue="toggleDarkMode"
+        />
+      </div>
+    </div>
+
+    <div class="glass-card exp-card">
+      <div class="exp-card-body">
+        <div class="category-title">網站特製樣式</div>
+        <div class="exp-card-desc">管理各子網域的樣式。若要套用變更，請重新整理網頁。</div>
+        <div class="toggle-list">
+          <ToggleSwitch 
+            v-model="userCssSettings.global"
+            label="全域樣式"
+            description="關閉後將停用所有子網域的自訂 CSS 樣式。"
+            @update:modelValue="saveSettings"
+          />
+          <ToggleSwitch 
+            v-for="sub in subdomains" 
+            :key="sub"
+            v-model="userCssSettings[sub]"
+            :label="`${sub} 樣式`"
+            description="切換該子網域的特定樣式。"
+            @update:modelValue="saveSettings"
+          />
         </div>
       </div>
     </div>
@@ -141,11 +181,12 @@ const handleSSO = (code: string) => {
       <div class="exp-card-body">
         <div class="category-title">偵錯模式</div>
         <div class="exp-card-desc">開啟後可在 console 查看 JSON。</div>
-        <div class="exp-card-actions">
-          <button class="modern-btn" @click="toggleDebugMode">
-            {{ debugMode ? '關閉' : '開啟' }} Debug mode
-          </button>
-        </div>
+        <ToggleSwitch 
+          v-model="debugMode"
+          label="Debug Mode"
+          description="記錄詳細的 API 請求與響應資訊到開發者主控台。"
+          @update:modelValue="toggleDebugMode"
+        />
       </div>
     </div>
   </div>
@@ -217,8 +258,9 @@ const handleSSO = (code: string) => {
     }
 }
 
-.theme-btn {
-    padding: 6px 12px;
-    font-size: 12px;
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 </style>
