@@ -1,0 +1,151 @@
+/* ============================================================
+   北科大 SSO+ — User CSS for nportal.ntut.edu.tw
+   ============================================================
+   Filename determines the subdomain: nportal.css → nportal.ntut.edu.tw
+
+   Use @match to restrict styles to specific paths.
+   Supports * wildcard, e.g. @match "/course/*";
+   CSS before any @match applies to ALL pages on this subdomain.
+   ============================================================ */
+
+@match "/index.do";
+
+:root {
+    transition: all 0.5s ease-in-out !important;
+}
+
+/* 背景灰色長方形 */
+body {
+    background: none !important;
+}
+
+form[name="login"] {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: #f2f2f2;
+}
+
+/* 左上角的北科大 Logo */
+.header {
+    display: none !important;
+}
+
+/* 下面 */
+.copyright {
+    display: none !important;
+}
+
+/* 忘記密碼 */
+table[style="border:0; width:100%;"] {
+    display: none !important;
+}
+
+#sliderShow {
+    display: none !important;
+}
+
+#wrap {
+    background: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 主登入框 */
+.boxContent {
+    margin: auto !important;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    color: rgb(0, 0, 0) !important;
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 2rem !important;
+    overflow: hidden !important;
+}
+
+img[src="template/ntut/index/images/l_login_title01.png"] {
+    display: none !important;
+}
+
+.boxContent::before {
+    content: "登入校園入口";
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.form {
+    height: auto !important;
+    max-width: 500px !important;
+    width: 100% !important;
+}
+
+.co {
+    height: auto !important;
+    margin: 0 !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+}
+
+.title {
+    color: #000000 !important;
+    width: 100% !important;
+    margin: 0% !important;
+    text-align: left !important;
+    font-size: 1rem !important;
+}
+
+.co>input {
+    width: 100% !important;
+    font-size: 1rem !important;
+    line-height: 2rem !important;
+    padding: 1rem !important;
+    height: 3rem !important;
+    box-sizing: border-box !important;
+    border-radius: 2rem !important;
+    margin-top: 0.5rem !important;
+}
+
+.titleEng {
+    display: none !important;
+}
+
+#authImage {
+    margin-top: 0.5rem !important;
+}
+
+#authcode {
+    text-transform: uppercase;
+}
+
+#eyes {
+    display: none !important;
+}
+
+.loginBtn {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.loginBtn>input {
+    width: 100% !important;
+    height: 3rem !important;
+    border-radius: 2rem !important;
+    margin-top: 0.5rem !important;
+}
+
+@match "/login.do";
