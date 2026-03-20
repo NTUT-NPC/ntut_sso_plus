@@ -92,11 +92,8 @@ export default defineContentScript({
             }
 
             if (sections) {
-                const pathname = window.location.pathname;
-                const matched = sections
-                    .filter((s) => s.pattern === null || pathMatches(pathname, s.pattern))
-                    .map((s) => s.css)
-                    .join('\n');
+                // Apply all CSS sections, ignore @match
+                const matched = sections.map((s) => s.css).join('\n');
 
                 if (matched.trim()) {
                     let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
