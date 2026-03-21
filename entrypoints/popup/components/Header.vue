@@ -36,10 +36,10 @@ const handleLogout = () => {
       <a class="icon-btn" href="https://github.com/NTUT-NPC/ntut_sso_plus" target="_blank" title="GitHub 專案">
         <div class="icon github"></div>
       </a>
-      <button class="icon-btn" title="在新分頁開啟" @click="openInNewTab">
+      <button class="icon-btn" title="開啟分頁" @click="openInNewTab">
         <div class="icon external-link"></div>
       </button>
-      <button class="icon-btn" title="在新視窗開啟" @click="openInNewWindow">
+      <button class="icon-btn" title="視窗模式" @click="openInNewWindow">
         <div class="icon maximize"></div>
       </button>
       <button v-if="showLogout" class="modern-btn sm" @click="handleLogout">登出</button>
