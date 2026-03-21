@@ -59,7 +59,12 @@ const CSS_MAP: Record<string, CssSection[]> = {};
 for (const [path, mod] of Object.entries(cssModules)) {
     const filename = path.split('/').pop()!.replace('.css', '');
     const raw = (mod as { default: string }).default;
-    CSS_MAP[filename] = parseSections(raw);
+    const sections = parseSections(raw);
+    if (CSS_MAP[filename]) {
+        CSS_MAP[filename] = CSS_MAP[filename].concat(sections);
+    } else {
+        CSS_MAP[filename] = sections;
+    }
 }
 
 function pathMatches(pathname: string, pattern: string): boolean {
@@ -73,94 +78,115 @@ export default defineContentScript({
     matchAboutBlank: true,
     runAt: 'document_start',
     async main() {
-        const hostname = window.location.hostname;
-        const subdomain = hostname.replace('.ntut.edu.tw', '');
-        const sections = CSS_MAP[subdomain];
-
-        const updateCss = async () => {
-            const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
-            const settings = userCssSettings ?? { global: true }; // Default to global: true if not set
-
-            // Check if global or subdomain is disabled
-            // If settings for a subdomain aren't set, default to true
-            const isGlobalEnabled = settings.global !== false;
-            const isSubdomainEnabled = settings[subdomain] !== false;
-
-            if (!isGlobalEnabled || !isSubdomainEnabled) {
-                document.getElementById('ntut-sso-user-css')?.remove();
-                return;
+        try {
+            const hostname = window.location.hostname;
+            const subdomain = hostname.replace('.ntut.edu.tw', '');
+            const sections = CSS_MAP[subdomain];
+            if (!sections) {
+                console.warn('[NTUT SSO+] No user CSS found for subdomain:', subdomain);
             }
 
-            if (sections) {
-                // Apply all CSS sections, ignore @match
-                const matched = sections.map((s) => s.css).join('\n');
+            const updateCss = async () => {
+                try {
+                    const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
+                    const settings = userCssSettings ?? { global: true }; // Default to global: true if not set
 
-                if (matched.trim()) {
-                    let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
-                    if (!style) {
-                        style = document.createElement('style');
-                        style.id = 'ntut-sso-user-css';
-                        (document.head || document.documentElement).appendChild(style);
+                    // Check if global or subdomain is disabled
+                    // If settings for a subdomain aren't set, default to true
+                    const isGlobalEnabled = settings.global !== false;
+                    const isSubdomainEnabled = settings[subdomain] !== false;
+
+                    if (!isGlobalEnabled || !isSubdomainEnabled) {
+                        document.getElementById('ntut-sso-user-css')?.remove();
+                        return;
                     }
-                    style.textContent = matched;
-                } else {
-                    document.getElementById('ntut-sso-user-css')?.remove();
+
+                    if (sections && Array.isArray(sections)) {
+                        // Apply all CSS sections, ignore @match
+                        const matched = sections.map((s) => s.css).join('\n');
+
+                        if (matched.trim()) {
+                            let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
+                            if (!style) {
+                                style = document.createElement('style');
+                                style.id = 'ntut-sso-user-css';
+                                (document.head || document.documentElement).appendChild(style);
+                            }
+                            style.textContent = matched;
+                        } else {
+                            document.getElementById('ntut-sso-user-css')?.remove();
+                        }
+                    } else {
+                        document.getElementById('ntut-sso-user-css')?.remove();
+                    }
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in updateCss:', err);
                 }
-            }
-        };
+            };
 
-        // 1. Inject CSS
-        await updateCss();
+            // 1. Inject CSS
+            await updateCss();
 
-        // Listen for storage changes to dynamic update CSS
-        browser.storage.onChanged.addListener((changes) => {
-            if (changes.userCssSettings) {
-                updateCss();
-            }
-        });
-
-        // 2. Enable Autocomplete (ONLY for muid/password and add hints for Bitwarden)
-        function enableAutocomplete() {
-            // Target specific fields: Username (muid, username) and Password
-            const usernameSelector = 'input[name="muid"], input#muid, input[name="username"]';
-            const passwordSelector = 'input[type="password"]';
-
-            // Handle Username
-            const usernameFields = document.querySelectorAll(usernameSelector);
-            usernameFields.forEach((el) => {
-                if (el.getAttribute('autocomplete') === 'off') {
-                    el.removeAttribute('autocomplete');
-                }
-                if (!el.getAttribute('autocomplete')) {
-                    el.setAttribute('autocomplete', 'username');
-                }
-            });
-
-            // Handle Password
-            const passwordFields = document.querySelectorAll(passwordSelector);
-            passwordFields.forEach((el) => {
-                if (el.getAttribute('autocomplete') === 'off' || el.getAttribute('autocomplete') === 'new-password') {
-                    el.removeAttribute('autocomplete');
-                }
-                if (!el.getAttribute('autocomplete')) {
-                    el.setAttribute('autocomplete', 'current-password');
+            // Listen for storage changes to dynamic update CSS
+            browser.storage.onChanged.addListener((changes) => {
+                try {
+                    if (changes.userCssSettings) {
+                        updateCss();
+                    }
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in storage change handler:', err);
                 }
             });
-        }
 
-        // Run immediately and periodically/on changes
-        enableAutocomplete();
-        const observer = new MutationObserver(enableAutocomplete);
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['autocomplete'],
-        });
+            // 2. Enable Autocomplete (ONLY for muid/password and add hints for Bitwarden)
+            function enableAutocomplete() {
+                try {
+                    // Target specific fields: Username (muid, username) and Password
+                    const usernameSelector = 'input[name="muid"], input#muid, input[name="username"]';
+                    const passwordSelector = 'input[type="password"]';
 
-        // Some sites re-add it in their own scripts, so we check a few times
-        for (let delay of [500, 1000, 2000, 5000]) {
-            setTimeout(enableAutocomplete, delay);
+                    // Handle Username
+                    const usernameFields = document.querySelectorAll(usernameSelector);
+                    usernameFields.forEach((el) => {
+                        if (el.getAttribute('autocomplete') === 'off') {
+                            el.removeAttribute('autocomplete');
+                        }
+                        if (!el.getAttribute('autocomplete')) {
+                            el.setAttribute('autocomplete', 'username');
+                        }
+                    });
+
+                    // Handle Password
+                    const passwordFields = document.querySelectorAll(passwordSelector);
+                    passwordFields.forEach((el) => {
+                        if (el.getAttribute('autocomplete') === 'off' || el.getAttribute('autocomplete') === 'new-password') {
+                            el.removeAttribute('autocomplete');
+                        }
+                        if (!el.getAttribute('autocomplete')) {
+                            el.setAttribute('autocomplete', 'current-password');
+                        }
+                    });
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in enableAutocomplete:', err);
+                }
+            }
+
+            // Run immediately and periodically/on changes
+            enableAutocomplete();
+            const observer = new MutationObserver(enableAutocomplete);
+            observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['autocomplete'],
+            });
+
+            // Some sites re-add it in their own scripts, so we check a few times
+            for (let delay of [500, 1000, 2000, 5000]) {
+                setTimeout(enableAutocomplete, delay);
+            }
+        } catch (err) {
+            console.error('[NTUT SSO+] Uncaught error in main content script:', err);
         }
     },
 });

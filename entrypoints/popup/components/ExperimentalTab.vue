@@ -21,26 +21,46 @@ onMounted(async () => {
   const data = await browser.storage.local.get(['debugMode', 'userCssSettings', 'theme']) as { debugMode?: boolean, userCssSettings?: Record<string, boolean>, theme?: string };
   debugMode.value = !!data.debugMode;
   isDarkMode.value = data.theme === 'dark';
-  console.log('[ExperimentalTab] Loading settings from storage:', data.userCssSettings);
-  if (data.userCssSettings) {
-    userCssSettings.value = { ...data.userCssSettings };
-  } else {
-    // Initialize with default if absolutely empty
-    userCssSettings.value = { global: true };
-    await browser.storage.local.set({ userCssSettings: { global: true } });
-  }
 
   // Discover subdomains with CSS files
   const cssModules = import.meta.glob('../../user-css/*.css', { eager: true });
-  console.log('[ExperimentalTab] Discovered CSS modules:', cssModules);
+  if (debugMode.value) {
+    console.log('[ExperimentalTab] Discovered CSS modules:', cssModules);
+  }
   subdomains.value = Object.keys(cssModules).map(path => 
     path.split('/').pop()!.replace('.css', '')
   );
+
+  // Filter userCssSettings to only valid subdomains and 'global'
+  const validKeys = new Set(['global', ...subdomains.value]);
+  if (data.userCssSettings) {
+    const cleaned = Object.fromEntries(
+      Object.entries(data.userCssSettings).filter(([k]) => validKeys.has(k))
+    );
+    userCssSettings.value = cleaned;
+    // Save cleaned settings if any keys were removed
+    if (Object.keys(cleaned).length !== Object.keys(data.userCssSettings).length) {
+      if (debugMode.value) {
+        console.log('[ExperimentalTab] Cleaned userCssSettings:', cleaned);
+      }
+      await browser.storage.local.set({ userCssSettings: cleaned });
+    }
+  } else {
+    userCssSettings.value = { global: true };
+    await browser.storage.local.set({ userCssSettings: { global: true } });
+  }
 });
 
 const saveSettings = async () => {
-  const rawData = toRaw(userCssSettings.value);
-  console.log('[ExperimentalTab] Saving userCssSettings:', rawData);
+  // Only save settings for valid subdomains and 'global'
+  const validKeys = new Set(['global', ...subdomains.value]);
+  const rawData = Object.fromEntries(
+    Object.entries(toRaw(userCssSettings.value)).filter(([k]) => validKeys.has(k))
+  );
+  userCssSettings.value = rawData;
+  if (debugMode.value) {
+    console.log('[ExperimentalTab] Saving userCssSettings:', rawData);
+  }
   await browser.storage.local.set({ userCssSettings: rawData });
 };
 
