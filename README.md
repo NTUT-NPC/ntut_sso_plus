@@ -9,27 +9,36 @@
 - **加退選系統自動填入**
 - **客製化最愛捷徑**
 
-## 安裝指南 (Chrome/Edge/Brave/Chromium)
-1. 在 [Github Release](https://github.com/NTUT-NPC/ntut_sso_plus/releases) 下載 [`chrome.zip`](https://github.com/NTUT-NPC/ntut_sso_plus/releases)
-1. 解壓縮 `chrome.zip`
-1. 在網址列輸入並前往
-    ```
-    chrome://extensions
-    ```
-1. 開啟 Developer mode
+## 安裝
+### 從商店
+|瀏覽器|Chrome|Edge|Brave|Firefox|Firefox Android|
+|---|---|---|---|---|---|
+|安裝連結|[Web Store](https://chromewebstore.google.com/detail/nppojibjajdjephkangpfamenpphamaj)|[Web Store](https://chromewebstore.google.com/detail/nppojibjajdjephkangpfamenpphamaj)|[Web Store](https://chromewebstore.google.com/detail/nppojibjajdjephkangpfamenpphamaj)|[Firefox 擴充套件](https://addons.mozilla.org/zh-TW/firefox/addon/ntut-sso-plus/)|[Android 擴充套件](https://addons.mozilla.org/zh-TW/android/addon/ntut-sso-plus/)|
 
-    <img width="626" alt="image" src="./docs/image.png" />
-    
-1. 點擊 Load unpacked
-1. 選擇解壓縮完的 `chrome.zip` 資料夾
-   
-    <img width="626" alt="image" src="./docs/image-1.png" />
-   
+> [!NOTE]
+> Chrome Web Store 的版本會落後最新版至少一週，如果想體驗最新功能，建議手動安裝指定版本。
 
-## 安裝指南 (Firefox)
-https://addons.mozilla.org/zh-TW/firefox/addon/%E5%8C%97%E7%A7%91%E5%A4%A7-sso-plus/
+> [!CAUTION]
+> Firefox Android 無法更新擴充套件，可能需要移除再重新安裝。
+### GitHub Release
 
-<img width="626" height="549" alt="image" src="https://github.com/user-attachments/assets/9c498e88-7f46-424f-b710-8e5dba319243" />
+https://github.com/NTUT-NPC/ntut_sso_plus/releases
+
+### Build from source
+#### Chrome
+```
+npm run build
+```
+輸出會在 `ntut_sso_plus/dist/chrome-mv3/`
+> [!IMPORTANT]
+> 刪除 `chrome-mv3/` 將導致已安裝的擴充功能失效。
+#### Firefox
+```
+npm run zip:firefox
+```
+輸出會在 `ntut_sso_plus/dist/ntutssoplus-26.xx.0-firefox.zip`
+> [!IMPORTANT]
+> 關閉 Firefox 後，從 about:bebugging 安裝的 Add-ons 都會被清除。
 
 ## 螢幕截圖
 <img width="626" alt="image" src="./docs/Screenshot_0.png" />
