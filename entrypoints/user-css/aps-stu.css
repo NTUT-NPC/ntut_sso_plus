@@ -1,0 +1,232 @@
+html,
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  #wrapper,
+  #page,
+  #page-bgtop {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    transition: all 0.3s ease-in-out !important;
+    #header,
+    #footer {
+      display: none !important;
+    }
+    #page-bgbtm {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      container-type: inline-size !important;
+      flex-direction: column;
+      background-color: #f1f5f9 !important;
+      #sidebar {
+        width: 100% !important;
+        overflow-y: auto !important;
+        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.15) !important;
+        margin-bottom: 1rem !important;
+        border-bottom: 0.25rem solid #0063c6;
+        ul {
+          list-style: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          li {
+            background-color: #fff !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            justify-content: space-around;
+            h2 {
+              display: none !important;
+            }
+            p {
+              margin: 0 !important;
+              padding: 0 !important;
+              display: block !important;
+              &:hover {
+                background-color: #f0f0f0 !important;
+              }
+              & a[href^="Main?func="] {
+                display: flex !important;
+                align-items: center !important;
+                padding: 1rem !important;
+                color: black !important;
+              }
+              & a:not([href^="Main?func="]) {
+                display: none !important;
+              }
+            }
+          }
+        }
+      }
+      #content {
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 !important;
+        .post {
+          margin: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: center !important;
+          align-items: center !important;
+          padding: 2rem !important;
+          box-sizing: border-box !important;
+          .box {
+            /* margin: 3rem 0 4rem 0 !important; */
+            max-width: 800px !important;
+            width: 100%;
+            border: 0;
+            background-color: #fff !important;
+            min-height: 500px !important;
+            border-radius: 2rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            color: black !important;
+            padding: 2rem !important;
+            box-sizing: border-box !important;
+          }
+          h1 {
+            display: none !important;
+          }
+          table {
+            width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            tbody {
+              display: flex !important;
+              flex-direction: row !important;
+              gap: 0.5rem !important;
+              flex-wrap: wrap !important;
+            }
+            tr {
+              display: flex !important;
+              flex-direction: row !important;
+              background-color: unset !important;
+              color: unset !important;
+              border: unset !important;
+              border-radius: unset !important;
+              box-shadow: unset !important;
+              flex-wrap: wrap !important;
+              width: 100%;
+              /* margin-bottom: 1rem !important; */
+            }
+            th {
+              background-color: unset !important;
+              color: unset !important;
+              font-size: larger !important;
+              text-align: left;
+              padding: unset !important;
+            }
+            .tableTitle {
+              word-spacing: -0.25rem;
+              width: 100% !important;
+              padding: unset !important;
+              text-align: left !important;
+              margin-bottom: 0rem;
+            }
+            td {
+              width: 100% !important;
+              height: fit-content !important;
+              .blue {
+                color: unset;
+              }
+            }
+            a[href="file/rule1120620.pdf"] {
+              display: none !important;
+            }
+            td:has(div[id="LA_date_div"]) {
+              flex-direction: row !important;
+              gap: 0.5rem !important;
+              align-items: center !important;
+              br {
+                display: none !important;
+              }
+              input[type="text"],
+              div,
+              span {
+                height: 38px !important;
+                display: inline-block;
+                margin-bottom: 0.5rem !important;
+                text-align: center !important;
+                line-height: 38px;
+                cursor: pointer !important;
+              }
+            }
+            td:has(span[class="red"]) {
+              width: 100% !important;
+              margin-bottom: 1rem;
+              background-color: rgb(255, 230, 230) !important;
+              padding: 0.5rem 1rem !important;
+              border-radius: 0.5rem !important;
+              span[class="red"] {
+                width: 100% !important;
+              }
+            }
+          }
+          input[type="button"] {
+            display: block !important;
+          }
+          input:not([type="radio"]),
+          select,
+          textarea {
+            width: 240px;
+            box-sizing: border-box !important;
+            display: inline-block;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            border: 1px solid #ccc !important;
+            height: unset !important;
+            min-height: 38px !important;
+            margin-bottom: 0.5rem !important;
+          }
+          input[type="button"],
+          input[type="text"],
+          select {
+            cursor: pointer;
+          }
+          select.error {
+            background-color: unset !important;
+            border: 2px solid red !important;
+          }
+          label[for="data_type"] {
+            display: none !important;
+            height: 0 !important;
+          }
+          #LA_date_div {
+            width: fit-content !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* body[text="#003398"] {
+  background: #191919 !important;
+  table[summary="版型表格：主要網頁內容"] {
+    background: rgb(52, 52, 52) !important;
+    td {
+      background-color: #191919 !important;
+      a{
+        color: white !important;
+      }
+    }
+  }
+} */
