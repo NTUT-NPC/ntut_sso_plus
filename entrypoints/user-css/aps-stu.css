@@ -1,232 +1,277 @@
-html,
+/* ============================================================
+   1. 全域設定 (Global Reset) - 全面採用 border-box
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+/* 移除舊版裝飾 */
+:is(#header, #footer, #logo, h1, .post h1, img[src*="banner-new.gif"]) {
+  display: none !important;
+}
+
+/* 扁平化層級，確保佈局由 Body 直接控制，解決 Header 遮擋問題 */
+:is(#wrapper, #page, #page-bgtop, #page-bgbtm, #content, .post) {
+  display: contents !important;
+}
+
 body {
+  background-color: #f1f5f9 !important;
+  font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif !important;
   margin: 0 !important;
   padding: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
-  #wrapper,
-  #page,
-  #page-bgtop {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   2. 置頂導航欄 (Sticky Header) - 會自動推開內容
+   ============================================================ */
+#sidebar {
+  position: sticky !important;
+  top: 0;
+  width: 100% !important;
+  min-height: 60px !important;
+  height: auto !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+
+  & h2 { display: none !important; }
+
+  & ul {
     display: flex !important;
-    flex-direction: column !important;
-    flex: 1 !important;
-    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    list-style: none !important;
     padding: 0 !important;
-    transition: all 0.3s ease-in-out !important;
-    #header,
-    #footer {
-      display: none !important;
-    }
-    #page-bgbtm {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      width: 100% !important;
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      container-type: inline-size !important;
-      flex-direction: column;
+    margin: 0 auto !important;
+    max-width: 900px;
+    width: 100%;
+    justify-content: flex-start;
+
+    & li, & p { display: inline-block !important; margin: 0 !important; }
+
+    & a {
+      text-decoration: none !important;
+      color: #334155 !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      padding: 7px 14px !important;
+      border-radius: 8px !important;
       background-color: #f1f5f9 !important;
-      #sidebar {
-        width: 100% !important;
-        overflow-y: auto !important;
-        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.15) !important;
-        margin-bottom: 1rem !important;
-        border-bottom: 0.25rem solid #0063c6;
-        ul {
-          list-style: none !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          width: 100% !important;
-          li {
-            background-color: #fff !important;
-            min-height: 0 !important;
-            width: 100% !important;
-            margin: 0 !important;
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-            justify-content: space-around;
-            h2 {
-              display: none !important;
-            }
-            p {
-              margin: 0 !important;
-              padding: 0 !important;
-              display: block !important;
-              &:hover {
-                background-color: #f0f0f0 !important;
-              }
-              & a[href^="Main?func="] {
-                display: flex !important;
-                align-items: center !important;
-                padding: 1rem !important;
-                color: black !important;
-              }
-              & a:not([href^="Main?func="]) {
-                display: none !important;
-              }
-            }
-          }
-        }
-      }
-      #content {
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-        height: 100% !important;
-        flex: 1 !important;
-        .post {
-          margin: 0 !important;
-          width: 100% !important;
-          height: 100% !important;
-          display: flex !important;
-          flex-direction: column !important;
-          justify-content: center !important;
-          align-items: center !important;
-          padding: 2rem !important;
-          box-sizing: border-box !important;
-          .box {
-            /* margin: 3rem 0 4rem 0 !important; */
-            max-width: 800px !important;
-            width: 100%;
-            border: 0;
-            background-color: #fff !important;
-            min-height: 500px !important;
-            border-radius: 2rem !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-            color: black !important;
-            padding: 2rem !important;
-            box-sizing: border-box !important;
-          }
-          h1 {
-            display: none !important;
-          }
-          table {
-            width: 100% !important;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            tbody {
-              display: flex !important;
-              flex-direction: row !important;
-              gap: 0.5rem !important;
-              flex-wrap: wrap !important;
-            }
-            tr {
-              display: flex !important;
-              flex-direction: row !important;
-              background-color: unset !important;
-              color: unset !important;
-              border: unset !important;
-              border-radius: unset !important;
-              box-shadow: unset !important;
-              flex-wrap: wrap !important;
-              width: 100%;
-              /* margin-bottom: 1rem !important; */
-            }
-            th {
-              background-color: unset !important;
-              color: unset !important;
-              font-size: larger !important;
-              text-align: left;
-              padding: unset !important;
-            }
-            .tableTitle {
-              word-spacing: -0.25rem;
-              width: 100% !important;
-              padding: unset !important;
-              text-align: left !important;
-              margin-bottom: 0rem;
-            }
-            td {
-              width: 100% !important;
-              height: fit-content !important;
-              .blue {
-                color: unset;
-              }
-            }
-            a[href="file/rule1120620.pdf"] {
-              display: none !important;
-            }
-            td:has(div[id="LA_date_div"]) {
-              flex-direction: row !important;
-              gap: 0.5rem !important;
-              align-items: center !important;
-              br {
-                display: none !important;
-              }
-              input[type="text"],
-              div,
-              span {
-                height: 38px !important;
-                display: inline-block;
-                margin-bottom: 0.5rem !important;
-                text-align: center !important;
-                line-height: 38px;
-                cursor: pointer !important;
-              }
-            }
-            td:has(span[class="red"]) {
-              width: 100% !important;
-              margin-bottom: 1rem;
-              background-color: rgb(255, 230, 230) !important;
-              padding: 0.5rem 1rem !important;
-              border-radius: 0.5rem !important;
-              span[class="red"] {
-                width: 100% !important;
-              }
-            }
-          }
-          input[type="button"] {
-            display: block !important;
-          }
-          input:not([type="radio"]),
-          select,
-          textarea {
-            width: 240px;
-            box-sizing: border-box !important;
-            display: inline-block;
-            padding: 0.5rem 1rem !important;
-            border-radius: 0.5rem;
-            background-color: #fff;
-            border: 1px solid #ccc !important;
-            height: unset !important;
-            min-height: 38px !important;
-            margin-bottom: 0.5rem !important;
-          }
-          input[type="button"],
-          input[type="text"],
-          select {
-            cursor: pointer;
-          }
-          select.error {
-            background-color: unset !important;
-            border: 2px solid red !important;
-          }
-          label[for="data_type"] {
-            display: none !important;
-            height: 0 !important;
-          }
-          #LA_date_div {
-            width: fit-content !important;
-          }
-        }
+      border: 1px solid #e2e8f0 !important;
+      transition: all 0.2s;
+      white-space: nowrap !important;
+
+      &:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
       }
     }
   }
 }
 
-/* body[text="#003398"] {
-  background: #191919 !important;
-  table[summary="版型表格：主要網頁內容"] {
-    background: rgb(52, 52, 52) !important;
-    td {
-      background-color: #191919 !important;
-      a{
-        color: white !important;
+/* ============================================================
+   3. 內容卡片 (.box)
+   ============================================================ */
+.box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 30px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  
+  width: calc(100% - 30px) !important;
+  max-width: 800px !important; 
+  margin: 30px auto !important;
+
+  & table { width: 100% !important; border-collapse: collapse !important; }
+  & tbody { display: block !important; width: 100% !important; }
+
+  /* 區塊標題置中 */
+  & th {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 55px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    padding: 10px !important;
+    margin: 0 0 25px 0 !important;
+    background-color: #f8fafc !important;
+    border-radius: 12px !important;
+    border-bottom: 4px solid #2563eb !important;
+    text-align: center !important;
+  }
+
+  & tr {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 22px !important;
+  }
+
+  /* 欄位標題：修正「備註」重疊問題 */
+  & .tableTitle {
+    display: block !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+    text-align: left !important;
+    line-height: 1.6 !important;
+    word-spacing: -0.15rem !important; 
+    letter-spacing: normal !important;
+    white-space: normal !important;
+  }
+
+  /* 欄位內容區域 (TD) */
+  & td {
+    display: block !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding: 0 !important;
+
+    /* 一般輸入框與下拉選單 */
+    & :is(input[type="text"], input:not([type]), select, textarea) {
+      width: 100% !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      background-color: #ffffff !important;
+      padding: 0 12px !important;
+      color: #1e293b !important;
+      height: 46px !important;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
       }
     }
+
+    & textarea {
+      height: auto !important;
+      min-height: 120px !important;
+      padding: 12px !important;
+    }
+
+    /* 按鈕樣式 (由 ID 與 container 指定，避免破壞 iframe) */
+    & :is(input[type="button"], input[type="submit"]) {
+      height: 46px !important;
+      padding: 0 24px !important;
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      font-size: 15px !important;
+      margin: 10px 8px 0 0 !important;
+
+      &:hover { background-color: #1d4ed8 !important; }
+    }
+
+    & input[type="reset"] {
+      height: 46px !important;
+      padding: 0 24px !important;
+      background-color: #f1f5f9 !important;
+      color: #475569 !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+    }
   }
-} */
+
+  /* ============================================================
+     關鍵修正：日期、~、按鈕 全部排成一行
+     ============================================================ */
+  & td:has(#lSdate) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important; /* 手機寬度不足時自動換行 */
+    align-items: center !important;
+    gap: 8px !important;
+
+    /* 隱藏造成換行的 <br> */
+    & br { display: none !important; }
+
+    /* 讓包含 end date 的 div 變為行內元素 */
+    & #LA_date_div {
+      display: inline-flex !important;
+      width: auto !important;
+    }
+
+    /* 調整日期輸入框寬度以利於橫向排版 */
+    & input.Wdate {
+      width: 140px !important;
+      min-width: 120px !important;
+    }
+
+    /* 確認按鈕在同一行的微調 */
+    & #bLeaveDate {
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    /* 針對波浪符號的排版 */
+    & span {
+      display: inline-block !important;
+      width: auto !important;
+      margin: 0 !important;
+    }
+  }
+}
+
+/* ============================================================
+   4. 警示區域 (.red) 樣式完全統一 (不論是 TD 或 Span)
+   ============================================================ */
+:is(.red, td.red) { 
+    background-color: #fff1f2 !important;
+    color: #e11d48 !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 15px 0 !important;
+    font-size: 14px !important;
+    border: 1px solid #ffe4e6 !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+    word-spacing: -0.15rem !important;
+}
+
+:is(.red, td.red) :is(b, strong, span) {
+    color: #e11d48 !important;
+}
+
+/* ============================================================
+   5. RWD & 組件保護
+   ============================================================ */
+@media (max-width: 600px) {
+  .box { padding: 20px 15px !important; width: calc(100% - 20px) !important; }
+  /* 手機版：若空間真的不夠，讓按鈕佔據下方整行 */
+  .box td:has(#lSdate) {
+      justify-content: flex-start;
+      & #bLeaveDate { width: 100% !important; margin-top: 10px !important; }
+  }
+}
+
+/* 日期選擇器保護 */
+#ui-datepicker-div, .WdatePickerDiv {
+  all: revert !important;
+  & * { all: revert !important; }
+  word-spacing: normal !important;
+}
+
+.blue { color: #2563eb !important; font-weight: 700 !important; }
