@@ -1,0 +1,157 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+  color: unset;
+  transition: all 0.05s ease;
+}
+
+/* 刪除橘點和 New 圖示 */
+img[src="../image/new04.gif"],
+img[src="../image/or_ball.gif"] {
+  display: none;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: #eef5fc;
+}
+
+br {
+  display: none !important;
+}
+
+h2 {
+  width: 100%;
+}
+
+blockquote {
+  width: 100%;
+  margin: auto;
+  border-radius: 1rem;
+  border: none;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap; /* 關鍵：讓圖示自動換行 */
+  gap: 20px; /* 圖示間距 */
+  padding: 20px;
+  justify-content: space-evenly; /* 從左側開始排 */
+
+  a {
+    display: flex;
+    flex-direction: column; /* 讓圖片在上，文字在下 */
+    align-items: center; /* 水平置中 */
+    justify-content: center;
+    border-radius: 1rem;
+    background-color: rgb(196, 222, 255);
+    height: 4rem;
+    flex: 1 1 300px;
+    text-decoration: none;
+  }
+  a:hover {
+    background-color: rgb(163, 192, 229);
+    transform: translate(1px, 1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+hr[size="4"],
+table[border="0"]:has(img[src="../image/home05.gif"]) {
+  display: none;
+}
+
+body[background*="grey918y.gif"] {
+  background-color: #eef5fc !important;
+  background-image: none !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #334155 !important;
+
+  table[border="4"] {
+    border: none !important;
+    border-collapse: separate !important;
+    border-spacing: 0 12px !important;
+    width: 100% !important;
+    max-width: 1000px;
+    margin: auto;
+    background: transparent !important;
+  }
+
+  table[border="4"] tr {
+    background: unset !important;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  table[border="4"] tr:not(:first-child):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    outline: 2px solid #5a91d6;
+    outline-offset: -2px;
+  }
+
+  table[border="4"] td,
+  table[border="4"] th {
+    border: none !important;
+    padding: 15px 20px !important;
+    vertical-align: middle;
+    background: #fff !important;
+  }
+
+  table[border="4"] tr td:first-child,
+  table[border="4"] tr th:first-child {
+    border-radius: 12px 0 0 12px;
+  }
+  table[border="4"] tr td:last-child,
+  table[border="4"] tr th:last-child {
+    border-radius: 0 12px 12px 0;
+  }
+
+  table[border="4"] td a {
+    color: #003398 !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  table[border="4"] td[align="center"] {
+    color: #64748b !important;
+    font-weight: 500;
+  }
+
+  th {
+    background: transparent !important;
+    padding: 10px 20px !important;
+    text-align: left;
+    color: #1e293b !important;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    font {
+      color: inherit !important;
+    }
+  }
+
+  img[src*="or_ball.gif"] {
+    display: none !important;
+  }
+}
