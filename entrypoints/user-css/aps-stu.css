@@ -1,23 +1,21 @@
 /* ============================================================
    1. 全域設定 (Global Reset) - 全面採用 border-box
    ============================================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box !important;
 }
 
-/* 移除舊版裝飾 */
-:is(#header, #footer, #logo, h1, .post h1, img[src*="banner-new.gif"]) {
-  display: none !important;
-}
-
-/* 扁平化層級，確保佈局由 Body 直接控制，解決 Header 遮擋問題 */
-:is(#wrapper, #page, #page-bgtop, #page-bgbtm, #content, .post) {
-  display: contents !important;
-}
-
-body {
+/* 防止選到學生查詢專區 body */
+body:has(#wrapper) {
   background-color: #f1f5f9 !important;
-  font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    "Microsoft JhengHei",
+    sans-serif !important;
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
@@ -25,11 +23,63 @@ body {
   min-height: 100vh;
   width: 100vw;
   overflow-x: hidden;
+  /* 移除舊版裝飾 */
+  :is(#header, #footer, #logo, h1, .post h1, img[src*="banner-new.gif"]) {
+    display: none !important;
+  }
+
+  /* 扁平化層級，確保佈局由 Body 直接控制，解決 Header 遮擋問題 */
+  :is(#wrapper, #page, #page-bgtop, #page-bgbtm, #content, .post) {
+    display: contents !important;
+  }
+  :is(.red, td.red) {
+    background-color: #fff1f2 !important;
+    color: #e11d48 !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 15px 0 !important;
+    font-size: 14px !important;
+    border: 1px solid #ffe4e6 !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+    word-spacing: -0.15rem !important;
+  }
+
+  :is(.red, td.red) :is(b, strong, span) {
+    color: #e11d48 !important;
+  }
+
+  .blue {
+    color: #2563eb !important;
+    font-weight: 700 !important;
+  }
+
+  @media (max-width: 600px) {
+    .box {
+      padding: 20px 15px !important;
+      width: calc(100% - 20px) !important;
+    }
+    .box td:has(#lSdate) {
+      justify-content: flex-start;
+      & #bLeaveDate {
+        width: 100% !important;
+        margin-top: 10px !important;
+      }
+    }
+  }
+
+  #ui-datepicker-div,
+  .WdatePickerDiv {
+    all: revert !important;
+    & * {
+      all: revert !important;
+    }
+    word-spacing: normal !important;
+  }
 }
 
-/* ============================================================
-   2. 置頂導航欄 (Sticky Header) - 會自動推開內容
-   ============================================================ */
 #sidebar {
   position: sticky !important;
   top: 0;
@@ -44,7 +94,9 @@ body {
   align-items: center !important;
   padding: 10px 20px !important;
 
-  & h2 { display: none !important; }
+  & h2 {
+    display: none !important;
+  }
 
   & ul {
     display: flex !important;
@@ -57,7 +109,11 @@ body {
     width: 100%;
     justify-content: flex-start;
 
-    & li, & p { display: inline-block !important; margin: 0 !important; }
+    & li,
+    & p {
+      display: inline-block !important;
+      margin: 0 !important;
+    }
 
     & a {
       text-decoration: none !important;
@@ -88,13 +144,19 @@ body {
   border-radius: 16px !important;
   padding: 30px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-  
+
   width: calc(100% - 30px) !important;
-  max-width: 800px !important; 
+  max-width: 800px !important;
   margin: 30px auto !important;
 
-  & table { width: 100% !important; border-collapse: collapse !important; }
-  & tbody { display: block !important; width: 100% !important; }
+  & table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  & tbody {
+    display: block !important;
+    width: 100% !important;
+  }
 
   /* 區塊標題置中 */
   & th {
@@ -129,7 +191,7 @@ body {
     margin-bottom: 10px !important;
     text-align: left !important;
     line-height: 1.6 !important;
-    word-spacing: -0.15rem !important; 
+    word-spacing: -0.15rem !important;
     letter-spacing: normal !important;
     white-space: normal !important;
   }
@@ -179,7 +241,9 @@ body {
       font-size: 15px !important;
       margin: 10px 8px 0 0 !important;
 
-      &:hover { background-color: #1d4ed8 !important; }
+      &:hover {
+        background-color: #1d4ed8 !important;
+      }
     }
 
     & input[type="reset"] {
@@ -192,10 +256,6 @@ body {
       cursor: pointer !important;
     }
   }
-
-  /* ============================================================
-     關鍵修正：日期、~、按鈕 全部排成一行
-     ============================================================ */
   & td:has(#lSdate) {
     display: flex !important;
     flex-direction: row !important;
@@ -204,7 +264,9 @@ body {
     gap: 8px !important;
 
     /* 隱藏造成換行的 <br> */
-    & br { display: none !important; }
+    & br {
+      display: none !important;
+    }
 
     /* 讓包含 end date 的 div 變為行內元素 */
     & #LA_date_div {
@@ -232,46 +294,3 @@ body {
     }
   }
 }
-
-/* ============================================================
-   4. 警示區域 (.red) 樣式完全統一 (不論是 TD 或 Span)
-   ============================================================ */
-:is(.red, td.red) { 
-    background-color: #fff1f2 !important;
-    color: #e11d48 !important;
-    padding: 16px !important;
-    border-radius: 12px !important;
-    display: block !important;
-    width: 100% !important;
-    margin: 15px 0 !important;
-    font-size: 14px !important;
-    border: 1px solid #ffe4e6 !important;
-    text-align: center !important;
-    line-height: 1.6 !important;
-    word-spacing: -0.15rem !important;
-}
-
-:is(.red, td.red) :is(b, strong, span) {
-    color: #e11d48 !important;
-}
-
-/* ============================================================
-   5. RWD & 組件保護
-   ============================================================ */
-@media (max-width: 600px) {
-  .box { padding: 20px 15px !important; width: calc(100% - 20px) !important; }
-  /* 手機版：若空間真的不夠，讓按鈕佔據下方整行 */
-  .box td:has(#lSdate) {
-      justify-content: flex-start;
-      & #bLeaveDate { width: 100% !important; margin-top: 10px !important; }
-  }
-}
-
-/* 日期選擇器保護 */
-#ui-datepicker-div, .WdatePickerDiv {
-  all: revert !important;
-  & * { all: revert !important; }
-  word-spacing: normal !important;
-}
-
-.blue { color: #2563eb !important; font-weight: 700 !important; }
