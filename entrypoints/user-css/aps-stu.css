@@ -459,7 +459,7 @@ body:has(center) {
     background: #ffffff !important;
     border-radius: 12px !important;
     overflow: hidden !important;
-    border: 1px solid #000000 !important;
+    border: 2px solid #000000 !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 
     td,
@@ -467,23 +467,24 @@ body:has(center) {
       padding: 14px 16px !important;
       color: #1e293b !important;
       background: white !important;
-
+      border: 0 !important;
       /* 1. Add internal borders to the top and left of every cell */
-      border-top: 1px solid #000000 !important;
-      border-left: 1px solid #000000 !important;
+      /* border-top: 1px solid #000000 !important;
+      border-left: 1px solid #000000 !important; */
+      outline: 1px solid black !important;
     }
 
     /* 2. Remove the top border from the first row (the table's outer border handles this) */
-    tr:first-child td,
+    /* tr:first-child td,
     tr:first-child th {
       border-top: none !important;
-    }
+    } */
 
     /* 3. Remove the left border from the first column (the table's outer border handles this) */
-    td:first-child,
+    /* td:first-child,
     th:first-child {
       border-left: none !important;
-    }
+    } */
 
     /* Hover effect for data rows */
     tr:hover td {
