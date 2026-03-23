@@ -5,7 +5,7 @@
 }
 
 /* 防止選到學生查詢專區 body */
-body:has(#wrapper) {
+body:has(#wrapper):not(#page-top):not(body[style="background-color:#blue;"]) {
   background-color: #f1f5f9 !important;
   font-family: Arial, Helvetica, sans-serif !important;
   margin: 0 !important;
@@ -72,7 +72,7 @@ body:has(#wrapper) {
   }
 }
 
-#sidebar {
+body:has(#wrapper):not(#page-top):not(body[style="background-color:#blue;"]) #sidebar {
   position: sticky !important;
   top: 0;
   width: 100% !important;
@@ -288,7 +288,7 @@ body:has(#wrapper) {
 }
 
 /* StuQuery SIDEBAR */
-body[text="#003398"] {
+body[text="#003398"]:not(#page-top):not(body[style="background-color:#blue;"]) {
   background-color: #f8fafc !important;
   color: #1e293b !important;
   font-family: Arial, Helvetica, sans-serif !important;
@@ -379,7 +379,7 @@ body[text="#003398"] {
   }
 }
 /* StuQuery Main Redesign */
-body:has(center) {
+body:has(center):not(#page-top):not(body[style="background-color:#blue;"]) {
   background: #f8fafc !important; /* Slightly off-white for better contrast with cards */
 
   /* Remove legacy orange dot */
