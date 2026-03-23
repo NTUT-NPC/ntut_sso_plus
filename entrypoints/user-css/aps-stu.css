@@ -7,12 +7,7 @@
 /* 防止選到學生查詢專區 body */
 body:has(#wrapper) {
   background-color: #f1f5f9 !important;
-  font-family:
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    "Microsoft JhengHei",
-    sans-serif !important;
+  font-family: Arial, Helvetica, sans-serif !important;
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
@@ -296,8 +291,7 @@ body:has(#wrapper) {
 body[text="#003398"] {
   background-color: #f8fafc !important;
   color: #1e293b !important;
-  font-family:
-    "Inter", "PingFang TC", "Microsoft JhengHei", sans-serif !important;
+  font-family: Arial, Helvetica, sans-serif !important;
   line-height: 1.6;
   padding: 0 !important;
   table[summary="版型表格：主要網頁內容"] {
@@ -333,14 +327,20 @@ body[text="#003398"] {
       background-color: #ffffff !important;
       border: 1px solid #e2e8f0 !important;
       border-radius: 6px !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    > tbody > tr > td:not([valign="bottom"]):hover {
+      background-color: #f8fafc !important;
     }
 
     a {
       display: inline-block !important;
       width: 100% !important;
-      color: #2563eb !important;
+      color: #000 !important;
       text-decoration: none !important;
       font-size: 1rem !important;
+      font-family: Arial, Helvetica, sans-serif !important;
     }
 
     tr:has(td[valign="bottom"]) td table {
@@ -376,5 +376,142 @@ body[text="#003398"] {
         }
       }
     }
+  }
+}
+/* StuQuery Main Redesign */
+body:has(center) {
+  background: #f8fafc !important; /* Slightly off-white for better contrast with cards */
+
+  /* Remove legacy orange dot */
+  img[src*="or_ball.gif"] {
+    display: none !important;
+  }
+
+  /* Base Reset for Form Elements */
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    /* Layout & Typography */
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    /* Modern Styling */
+    color: #ffffff !important;
+    background-color: #2563eb !important; /* Primary Indigo-Blue */
+    border: 1px solid #1d4ed8 !important;
+    border-radius: 8px !important;
+
+    /* Interactive Effects */
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 4px 6px -1px rgba(37, 99, 235, 0.1) !important;
+
+    /* States */
+    &:hover {
+      background-color: #1d4ed8 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2) !important;
+    }
+
+    &:active {
+      transform: translateY(0px) !important;
+      background-color: #1e40af !important;
+    }
+
+    /* Handle secondary buttons (like "Reset") if they exist */
+    &[name*="reset"],
+    &[value*="重設"] {
+      background-color: #f1f5f9 !important;
+      color: #475569 !important;
+      border: 1px solid #e2e8f0 !important;
+
+      &:hover {
+        background-color: #e2e8f0 !important;
+        color: #1e293b !important;
+      }
+    }
+  }
+
+  /* Distinct styling for Text Inputs */
+  input[type="text"],
+  select {
+    padding: 10px 16px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    color: #1e293b !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+
+    &:focus {
+      outline: none !important;
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+  }
+  table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    border: 1px solid #000000 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+
+    td,
+    th {
+      padding: 14px 16px !important;
+      color: #1e293b !important;
+      background: white !important;
+
+      /* 1. Add internal borders to the top and left of every cell */
+      border-top: 1px solid #000000 !important;
+      border-left: 1px solid #000000 !important;
+    }
+
+    /* 2. Remove the top border from the first row (the table's outer border handles this) */
+    tr:first-child td,
+    tr:first-child th {
+      border-top: none !important;
+    }
+
+    /* 3. Remove the left border from the first column (the table's outer border handles this) */
+    td:first-child,
+    th:first-child {
+      border-left: none !important;
+    }
+
+    /* Hover effect for data rows */
+    tr:hover td {
+      background-color: #f8fafc !important;
+    }
+  }
+
+  /* Handle links inside tables */
+  table a {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+
+    &:hover {
+      text-decoration: underline !important;
+      color: #1d4ed8 !important;
+    }
+  }
+
+  /* Responsive Fix: Allow horizontal scrolling on mobile */
+  @media (max-width: 768px) {
+    table {
+      display: block !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+  }
+  * {
+    background: unset !important;
   }
 }
