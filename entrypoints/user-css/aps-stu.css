@@ -291,3 +291,90 @@ body:has(#wrapper) {
     }
   }
 }
+
+/* StuQuery SIDEBAR */
+body[text="#003398"] {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  font-family:
+    "Inter", "PingFang TC", "Microsoft JhengHei", sans-serif !important;
+  line-height: 1.6;
+  padding: 0 !important;
+  table[summary="版型表格：主要網頁內容"] {
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    overflow-y: scroll !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0 !important;
+    tbody,
+    tr,
+    td {
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    td {
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow-wrap: break-word !important;
+      height: auto !important;
+      padding: 10px 15px !important;
+      line-height: 1.5 !important;
+      font-size: 0 !important;
+      background-color: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 6px !important;
+    }
+
+    a {
+      display: inline-block !important;
+      width: 100% !important;
+      color: #2563eb !important;
+      text-decoration: none !important;
+      font-size: 1rem !important;
+    }
+
+    tr:has(td[valign="bottom"]) td table {
+      background: white !important;
+      border: 0 !important;
+      tbody {
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        overflow: hidden;
+      }
+      tr[bgcolor="#CCFFCC"] {
+        background-color: transparent !important;
+      }
+      tr {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        background-color: unset !important;
+        overflow: hidden;
+        border: 1px solid #e2e8f0 !important;
+        padding: 15px !important;
+        th {
+          border: 0 !important;
+        }
+        td {
+          font-size: 1rem !important;
+          margin: 0 !important;
+          border: 0 !important;
+          padding: 0 !important;
+          border-radius: 0 !important;
+          div {
+            text-align: left !important;
+          }
+        }
+      }
+    }
+  }
+}
