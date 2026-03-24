@@ -20,8 +20,7 @@
       "https://aps.ntut.edu.tw/course/tw/Curr.jsp*"
     ],
     "css": [
-      "course-curr.css",
-      "search-curr.css"
+      "course-curr.css"
     ]
   },
   {
@@ -30,6 +29,14 @@
     ],
     "css": [
       "aps-stu.css"
+    ]
+  },
+  {
+    "matches": [
+      "https://aps.ntut.edu.tw/course/tw/SearchCurr.jsp*"
+    ],
+    "css": [
+      "search-curr.css"
     ]
   }
 ]

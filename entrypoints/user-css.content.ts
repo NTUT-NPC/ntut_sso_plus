@@ -66,20 +66,20 @@ for (const [path, mod] of Object.entries(cssModules)) {
 }
 
 function urlMatches(url: string, pattern: string): boolean {
-    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
-    return new RegExp('^' + escaped + '$').test(url);
+    const protoAgUrl = url.replace(/^https?:\/\//, '');
+    const protoAgPattern = pattern.replace(/^(\*|https?):\/\//, '');
+    const escaped = protoAgPattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+    return new RegExp('^' + escaped + '$').test(protoAgUrl);
 }
 
 export default defineContentScript({
-    matches: ['https://*.ntut.edu.tw/*'],
+    matches: ['*://*.ntut.edu.tw/*'],
     allFrames: true,
     matchAboutBlank: true,
     runAt: 'document_start',
     async main() {
         try {
             const currentUrl = window.location.href;
-            const hostname = window.location.hostname;
-            const subdomain = hostname.replace('.ntut.edu.tw', '');
 
             // Find all matching configs
             const activeConfigs = config.filter(c =>
@@ -92,19 +92,17 @@ export default defineContentScript({
 
             const updateCss = async () => {
                 try {
-                    const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
-                    const settings = userCssSettings ?? { global: true };
+                    const data = await browser.storage.local.get('isUserCssEnabled') as { isUserCssEnabled?: boolean };
+                    const isEnabled = data.isUserCssEnabled !== false;
+                    console.log('[NTUT SSO+] Storage check - isUserCssEnabled:', isEnabled);
 
-                    const isGlobalEnabled = settings.global !== false;
-                    // For backward compatibility, we still check subdomain toggle.
-                    // If multiple CSS files are injected, they all depend on the subdomain toggle for now.
-                    const isSubdomainEnabled = settings[subdomain] !== false;
-
-                    if (!isGlobalEnabled || !isSubdomainEnabled) {
+                    if (!isEnabled) {
+                        console.log('[NTUT SSO+] User CSS disabled by settings (isUserCssEnabled: false)');
                         document.getElementById('ntut-sso-user-css')?.remove();
                         return;
                     }
 
+                    console.log('[NTUT SSO+] Injecting CSS for following configs:', activeConfigs.map(c => c.css));
                     let combinedCss = '';
                     for (const conf of activeConfigs) {
                         const cssFiles = Array.isArray(conf.css) ? conf.css : [conf.css];
@@ -122,6 +120,7 @@ export default defineContentScript({
                     }
 
                     if (combinedCss.trim()) {
+                        console.log('[NTUT SSO+] Combined CSS length:', combinedCss.length);
                         let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
                         if (!style) {
                             style = document.createElement('style');
@@ -143,7 +142,7 @@ export default defineContentScript({
             // Listen for storage changes to dynamic update CSS
             browser.storage.onChanged.addListener((changes) => {
                 try {
-                    if (changes.userCssSettings) {
+                    if (changes.isUserCssEnabled) {
                         updateCss();
                     }
                 } catch (err) {
