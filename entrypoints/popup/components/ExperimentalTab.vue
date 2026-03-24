@@ -14,38 +14,21 @@ defineProps<{
 
 const isDarkMode = ref(false);
 const debugMode = ref(false);
-const userCssSettings = ref<Record<string, boolean>>({ global: true });
-const subdomains = ref<string[]>([]);
+const isUserCssEnabled = ref(true);
 
 onMounted(async () => {
-  const data = await browser.storage.local.get(['debugMode', 'userCssSettings', 'theme']) as { debugMode?: boolean, userCssSettings?: Record<string, boolean>, theme?: string };
+  const data = await browser.storage.local.get(['debugMode', 'theme', 'isUserCssEnabled']) as { debugMode?: boolean, theme?: string, isUserCssEnabled?: boolean };
   debugMode.value = !!data.debugMode;
   isDarkMode.value = data.theme === 'dark';
-  console.log('[ExperimentalTab] Loading settings from storage:', data.userCssSettings);
-  if (data.userCssSettings) {
-    userCssSettings.value = { ...data.userCssSettings };
-  } else {
-    // Initialize with default if absolutely empty
-    userCssSettings.value = { global: true };
-    await browser.storage.local.set({ userCssSettings: { global: true } });
-  }
-
-  // Discover subdomains with CSS files
-  const cssModules = import.meta.glob('../../user-css/*.css', { eager: true });
-  console.log('[ExperimentalTab] Discovered CSS modules:', cssModules);
-  subdomains.value = Object.keys(cssModules).map(path => 
-    path.split('/').pop()!.replace('.css', '')
-  );
+  isUserCssEnabled.value = data.isUserCssEnabled !== false;
 });
-
-const saveSettings = async () => {
-  const rawData = toRaw(userCssSettings.value);
-  console.log('[ExperimentalTab] Saving userCssSettings:', rawData);
-  await browser.storage.local.set({ userCssSettings: rawData });
-};
 
 const toggleDebugMode = async () => {
   await browser.storage.local.set({ debugMode: debugMode.value });
+};
+
+const toggleCss = async () => {
+  await browser.storage.local.set({ isUserCssEnabled: isUserCssEnabled.value });
 };
 
 const toggleDarkMode = async () => {
@@ -74,26 +57,17 @@ const handleSSO = (code: string) => {
       </div>
     </div>
 
+
     <div class="glass-card exp-card">
       <div class="exp-card-body">
-        <div class="category-title">網站特製樣式</div>
-        <div class="exp-card-desc">管理各子網域的樣式。若要套用變更，請重新整理網頁。</div>
-        <div class="toggle-list">
-          <ToggleSwitch 
-            v-model="userCssSettings.global"
-            label="全域樣式"
-            description="關閉後將停用所有子網域的自訂 CSS 樣式。"
-            @update:modelValue="saveSettings"
-          />
-          <ToggleSwitch 
-            v-for="sub in subdomains" 
-            :key="sub"
-            v-model="userCssSettings[sub]"
-            :label="`${sub} 樣式`"
-            description="切換該子網域的特定樣式。"
-            @update:modelValue="saveSettings"
-          />
-        </div>
+        <div class="category-title">自訂網站樣式</div>
+        <div class="exp-card-desc">全域開啟或關閉由本擴充功能提供的網站樣式優化。</div>
+        <ToggleSwitch 
+          v-model="isUserCssEnabled"
+          label="啟用樣式優化"
+          description="關閉此選項將停用所有自訂 CSS。變更後請重新整理網頁。"
+          @update:modelValue="toggleCss"
+        />
       </div>
     </div>
 

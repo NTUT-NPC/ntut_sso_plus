@@ -1,0 +1,42 @@
+[
+  {
+    "matches": [
+      "https://nportal.ntut.edu.tw/*"
+    ],
+    "css": [
+      "nportal.css"
+    ]
+  },
+  {
+    "matches": [
+      "https://aps.ntut.edu.tw/course/tw/course.jsp*"
+    ],
+    "css": [
+      "course.css"
+    ]
+  },
+  {
+    "matches": [
+      "https://aps.ntut.edu.tw/course/tw/Curr.jsp*"
+    ],
+    "css": [
+      "course-curr.css"
+    ]
+  },
+  {
+    "matches": [
+      "https://aps-stu.ntut.edu.tw/*"
+    ],
+    "css": [
+      "aps-stu.css"
+    ]
+  },
+  {
+    "matches": [
+      "https://aps.ntut.edu.tw/course/tw/SearchCurr.jsp*"
+    ],
+    "css": [
+      "search-curr.css"
+    ]
+  }
+]

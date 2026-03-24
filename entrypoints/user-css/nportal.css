@@ -1,12 +1,3 @@
-/* ============================================================
-   北科大 SSO+ — User CSS for nportal.ntut.edu.tw
-   ============================================================
-   Filename determines the subdomain: nportal.css → nportal.ntut.edu.tw
-
-   Use @match to restrict styles to specific paths.
-   Supports * wildcard, e.g. @match "/course/*";
-   CSS before any @match applies to ALL pages on this subdomain.
-   ============================================================ */
 :root {
     transition: all 0.5s ease-in-out !important;
 }
@@ -55,7 +46,7 @@ table[style="border:0; width:100%;"] {
 }
 
 /* 主登入框 */
-#wrap > .boxContent {
+#wrap>.boxContent {
     margin: auto !important;
     background-color: #ffffff;
     padding: 2rem;
@@ -76,7 +67,7 @@ img[src="template/ntut/index/images/l_login_title01.png"] {
     display: none !important;
 }
 
-.wrap > .boxContent::before {
+.wrap>.boxContent::before {
     content: "登入校園入口";
     display: block;
     font-size: 1.5rem;
@@ -150,6 +141,7 @@ img[src="template/ntut/index/images/l_login_title01.png"] {
     min-height: 33px !important;
     height: 66px !important;
     position: relative !important;
+
     .headerArea {
         background: transparent !important;
     }
@@ -198,7 +190,8 @@ div[class="tab clearfix"] {
 }
 
 
-.headerLogo, .statist {
+.headerLogo,
+.statist {
     display: none !important;
 }
 
@@ -244,7 +237,9 @@ a[href="javascript:efolderMain()"] {
     display: none !important;
 }
 
-#Column1, #Column2, #Column3 {
+#Column1,
+#Column2,
+#Column3 {
     min-height: 0;
     padding: 0 !important;
     width: calc(100% - 1rem) !important;
@@ -282,33 +277,38 @@ a[href="javascript:efolderMain()"] {
     display: none !important;
 }
 
-.aptree > ul {
+.aptree>ul {
     display: grid !important;
     grid-template-columns: repeat(auto-fit, minmax(266px, 1fr));
-    gap: 1rem;           /* Space between icons */
+    gap: 1rem;
+    /* Space between icons */
     padding: 1rem;
-    list-style: none;    /* Remove bullet points */
+    list-style: none;
+    /* Remove bullet points */
     margin: 0;
 }
 
-.aptree > ul > li {
+.aptree>ul>li {
     background: rgba(200, 230, 255, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 20px;
     border-radius: 12px;
-    text-align: left; /* 改成靠左，像卡片一樣 */
+    text-align: left;
+    /* 改成靠左，像卡片一樣 */
     transition: 0.3s;
-    overflow-wrap: break-word; /* 長文字換行 */
+    overflow-wrap: break-word;
+    /* 長文字換行 */
 }
 
-.aptree > ul > li:hover {
+.aptree>ul>li:hover {
     background: #fff;
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 div[style="text-align:right; font-size:.9rem;"] {
     padding-right: 1rem;
+
     a {
         color: #000 !important;
     }

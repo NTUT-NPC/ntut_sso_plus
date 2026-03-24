@@ -1,0 +1,74 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+  color: unset;
+  transition: all 0.05s ease;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* 刪除橘點和 New 圖示 */
+img[src="../image/new04.gif"],
+img[src="../image/or_ball.gif"] {
+  display: none;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: #eef5fc;
+}
+
+br {
+  display: none !important;
+}
+
+h2 {
+  width: 100%;
+}
+
+blockquote {
+  width: 100%;
+  margin: auto;
+  border-radius: 1rem;
+  border: none;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  /* 關鍵：讓圖示自動換行 */
+  gap: 20px;
+  /* 圖示間距 */
+  padding: 20px;
+  justify-content: space-evenly;
+  /* 從左側開始排 */
+
+  a {
+    display: flex;
+    flex-direction: column;
+    /* 讓圖片在上，文字在下 */
+    align-items: center;
+    /* 水平置中 */
+    justify-content: center;
+    border-radius: 1rem;
+    background-color: rgb(196, 222, 255);
+    height: 4rem;
+    flex: 1 1 300px;
+    text-decoration: none;
+  }
+
+  a:hover {
+    background-color: rgb(163, 192, 229);
+    transform: translate(1px, 1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+}

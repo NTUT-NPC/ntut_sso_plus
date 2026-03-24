@@ -12,6 +12,8 @@
 // Supports * wildcard, e.g. @match "/course/*";
 import { browser } from 'wxt/browser';
 
+import config from './user-css/config.json';
+
 const cssModules = import.meta.glob('./user-css/*.css', { query: '?raw', eager: true });
 
 interface CssSection {
@@ -57,110 +59,146 @@ function parseSections(raw: string): CssSection[] {
 
 const CSS_MAP: Record<string, CssSection[]> = {};
 for (const [path, mod] of Object.entries(cssModules)) {
-    const filename = path.split('/').pop()!.replace('.css', '');
+    const filename = path.split('/').pop()!;
     const raw = (mod as { default: string }).default;
-    CSS_MAP[filename] = parseSections(raw);
+    const sections = parseSections(raw);
+    CSS_MAP[filename] = sections;
 }
 
-function pathMatches(pathname: string, pattern: string): boolean {
-    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
-    return new RegExp('^' + escaped + '$').test(pathname);
+function urlMatches(url: string, pattern: string): boolean {
+    const protoAgUrl = url.replace(/^https?:\/\//, '');
+    const protoAgPattern = pattern.replace(/^(\*|https?):\/\//, '');
+    const escaped = protoAgPattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+    return new RegExp('^' + escaped + '$').test(protoAgUrl);
 }
 
 export default defineContentScript({
-    matches: ['https://*.ntut.edu.tw/*'],
+    matches: ['*://*.ntut.edu.tw/*'],
     allFrames: true,
     matchAboutBlank: true,
     runAt: 'document_start',
     async main() {
-        const hostname = window.location.hostname;
-        const subdomain = hostname.replace('.ntut.edu.tw', '');
-        const sections = CSS_MAP[subdomain];
+        try {
+            const currentUrl = window.location.href;
 
-        const updateCss = async () => {
-            const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
-            const settings = userCssSettings ?? { global: true }; // Default to global: true if not set
+            // Find all matching configs
+            const activeConfigs = config.filter(c =>
+                c.matches.some(pattern => urlMatches(currentUrl, pattern))
+            );
 
-            // Check if global or subdomain is disabled
-            // If settings for a subdomain aren't set, default to true
-            const isGlobalEnabled = settings.global !== false;
-            const isSubdomainEnabled = settings[subdomain] !== false;
-
-            if (!isGlobalEnabled || !isSubdomainEnabled) {
-                document.getElementById('ntut-sso-user-css')?.remove();
-                return;
+            if (activeConfigs.length === 0) {
+                console.warn('[NTUT SSO+] No user CSS found for URL:', currentUrl);
             }
 
-            if (sections) {
-                // Apply all CSS sections, ignore @match
-                const matched = sections.map((s) => s.css).join('\n');
+            const updateCss = async () => {
+                try {
+                    const data = await browser.storage.local.get('isUserCssEnabled') as { isUserCssEnabled?: boolean };
+                    const isEnabled = data.isUserCssEnabled !== false;
+                    console.log('[NTUT SSO+] Storage check - isUserCssEnabled:', isEnabled);
 
-                if (matched.trim()) {
-                    let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
-                    if (!style) {
-                        style = document.createElement('style');
-                        style.id = 'ntut-sso-user-css';
-                        (document.head || document.documentElement).appendChild(style);
+                    if (!isEnabled) {
+                        console.log('[NTUT SSO+] User CSS disabled by settings (isUserCssEnabled: false)');
+                        document.getElementById('ntut-sso-user-css')?.remove();
+                        return;
                     }
-                    style.textContent = matched;
-                } else {
-                    document.getElementById('ntut-sso-user-css')?.remove();
+
+                    console.log('[NTUT SSO+] Injecting CSS for following configs:', activeConfigs.map(c => c.css));
+                    let combinedCss = '';
+                    for (const conf of activeConfigs) {
+                        const cssFiles = Array.isArray(conf.css) ? conf.css : [conf.css];
+                        for (const cssFile of cssFiles) {
+                            const sections = CSS_MAP[cssFile];
+                            if (sections && Array.isArray(sections)) {
+                                // Filter sections based on @match if present
+                                for (const section of sections) {
+                                    if (!section.pattern || urlMatches(window.location.pathname, section.pattern)) {
+                                        combinedCss += section.css + '\n';
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (combinedCss.trim()) {
+                        console.log('[NTUT SSO+] Combined CSS length:', combinedCss.length);
+                        let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
+                        if (!style) {
+                            style = document.createElement('style');
+                            style.id = 'ntut-sso-user-css';
+                            (document.head || document.documentElement).appendChild(style);
+                        }
+                        style.textContent = combinedCss;
+                    } else {
+                        document.getElementById('ntut-sso-user-css')?.remove();
+                    }
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in updateCss:', err);
                 }
-            }
-        };
+            };
 
-        // 1. Inject CSS
-        await updateCss();
+            // 1. Inject CSS
+            await updateCss();
 
-        // Listen for storage changes to dynamic update CSS
-        browser.storage.onChanged.addListener((changes) => {
-            if (changes.userCssSettings) {
-                updateCss();
-            }
-        });
-
-        // 2. Enable Autocomplete (ONLY for muid/password and add hints for Bitwarden)
-        function enableAutocomplete() {
-            // Target specific fields: Username (muid, username) and Password
-            const usernameSelector = 'input[name="muid"], input#muid, input[name="username"]';
-            const passwordSelector = 'input[type="password"]';
-
-            // Handle Username
-            const usernameFields = document.querySelectorAll(usernameSelector);
-            usernameFields.forEach((el) => {
-                if (el.getAttribute('autocomplete') === 'off') {
-                    el.removeAttribute('autocomplete');
-                }
-                if (!el.getAttribute('autocomplete')) {
-                    el.setAttribute('autocomplete', 'username');
+            // Listen for storage changes to dynamic update CSS
+            browser.storage.onChanged.addListener((changes) => {
+                try {
+                    if (changes.isUserCssEnabled) {
+                        updateCss();
+                    }
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in storage change handler:', err);
                 }
             });
 
-            // Handle Password
-            const passwordFields = document.querySelectorAll(passwordSelector);
-            passwordFields.forEach((el) => {
-                if (el.getAttribute('autocomplete') === 'off' || el.getAttribute('autocomplete') === 'new-password') {
-                    el.removeAttribute('autocomplete');
+            // 2. Enable Autocomplete (ONLY for muid/password and add hints for Bitwarden)
+            function enableAutocomplete() {
+                try {
+                    // Target specific fields: Username (muid, username) and Password
+                    const usernameSelector = 'input[name="muid"], input#muid, input[name="username"]';
+                    const passwordSelector = 'input[type="password"]';
+
+                    // Handle Username
+                    const usernameFields = document.querySelectorAll(usernameSelector);
+                    usernameFields.forEach((el) => {
+                        if (el.getAttribute('autocomplete') === 'off') {
+                            el.removeAttribute('autocomplete');
+                        }
+                        if (!el.getAttribute('autocomplete')) {
+                            el.setAttribute('autocomplete', 'username');
+                        }
+                    });
+
+                    // Handle Password
+                    const passwordFields = document.querySelectorAll(passwordSelector);
+                    passwordFields.forEach((el) => {
+                        if (el.getAttribute('autocomplete') === 'off' || el.getAttribute('autocomplete') === 'new-password') {
+                            el.removeAttribute('autocomplete');
+                        }
+                        if (!el.getAttribute('autocomplete')) {
+                            el.setAttribute('autocomplete', 'current-password');
+                        }
+                    });
+                } catch (err) {
+                    console.error('[NTUT SSO+] Error in enableAutocomplete:', err);
                 }
-                if (!el.getAttribute('autocomplete')) {
-                    el.setAttribute('autocomplete', 'current-password');
-                }
+            }
+
+            // Run immediately and periodically/on changes
+            enableAutocomplete();
+            const observer = new MutationObserver(enableAutocomplete);
+            observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['autocomplete'],
             });
-        }
 
-        // Run immediately and periodically/on changes
-        enableAutocomplete();
-        const observer = new MutationObserver(enableAutocomplete);
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['autocomplete'],
-        });
-
-        // Some sites re-add it in their own scripts, so we check a few times
-        for (let delay of [500, 1000, 2000, 5000]) {
-            setTimeout(enableAutocomplete, delay);
+            // Some sites re-add it in their own scripts, so we check a few times
+            for (let delay of [500, 1000, 2000, 5000]) {
+                setTimeout(enableAutocomplete, delay);
+            }
+        } catch (err) {
+            console.error('[NTUT SSO+] Uncaught error in main content script:', err);
         }
     },
 });

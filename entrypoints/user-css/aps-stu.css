@@ -1,0 +1,518 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+}
+
+/* 防止選到學生查詢專區 body */
+body:has(#wrapper):not(#page-top):not(body[style="background-color:#blue;"]) {
+  background-color: #f1f5f9 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  /* 移除舊版裝飾 */
+  :is(#header, #footer, #logo, h1, .post h1, img[src*="banner-new.gif"]) {
+    display: none !important;
+  }
+
+  /* 扁平化層級，確保佈局由 Body 直接控制，解決 Header 遮擋問題 */
+  :is(#wrapper, #page, #page-bgtop, #page-bgbtm, #content, .post) {
+    display: contents !important;
+  }
+  :is(.red, td.red) {
+    background-color: #fff1f2 !important;
+    color: #e11d48 !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 15px 0 !important;
+    font-size: 14px !important;
+    border: 1px solid #ffe4e6 !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+    word-spacing: -0.15rem !important;
+  }
+
+  :is(.red, td.red) :is(b, strong, span) {
+    color: #e11d48 !important;
+  }
+
+  .blue {
+    color: #2563eb !important;
+    font-weight: 700 !important;
+  }
+
+  @media (max-width: 600px) {
+    .box {
+      padding: 20px 15px !important;
+      width: calc(100% - 20px) !important;
+    }
+    .box td:has(#lSdate) {
+      justify-content: flex-start;
+      & #bLeaveDate {
+        width: 100% !important;
+        margin-top: 10px !important;
+      }
+    }
+  }
+
+  #ui-datepicker-div,
+  .WdatePickerDiv {
+    all: revert !important;
+    & * {
+      all: revert !important;
+    }
+    word-spacing: normal !important;
+  }
+}
+
+body:has(#wrapper):not(#page-top):not(body[style="background-color:#blue;"]) #sidebar {
+  position: sticky !important;
+  top: 0;
+  width: 100% !important;
+  min-height: 60px !important;
+  height: auto !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+
+  & h2 {
+    display: none !important;
+  }
+
+  & ul {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 900px;
+    width: 100%;
+    justify-content: flex-start;
+
+    & li,
+    & p {
+      display: inline-block !important;
+      margin: 0 !important;
+    }
+
+    & a {
+      text-decoration: none !important;
+      color: #334155 !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      padding: 7px 14px !important;
+      border-radius: 8px !important;
+      background-color: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+      transition: all 0.2s;
+      white-space: nowrap !important;
+
+      &:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   3. 內容卡片 (.box)
+   ============================================================ */
+.box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 30px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+
+  width: calc(100% - 30px) !important;
+  max-width: 800px !important;
+  margin: 30px auto !important;
+
+  & table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  & tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* 區塊標題置中 */
+  & th {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 55px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    padding: 10px !important;
+    margin: 0 0 25px 0 !important;
+    background-color: #f8fafc !important;
+    border-radius: 12px !important;
+    border-bottom: 4px solid #2563eb !important;
+    text-align: center !important;
+  }
+
+  & tr {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 22px !important;
+  }
+
+  /* 欄位標題：修正「備註」重疊問題 */
+  & .tableTitle {
+    display: block !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+    text-align: left !important;
+    line-height: 1.6 !important;
+    word-spacing: -0.15rem !important;
+    letter-spacing: normal !important;
+    white-space: normal !important;
+  }
+
+  /* 欄位內容區域 (TD) */
+  & td {
+    display: block !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding: 0 !important;
+
+    /* 一般輸入框與下拉選單 */
+    & :is(input[type="text"], input:not([type]), select, textarea) {
+      width: 100% !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      background-color: #ffffff !important;
+      padding: 0 12px !important;
+      color: #1e293b !important;
+      height: 46px !important;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+      }
+    }
+
+    & textarea {
+      height: auto !important;
+      min-height: 120px !important;
+      padding: 12px !important;
+    }
+
+    /* 按鈕樣式 (由 ID 與 container 指定，避免破壞 iframe) */
+    & :is(input[type="button"], input[type="submit"]) {
+      height: 46px !important;
+      padding: 0 24px !important;
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      font-size: 15px !important;
+      margin: 10px 8px 0 0 !important;
+
+      &:hover {
+        background-color: #1d4ed8 !important;
+      }
+    }
+
+    & input[type="reset"] {
+      height: 46px !important;
+      padding: 0 24px !important;
+      background-color: #f1f5f9 !important;
+      color: #475569 !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+    }
+  }
+  & td:has(#lSdate) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important; /* 手機寬度不足時自動換行 */
+    align-items: center !important;
+    gap: 8px !important;
+
+    /* 隱藏造成換行的 <br> */
+    & br {
+      display: none !important;
+    }
+
+    /* 讓包含 end date 的 div 變為行內元素 */
+    & #LA_date_div {
+      display: inline-flex !important;
+      width: auto !important;
+    }
+
+    /* 調整日期輸入框寬度以利於橫向排版 */
+    & input.Wdate {
+      width: 140px !important;
+      min-width: 120px !important;
+    }
+
+    /* 確認按鈕在同一行的微調 */
+    & #bLeaveDate {
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    /* 針對波浪符號的排版 */
+    & span {
+      display: inline-block !important;
+      width: auto !important;
+      margin: 0 !important;
+    }
+  }
+}
+
+/* StuQuery SIDEBAR */
+body[text="#003398"]:not(#page-top):not(body[style="background-color:#blue;"]) {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  line-height: 1.6;
+  padding: 0 !important;
+  table[summary="版型表格：主要網頁內容"] {
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    overflow-y: scroll !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0 !important;
+    tbody,
+    tr,
+    td {
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    td {
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow-wrap: break-word !important;
+      height: auto !important;
+      padding: 10px 15px !important;
+      line-height: 1.5 !important;
+      font-size: 0 !important;
+      background-color: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 6px !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    > tbody > tr > td:not([valign="bottom"]):hover {
+      background-color: #f8fafc !important;
+    }
+
+    a {
+      display: inline-block !important;
+      width: 100% !important;
+      color: #000 !important;
+      text-decoration: none !important;
+      font-size: 1rem !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    tr:has(td[valign="bottom"]) td table {
+      background: white !important;
+      border: 0 !important;
+      tbody {
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        overflow: hidden;
+      }
+      tr[bgcolor="#CCFFCC"] {
+        background-color: transparent !important;
+      }
+      tr {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        background-color: unset !important;
+        overflow: hidden;
+        border: 1px solid #e2e8f0 !important;
+        padding: 15px !important;
+        th {
+          border: 0 !important;
+        }
+        td {
+          font-size: 1rem !important;
+          margin: 0 !important;
+          border: 0 !important;
+          padding: 0 !important;
+          border-radius: 0 !important;
+          div {
+            text-align: left !important;
+          }
+        }
+      }
+    }
+  }
+}
+/* StuQuery Main Redesign */
+body:has(center):not(#page-top):not(body[style="background-color:#blue;"]) {
+  background: #f8fafc !important; /* Slightly off-white for better contrast with cards */
+
+  /* Remove legacy orange dot */
+  img[src*="or_ball.gif"] {
+    display: none !important;
+  }
+
+  /* Base Reset for Form Elements */
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    /* Layout & Typography */
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    /* Modern Styling */
+    color: #ffffff !important;
+    background-color: #2563eb !important; /* Primary Indigo-Blue */
+    border: 1px solid #1d4ed8 !important;
+    border-radius: 8px !important;
+
+    /* Interactive Effects */
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 4px 6px -1px rgba(37, 99, 235, 0.1) !important;
+
+    /* States */
+    &:hover {
+      background-color: #1d4ed8 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2) !important;
+    }
+
+    &:active {
+      transform: translateY(0px) !important;
+      background-color: #1e40af !important;
+    }
+
+    /* Handle secondary buttons (like "Reset") if they exist */
+    &[name*="reset"],
+    &[value*="重設"] {
+      background-color: #f1f5f9 !important;
+      color: #475569 !important;
+      border: 1px solid #e2e8f0 !important;
+
+      &:hover {
+        background-color: #e2e8f0 !important;
+        color: #1e293b !important;
+      }
+    }
+  }
+
+  /* Distinct styling for Text Inputs */
+  input[type="text"],
+  select {
+    padding: 10px 16px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    color: #1e293b !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+
+    &:focus {
+      outline: none !important;
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+  }
+  table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    border: 2px solid #000000 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+
+    td,
+    th {
+      padding: 14px 16px !important;
+      color: #1e293b !important;
+      background: white !important;
+      border: 0 !important;
+      /* 1. Add internal borders to the top and left of every cell */
+      /* border-top: 1px solid #000000 !important;
+      border-left: 1px solid #000000 !important; */
+      outline: 1px solid black !important;
+    }
+
+    /* 2. Remove the top border from the first row (the table's outer border handles this) */
+    /* tr:first-child td,
+    tr:first-child th {
+      border-top: none !important;
+    } */
+
+    /* 3. Remove the left border from the first column (the table's outer border handles this) */
+    /* td:first-child,
+    th:first-child {
+      border-left: none !important;
+    } */
+
+    /* Hover effect for data rows */
+    tr:hover td {
+      background-color: #f8fafc !important;
+    }
+  }
+
+  /* Handle links inside tables */
+  table a {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+
+    &:hover {
+      text-decoration: underline !important;
+      color: #1d4ed8 !important;
+    }
+  }
+
+  /* Responsive Fix: Allow horizontal scrolling on mobile */
+  @media (max-width: 768px) {
+    table {
+      display: block !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+  }
+  * {
+    background: unset !important;
+  }
+}

@@ -1,0 +1,112 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+  color: unset;
+  transition: all 0.05s ease;
+}
+
+/* 刪除橘點和 New 圖示 */
+img[src="../image/new04.gif"],
+img[src="../image/or_ball.gif"] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: #eef5fc;
+}
+
+br {
+  display: none !important;
+}
+
+h2 {
+  width: 100%;
+}
+
+
+
+hr[size="4"],
+table[border="0"]:has(img[src="../image/home05.gif"]) {
+  display: none;
+}
+
+body[background*="grey918y.gif"] {
+  background-color: #eef5fc !important;
+  background-image: none !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #334155 !important;
+
+  /* Style for the search form to match the premium theme */
+  form[name="F1"] {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 600px;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  input[name="code"] {
+    padding: 10px 15px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+  }
+
+  input[type="submit"],
+  input[type="reset"],
+  input[name="button"],
+  input[type="button"] {
+    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 1rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.2s;
+    font-size: 1.1rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  input[type="submit"] {
+    background-color: rgb(196, 222, 255) !important;
+    color: #003398 !important;
+  }
+
+  input[type="submit"]:hover {
+    background-color: rgb(163, 192, 229) !important;
+    transform: translate(1px, 1px) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  input[type="reset"],
+  input[type="button"] {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  input[type="reset"]:hover,
+  input[type="button"]:hover {
+    background-color: #f1f5f9 !important;
+    transform: translate(1px, 1px) !important;
+  }
+}
