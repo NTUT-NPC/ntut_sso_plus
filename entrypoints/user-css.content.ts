@@ -12,6 +12,8 @@
 // Supports * wildcard, e.g. @match "/course/*";
 import { browser } from 'wxt/browser';
 
+import config from './user-css/config.json';
+
 const cssModules = import.meta.glob('./user-css/*.css', { query: '?raw', eager: true });
 
 interface CssSection {
@@ -57,19 +59,15 @@ function parseSections(raw: string): CssSection[] {
 
 const CSS_MAP: Record<string, CssSection[]> = {};
 for (const [path, mod] of Object.entries(cssModules)) {
-    const filename = path.split('/').pop()!.replace('.css', '');
+    const filename = path.split('/').pop()!;
     const raw = (mod as { default: string }).default;
     const sections = parseSections(raw);
-    if (CSS_MAP[filename]) {
-        CSS_MAP[filename] = CSS_MAP[filename].concat(sections);
-    } else {
-        CSS_MAP[filename] = sections;
-    }
+    CSS_MAP[filename] = sections;
 }
 
-function pathMatches(pathname: string, pattern: string): boolean {
+function urlMatches(url: string, pattern: string): boolean {
     const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
-    return new RegExp('^' + escaped + '$').test(pathname);
+    return new RegExp('^' + escaped + '$').test(url);
 }
 
 export default defineContentScript({
@@ -79,21 +77,27 @@ export default defineContentScript({
     runAt: 'document_start',
     async main() {
         try {
+            const currentUrl = window.location.href;
             const hostname = window.location.hostname;
             const subdomain = hostname.replace('.ntut.edu.tw', '');
-            const sections = CSS_MAP[subdomain];
-            if (!sections) {
-                console.warn('[NTUT SSO+] No user CSS found for subdomain:', subdomain);
+
+            // Find all matching configs
+            const activeConfigs = config.filter(c =>
+                c.matches.some(pattern => urlMatches(currentUrl, pattern))
+            );
+
+            if (activeConfigs.length === 0) {
+                console.warn('[NTUT SSO+] No user CSS found for URL:', currentUrl);
             }
 
             const updateCss = async () => {
                 try {
                     const { userCssSettings } = await browser.storage.local.get('userCssSettings') as { userCssSettings?: Record<string, boolean> };
-                    const settings = userCssSettings ?? { global: true }; // Default to global: true if not set
+                    const settings = userCssSettings ?? { global: true };
 
-                    // Check if global or subdomain is disabled
-                    // If settings for a subdomain aren't set, default to true
                     const isGlobalEnabled = settings.global !== false;
+                    // For backward compatibility, we still check subdomain toggle.
+                    // If multiple CSS files are injected, they all depend on the subdomain toggle for now.
                     const isSubdomainEnabled = settings[subdomain] !== false;
 
                     if (!isGlobalEnabled || !isSubdomainEnabled) {
@@ -101,21 +105,30 @@ export default defineContentScript({
                         return;
                     }
 
-                    if (sections && Array.isArray(sections)) {
-                        // Apply all CSS sections, ignore @match
-                        const matched = sections.map((s) => s.css).join('\n');
-
-                        if (matched.trim()) {
-                            let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
-                            if (!style) {
-                                style = document.createElement('style');
-                                style.id = 'ntut-sso-user-css';
-                                (document.head || document.documentElement).appendChild(style);
+                    let combinedCss = '';
+                    for (const conf of activeConfigs) {
+                        const cssFiles = Array.isArray(conf.css) ? conf.css : [conf.css];
+                        for (const cssFile of cssFiles) {
+                            const sections = CSS_MAP[cssFile];
+                            if (sections && Array.isArray(sections)) {
+                                // Filter sections based on @match if present
+                                for (const section of sections) {
+                                    if (!section.pattern || urlMatches(window.location.pathname, section.pattern)) {
+                                        combinedCss += section.css + '\n';
+                                    }
+                                }
                             }
-                            style.textContent = matched;
-                        } else {
-                            document.getElementById('ntut-sso-user-css')?.remove();
                         }
+                    }
+
+                    if (combinedCss.trim()) {
+                        let style = document.getElementById('ntut-sso-user-css') as HTMLStyleElement;
+                        if (!style) {
+                            style = document.createElement('style');
+                            style.id = 'ntut-sso-user-css';
+                            (document.head || document.documentElement).appendChild(style);
+                        }
+                        style.textContent = combinedCss;
                     } else {
                         document.getElementById('ntut-sso-user-css')?.remove();
                     }
